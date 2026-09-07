@@ -152,3 +152,12 @@ lobodelmar account; private visibility initially. GitHub CLI version installed:
 `gh auth login --hostname github.com --git-protocol https --web` in the platform
 admin session; never place a token in source, chat or a remote URL. Authentication
 here does not grant the lab deployment user access to GitHub credentials.
+
+## GitHub publication completed
+
+Authenticated as lobodelmar through browser device authorization and created
+https://github.com/random-quark/randomjunk-lab as a private organisation repository.
+Pushed the existing commit history on master and configured origin/upstream.
+Repeat updates from this checkout with `git push origin master` after checks.
+GitHub credentials stay in the root user's gh configuration outside this repository;
+lab has not been granted them. Individual experiments have not been pushed.

@@ -7,7 +7,7 @@ use uv and committed lockfiles.
 **Status:** installed and live-tested on `randomjunk.dev`. See the
 [installation record](docs/installation.md), [test evidence](docs/verification.md)
 and [review checklist](docs/review-checklist.md). Remote backup configuration,
-GitHub authorization and iPhone checks remain separate follow-up tasks. Other
+and iPhone checks remain separate follow-up tasks. Other
 machines still require an explicitly authorized installation and validation.
 
 ## Start here
@@ -19,7 +19,7 @@ machines still require an explicitly authorized installation and validation.
   Its source is [the operating-instructions template](templates/operating-instructions.md).
 - **Reproduce development and tests:** read [docs/development.md](docs/development.md).
 
-The GitHub repository name is `randomjunk-lab`. This repository contains the
+The private GitHub repository is [random-quark/randomjunk-lab](https://github.com/random-quark/randomjunk-lab). This repository contains the
 platform and its starter templates; generated experiments keep separate Git
 repositories. Never commit live credentials, databases, certificates or caches.
 
