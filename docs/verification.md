@@ -119,3 +119,14 @@ check, not a guarantee that every possible secret format can be detected.
 ## Owner settings workflow — 2026-09-07
 
 Settings workflow update: document-only inputs and instructions; verify source tests/parser and installed source parity. No backup, paid API, reboot or GitHub access changes are implied.
+
+## Deployment CLI follow-up — 2026-09-07
+
+Owner's launch failed because Claude existed only under /root/.local/bin. Install
+with the official native installer as lab; verify command discovery in a fresh lab
+login shell. Existing shells need ~/.local/bin added to PATH. Keep owner login
+pending until checked interactively; do not reuse root credentials. Added this
+missing prerequisite to SETUP.md, settings.txt and setup-status.md.
+
+Verified lab login-shell discovery and Claude 2.1.263. All 61 source tests and
+28 parser checks passed. Interactive Claude account login remains owner action.

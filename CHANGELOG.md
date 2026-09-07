@@ -179,3 +179,11 @@ announcing success before anything was verified. Changes:
 ## Owner settings workflow — 2026-09-07
 
 Added owner settings.txt, current setup-status.md and mandatory proactive owner review instructions; secrets remain outside Git.
+
+## Deployment CLI follow-up — 2026-09-07
+
+Owner's launch failed because Claude existed only under /root/.local/bin. Install
+with the official native installer as lab; verify command discovery in a fresh lab
+login shell. Existing shells need ~/.local/bin added to PATH. Keep owner login
+pending until checked interactively; do not reuse root credentials. Added this
+missing prerequisite to SETUP.md, settings.txt and setup-status.md.

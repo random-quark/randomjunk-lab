@@ -43,3 +43,6 @@ NTFY_URL=https://ntfy.sh
 TARGET_DEVICES=android,iphone
 # Blank means ask before reboot/maintenance, not permission to reboot.
 REBOOT_WINDOW=
+
+# Coding agent used by the deployment user; its login is separate from app API keys.
+DEPLOYMENT_AGENT=claude

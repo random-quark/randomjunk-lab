@@ -165,3 +165,11 @@ lab has not been granted them. Individual experiments have not been pushed.
 ## Owner settings workflow — 2026-09-07
 
 Added settings.txt (non-secret owner choices), setup-status.md (agent-maintained current evidence), and docs/settings-workflow.md. These guide agents, not bootstrap parsing; no live settings were applied. Root and installed agent instructions require surfacing this review and unresolved setup work.
+
+## Deployment CLI follow-up — 2026-09-07
+
+Owner's launch failed because Claude existed only under /root/.local/bin. Install
+with the official native installer as lab; verify command discovery in a fresh lab
+login shell. Existing shells need ~/.local/bin added to PATH. Keep owner login
+pending until checked interactively; do not reuse root credentials. Added this
+missing prerequisite to SETUP.md, settings.txt and setup-status.md.

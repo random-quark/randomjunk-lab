@@ -18,6 +18,8 @@ configured. Review unresolved rows with the owner at each setup handoff.
 | Hosted ntfy | tested | Owner confirmed Android receipt; readiness sends succeeded. iPhone delivery not yet checked. |
 | Platform GitHub | tested | Private random-quark/randomjunk-lab pushed as lobodelmar; remote commit checked. |
 | Experiment GitHub access | needed | Decide restricted access for lab separately; root GitHub credentials are not shared with lab. |
+| Deployment agent executable | tested | 2026-09-07: fresh lab login resolves /home/lab/.local/bin/claude; version 2.1.263 verified. |
+| Deployment agent login | needed | Owner must launch Claude as lab and complete interactive account login. Root login does not establish lab access. |
 | AI credentials | configured | OpenAI/Gemini/Replicate key presence checked; no values recorded here. |
 | AI access / spending | needed | Agree test budget, verify intended model access, and distinguish provider spending controls from preferences. |
 | B2 credentials / endpoint | needed | Bucket, endpoint, key ID and application key missing. Collect securely. |

@@ -115,3 +115,26 @@ Backup failure notifications use systemd OnFailure, covering ordinary failure,
 timeout and killed/OOM processes while the manager remains running. Direct manual
 execution uses the script's exception notifier instead. Delivery itself depends
 on network/provider availability; host power loss cannot send its own alert.
+
+## Verify the deployment agent executable
+
+Before telling the owner to launch Claude, check it as lab, not root:
+`sudo -iu lab command -v claude` and `sudo -iu lab claude --version`.
+A root-only installation does not make Claude available to lab. If selected and
+missing, use the official native installer AS LAB:
+
+```sh
+sudo -iu lab
+curl -fsSL https://claude.ai/install.sh -o "$HOME/claude-install.sh"
+bash "$HOME/claude-install.sh"
+# In this existing shell, refresh PATH; new login shells use ~/.profile.
+export PATH="$HOME/.local/bin:$PATH"
+claude --version
+cd /srv/lab
+claude
+```
+
+The owner completes Claude login interactively as lab. Do not copy root's Claude
+credentials or expose /root. CLI installation and authenticated usage are separate
+checklist items; a version check does not prove login/subscription access.
+Reference: https://code.claude.com/docs/en/setup
