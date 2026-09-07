@@ -89,3 +89,16 @@ specific checks. Remote B2 backup/restore and credential recovery, iPhone/PWA
 behavior, reboot recovery, old-draft migration, and any failure cases not listed
 above remain untested. No paid provider API calls were made; billing/model access
 is not established by importing a key.
+
+## Experiment workflow documentation follow-up — 2026-09-07
+
+The first game exposed operational setup gaps, now covered in
+experiment-workflow.md and CLAUDE.md. This documentation-only update does not
+change platform code or establish new phone/backup acceptance. Neon Blocks game
+checks are recorded separately in /srv/lab/tetris/app/install.md. Validate this
+revision with the required locked source suite and parser checks, plus byte-for-byte
+comparison of the installed guidance with its authoritative source.
+
+Validation result: 61 source tests passed (two upstream deprecation warnings);
+28 Python/shell/TOML parse checks passed. Confirmed Playwright 1.62.0 exposes
+install-deps --dry-run. Installed guidance was compared byte-for-byte with source.

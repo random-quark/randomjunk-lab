@@ -1,5 +1,13 @@
 # Changelog
 
+## First experiment workflow lessons — 2026-09-07
+
+- Document unpublished development, early local Git/browser checks, meaningful
+  mobile/PWA/offline tests, persistence checks and clean release notifications.
+- Clarify that root must not execute lab-owned browser dependency installers;
+  use reviewed system package installation for missing browser libraries.
+- Synchronize installed operating guidance and retain reproduction instructions.
+
 ## Installation and live validation — 2026-09-07
 
 - Installed the platform for randomjunk.dev with explicit owner authorization;

@@ -90,7 +90,7 @@ virtual environments/caches or disposable test fixtures.
 - Static publication is explicit and snapshots regular files; symlinks are rejected.
 - State/locks/credentials move to root-only /var/lib/lab.
 - Failed create keeps resources; failed stop blocks destructive teardown.
-- `--prepare-only` is for stopped restoration; `publish` activates afterward.
+- `--prepare-only` supports unpublished development and stopped restoration; `publish` activates afterward.
 - HTTP-verified means only the documented HTTP/service checks passed.
 - Bootstrap is fresh-only and leaves backup scheduling disabled pending setup.
 
@@ -123,3 +123,15 @@ notifications.md, updated setup/agent guidance and corrected the stale permissio
 comment in bin/notify. This was a documentation-only configuration decision; no
 server, credentials, topic subscription or notification was created. The source
 ZIP was refreshed from the follow-up Git commit.
+
+## First experiment lessons — 2026-09-07
+
+Added docs/experiment-workflow.md and linked it from installed agent guidance.
+The Neon Blocks run exposed missing lab Git identity, missing browser OS libraries,
+and an offline reconnect retry gap. The reusable workflow now covers early tooling
+checks, prepare/build/test/publish, explicit PWA/device limits and fixture cleanup.
+Corrected browser dependency guidance: app-owned executables must never run as root;
+review package requirements as lab and install approved names through system apt.
+This is a documentation update; no platform runtime code or services changed.
+Authoritative docs and agent guidance are synchronized to the installed paths,
+and the source-only ZIP is refreshed from the documentation commit.

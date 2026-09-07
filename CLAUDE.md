@@ -17,6 +17,17 @@ is `/srv/lab/NAME/data/`, owned by `labapp-NAME`; deployment code must not conta
 secrets. The helper injects environment values through systemd, so don't create
 or load a local .env in the production scaffold.
 
+For a new requested app, prefer `newlab NAME ... --prepare-only`, implement and
+exercise the actual experience locally, then `sudo /usr/local/sbin/labctl publish NAME`.
+Preparation also supports development; do not publish a scaffold as a finished app.
+Check repository-local Git identity and required test tooling before implementation.
+See /usr/local/share/lab/docs/experiment-workflow.md for the completion workflow,
+browser setup, offline/PWA checks and reproducibility records.
+
+Never run app-owned scripts, virtualenv executables or dependency hooks as root,
+including browser dependency installers. Browser tests/downloads run as lab; an
+administrator installs reviewed OS package names through the system package manager.
+
 After static edits: `sudo /usr/local/sbin/labctl publish NAME`.
 After backend edits: `sudo /usr/local/sbin/labctl service restart NAME`.
 For dependencies, run `uv sync --locked --python /usr/bin/python3` as lab in app/;
