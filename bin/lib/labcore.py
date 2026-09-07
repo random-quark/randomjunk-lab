@@ -97,11 +97,15 @@ def locked(path):
     finally:
         os.close(fd)
 
-def caddy_site(rec, dom, root, public='/var/lib/lab-public'):
+def caddy_site(rec, dom, root, public='/var/lib/lab-public', tls_mode='production'):
     """Only structured platform data can influence Caddy directives."""
     app = name(rec['name'])
     domain(dom)
     lines = [f'{app}.{dom} {{', '\tencode gzip']
+    if tls_mode == 'internal' and dom.endswith('.test'):
+        lines.append('\ttls internal')
+    elif tls_mode != 'production':
+        raise LabError('internal TLS is restricted to a .test domain')
     if rec['private']:
         hashed = rec['auth_hash']
         if not re.fullmatch(r'\$2[aby]\$[0-9]{2}\$[./A-Za-z0-9]{53}', hashed):

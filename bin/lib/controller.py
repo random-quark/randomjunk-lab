@@ -12,6 +12,7 @@ import re
 import secrets
 import shutil
 import socket
+import ssl
 import subprocess
 import sys
 import time
@@ -52,6 +53,9 @@ class Controller:
         if config.get('version') != VERSION:
             raise LabError('unsupported platform version; follow migration documentation')
         domain(config['domain'])
+        mode = config.get('tls_mode', 'production')
+        if mode not in ('production', 'internal') or (mode == 'internal' and not config['domain'].endswith('.test')):
+            raise LabError('invalid TLS mode: internal TLS requires a .test domain')
         return config
 
     def path(self, app):
@@ -185,23 +189,30 @@ class Controller:
         One generated file is the complete imported site set. No arbitrary
         caller-supplied paths, Caddy text, or lab-writable staged files.
         """
-        canonical = '{\n\tadmin unix//run/caddy/admin.sock\n}\nimport /etc/caddy/lab-sites.caddy\n'
+        canonical = '{\n\tadmin unix//run/caddy/admin.sock\n\tskip_install_trust\n}\nimport /etc/caddy/lab-sites.caddy\n'
         if (self.caddy/'Caddyfile').read_text() != canonical:
             raise LabError('top-level Caddyfile differs from managed configuration; inspect before publication')
         dom = self.config()['domain']
-        sites = ''.join(caddy_site(rec, dom, self.root, self.public) for rec in sorted(records, key=lambda item: item['name']))
-        header = '{\n\tadmin unix//run/caddy/admin.sock\n}\n'
+        sites = ''.join(caddy_site(rec, dom, self.root, self.public, self.config().get('tls_mode', 'production')) for rec in sorted(records, key=lambda item: item['name']))
+        header = '{\n\tadmin unix//run/caddy/admin.sock\n\tskip_install_trust\n}\n'
         candidate = self.state/'caddy-candidate'
         atomic_write(candidate, header + sites, 0o600)
         self.run(['caddy', 'validate', '--config', candidate, '--adapter', 'caddyfile'])
         live = self.caddy/'lab-sites.caddy'
         previous = live.read_bytes()
         atomic_write(live, sites, 0o644)
-        result = self.run(['caddy', 'reload', '--config', self.caddy/'Caddyfile', '--adapter', 'caddyfile', '--address', 'unix//run/caddy/admin.sock'], check=False)
-        if result.returncode:
+        reload_command = ['caddy', 'reload', '--config', self.caddy/'Caddyfile', '--adapter', 'caddyfile', '--address', 'unix//run/caddy/admin.sock']
+        try:
+            failed = self.run(reload_command, check=False).returncode != 0
+        except (subprocess.TimeoutExpired, OSError):
+            failed = True
+        if failed:
             atomic_write(live, previous, 0o644)
-            rollback = self.run(['caddy', 'reload', '--config', self.caddy/'Caddyfile', '--adapter', 'caddyfile', '--address', 'unix//run/caddy/admin.sock'], check=False)
-            raise LabError('Caddy reload failed; old file restored' + ('; rollback reload ALSO failed: operator action required' if rollback.returncode else ' and reloaded'))
+            try:
+                rollback_failed = self.run(reload_command, check=False).returncode != 0
+            except (subprocess.TimeoutExpired, OSError):
+                rollback_failed = True
+            raise LabError('Caddy reload failed; old file restored' + ('; rollback reload ALSO failed: operator action required' if rollback_failed else ' and reloaded'))
         candidate.unlink(missing_ok=True)
 
     def published(self, exclude=None):
@@ -385,7 +396,10 @@ class Controller:
         class NoRedirect(urllib.request.HTTPRedirectHandler):
             def redirect_request(self, *args, **kwargs):
                 return None
-        opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirect())
+        context = ssl.create_default_context()
+        if self.config().get('tls_mode') == 'internal':
+            context.load_verify_locations('/var/lib/caddy/.local/share/caddy/pki/authorities/local/root.crt')
+        opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirect(), urllib.request.HTTPSHandler(context=context))
         deadline = time.monotonic() + timeout
         while True:
             try:
@@ -518,6 +532,8 @@ class Controller:
                 problems.append(f'{path.name}: {exc}')
         known = set(records)
         for directory in self.root.iterdir():
+            if directory.name in ('AGENTS.md', 'CLAUDE.md'):
+                continue
             if directory.name not in known:
                 problems.append(f'orphan app entry: {directory.name}')
         for path in self.units.glob('lab-app@*.service.d'):
@@ -548,7 +564,7 @@ class Controller:
             except LabError:
                 problems.append(f'cannot enumerate Postgres {kind}s')
         try:
-            expected_sites = ''.join(caddy_site(rec, self.config()['domain'], self.root, self.public) for rec in self.published())
+            expected_sites = ''.join(caddy_site(rec, self.config()['domain'], self.root, self.public, self.config().get('tls_mode', 'production')) for rec in self.published())
             if (self.caddy/'lab-sites.caddy').read_text() != expected_sites:
                 problems.append('Caddy file differs from published records; use labctl reconcile-caddy')
         except (LabError, OSError, ValueError):

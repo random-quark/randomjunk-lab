@@ -1,0 +1,12 @@
+{
+  "caddy": "v2.11.4 h1:XKxkMTgNSizEvKG6QHue6cAsFOteU2qA61w2tKkCWi0=",
+  "uv": "uv 0.8.22",
+  "postgresql": "psql (PostgreSQL) 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1)",
+  "restic": "restic 0.16.4 compiled with go1.22.2 on linux/amd64",
+  "systemd": "systemd 255 (255.4-1ubuntu8.17)",
+  "python": "Python 3.12.3",
+  "pgvector": "0.6.0",
+  "domain": "randomjunk.dev",
+  "date": "2026-09-07",
+  "backup_timer": "disabled pending remote backup configuration"
+}

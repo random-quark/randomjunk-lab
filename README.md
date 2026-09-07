@@ -1,13 +1,14 @@
-# Lab server — revision 3, source review candidate
+# Lab server — revision 3
 
 A small experiments platform for Ubuntu 24.04: Caddy, static sites, optional
 FastAPI, SQLite or PostgreSQL/pgvector, and restic backups. Python dependencies
 use uv and committed lockfiles.
 
-**Status:** source fixes and isolated tests; not installed or certified for
-unattended operation. See [test evidence](docs/verification.md) and the
-[review checklist](docs/review-checklist.md). Live installation/integration is a
-separate phase requiring the owner's authorization.
+**Status:** installed and live-tested on `randomjunk.dev`. See the
+[installation record](docs/installation.md), [test evidence](docs/verification.md)
+and [review checklist](docs/review-checklist.md). Remote backup configuration,
+GitHub authorization and iPhone checks remain separate follow-up tasks. Other
+machines still require an explicitly authorized installation and validation.
 
 ## Work on this repository
 

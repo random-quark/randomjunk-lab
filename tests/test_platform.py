@@ -42,7 +42,7 @@ def ctl(tmp_path):
     write_json(c.etc/'platform.json', {'version':3, 'domain':'example.test'})
     (c.etc/'secrets.env').write_text('FIRST=dummy-one\nSECOND=dummy-two\n')
     (c.caddy/'lab-sites.caddy').write_text('previous site configuration\n')
-    (c.caddy/'Caddyfile').write_text('{\n\tadmin unix//run/caddy/admin.sock\n}\nimport /etc/caddy/lab-sites.caddy\n')
+    (c.caddy/'Caddyfile').write_text('{\n\tadmin unix//run/caddy/admin.sock\n\tskip_install_trust\n}\nimport /etc/caddy/lab-sites.caddy\n')
     return c
 
 @pytest.mark.parametrize('value', ['../aa','a','a'*25,'-ab','ab-','ab\nfoo','a.b','docs'])
@@ -439,3 +439,22 @@ def test_unpublished_app_cannot_be_marked_verified(ctl):
     ctl.save(rec(kind='static'));ctl.wait_http=Mock(return_value=True)
     with pytest.raises(LabError,match='not published'):ctl.verify('demo')
     ctl.wait_http.assert_not_called()
+
+def test_internal_tls_restricted_to_test_domains():
+    r=rec()
+    assert 'tls internal' in caddy_site(r,'lab-integration.test','/srv/lab',tls_mode='internal')
+    with pytest.raises(LabError):caddy_site(r,'randomjunk.dev','/srv/lab',tls_mode='internal')
+
+def test_caddy_timeout_restores_previous_configuration(ctl):
+    ctl.run=Mock(side_effect=[SimpleNamespace(returncode=0),subprocess.TimeoutExpired('caddy',600),SimpleNamespace(returncode=0)])
+    with pytest.raises(LabError,match='restored and reloaded'):ctl.caddy_publish([rec()])
+    assert (ctl.caddy/'lab-sites.caddy').read_text()=='previous site configuration\n'
+
+def test_doctor_accepts_installed_agent_instruction_files(ctl,monkeypatch,capsys):
+    (ctl.root/'AGENTS.md').write_text('operating instructions')
+    (ctl.root/'CLAUDE.md').write_text('operating instructions')
+    ctl.sql=Mock(return_value=SimpleNamespace(stdout=''))
+    monkeypatch.setattr(pwd,'getpwall',lambda:[])
+    (ctl.caddy/'lab-sites.caddy').write_text('')
+    assert not ctl.doctor()
+    assert 'orphan app entry' not in capsys.readouterr().out

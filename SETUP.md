@@ -1,4 +1,8 @@
-# Future installation — not performed during source review
+# Installation and configuration
+
+This procedure was used for randomjunk.dev on 2026-09-07. See
+[installation.md](docs/installation.md) for actual results and follow-up items.
+Use the fresh installer only on a new target, not to rerun this installation.
 
 ## Information needed from the owner
 
@@ -55,9 +59,9 @@ The committed production config has no on-demand TLS.
 ## Operate as lab
 
 Root handles installation; `sudo -iu lab` enters the deployment account.
-Copy the repository's CLAUDE.md/AGENTS operating guidance to the agent's configured
-instructions deliberately, or keep the repository available read-only. Do not
-run the everyday experiment agent as root. The controller runs fixed scaffolding
+The installer places operating instructions at `/srv/lab/AGENTS.md`,
+`/srv/lab/CLAUDE.md` and `/home/lab/AGENTS.md`, and read-only reference docs under
+`/usr/local/share/lab/docs`. Do not run everyday experiment code as root. The controller runs fixed scaffolding
 and static export workers as lab; systemd runs each app as labapp-NAME.
 
 Create one disposable app at a time, test, and remove it. Run the matrix in

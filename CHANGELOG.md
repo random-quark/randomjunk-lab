@@ -1,5 +1,22 @@
 # Changelog
 
+## Installation and live validation — 2026-09-07
+
+- Installed the platform for randomjunk.dev with explicit owner authorization;
+  no VPS snapshot, as requested. Imported OpenAI/Gemini/Replicate and hosted ntfy
+  configuration without exposing values. Android setup delivery confirmed.
+- Added .test-only internal TLS for repeatable live checks without public ACME;
+  trust is per-client, never installed machine-wide. Added Caddy timeout rollback.
+- Added reproducible credential import, live integration and installed/source
+  comparison tools. Installed operating instructions for lab.
+- Passed actual app/identity/DB/vector/concurrency/stop-failure/Caddy-rollback and
+  isolated local restore tests, then removed all disposable apps. Kept one
+  welcome site for the real public HTTPS/readiness link.
+- Source tests: 61 passing; 28 source parse checks; 30 installed files match.
+  See docs/installation.md and docs/verification.md for limits and exact evidence.
+- Backup scheduling remains disabled pending remote storage configuration;
+  GitHub access, provider API/billing checks and iPhone/reboot testing remain open.
+
 ## Configuration decision — hosted ntfy, 2026-09-07
 
 - Use hosted ntfy.sh, with expected usage at most about 50 notifications/day.

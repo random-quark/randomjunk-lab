@@ -1,8 +1,10 @@
 # Working on the platform source
 
-- Current scope is source development and isolated tests. Do not install the
-  platform, change host services/users/firewall, configure real credentials,
-  or send notifications without explicit authorization for that phase.
+- The owner authorized installation for randomjunk.dev on 2026-09-07, without
+  a VPS snapshot. See docs/installation.md for live state and evidence. Root
+  administration is authorized for this installation; everyday experiment code
+  and dependency commands run as lab. Future unrelated host changes still need
+  task authorization. Readiness notifications are requested after verification.
 - Keep changes, reproducible commands, test evidence and limitations in this
   repository. Update CHANGELOG.md, docs/development.md and docs/verification.md.
 - Use uv for Python dependency management and committed lockfiles. No pip.

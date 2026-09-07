@@ -58,7 +58,7 @@ The owner has requested hosted ntfy readiness notifications. Once the topic is
 configured and delivery is tested, send one notification after the requested
 behavior and `labctl verify NAME` pass; no separate approval is needed each time.
 Include the app URL, never credentials or private content. Do not notify merely
-because scaffolding or installation completed. See docs/notifications.md.
+because scaffolding or installation completed. See /usr/local/share/lab/docs/notifications.md.
 
 Target Android and iPhone compatibility for experiments. Test relevant browser
 features on both when possible; report any iPhone/PWA behavior that still needs
@@ -66,3 +66,5 @@ owner testing rather than claiming it was verified.
 
 Record external resources and manual steps in app/install.md; do not overwrite
 hand-written notes.
+
+Provider selection defaults and key names are documented in /usr/local/share/lab/docs/providers.md.

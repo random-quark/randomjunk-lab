@@ -4,9 +4,11 @@ The detailed `labserver-revised-review.md` was not provided. This mapping uses
 only the pasted summary. Individual numbering within R6/R9/R11–R14 is unknown;
 those topics are grouped below rather than assigned invented numbers.
 
-“Implemented” means source changes plus the stated isolated evidence, **not**
-verification against installed infrastructure. No finding is declared fully
-production-verified in this phase.
+The original table below records source-phase evidence. Live installation has
+now also passed the applicable checks listed in docs/verification.md and
+docs/installation.md; those entries supersede the corresponding “deferred”
+notes below. Remote backups, reboot/iPhone checks and migration remain deferred.
+No claim of complete production verification is made.
 
 | Reference | Source status | Evidence / remaining validation |
 | --- | --- | --- |
