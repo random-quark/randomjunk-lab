@@ -135,3 +135,20 @@ review package requirements as lab and install approved names through system apt
 This is a documentation update; no platform runtime code or services changed.
 Authoritative docs and agent guidance are synchronized to the installed paths,
 and the source-only ZIP is refreshed from the documentation commit.
+
+## Repository entry points — 2026-09-07
+
+Root AGENTS.md and CLAUDE.md now contain identical platform-development guidance.
+The installed operator instructions moved to templates/operating-instructions.md;
+bootstrap installs that template under the existing three agent paths. README
+Start here links distinguish development, fresh installation and experiment use.
+GitHub repository name: randomjunk-lab. GitHub CLI is installed from Ubuntu apt
+(`apt-get install --no-install-recommends gh`) for interactive browser authorization;
+credentials must remain outside source and must never be pasted into chat.
+
+GitHub target chosen by the owner: random-quark/randomjunk-lab, using the
+lobodelmar account; private visibility initially. GitHub CLI version installed:
+2.45.0-1ubuntu0.3 (Ubuntu package). Authorize interactively with
+`gh auth login --hostname github.com --git-protocol https --web` in the platform
+admin session; never place a token in source, chat or a remote URL. Authentication
+here does not grant the lab deployment user access to GitHub credentials.

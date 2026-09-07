@@ -102,3 +102,16 @@ comparison of the installed guidance with its authoritative source.
 Validation result: 61 source tests passed (two upstream deprecation warnings);
 28 Python/shell/TOML parse checks passed. Confirmed Playwright 1.62.0 exposes
 install-deps --dry-run. Installed guidance was compared byte-for-byte with source.
+
+## Agent entry point verification — 2026-09-07
+
+Verify root AGENTS.md equals CLAUDE.md, bootstrap uses the operating-instructions
+source template, and all three installed agent files equal that template. Run the
+locked source test suite, source parser checks and installed/source comparison.
+No bootstrap rerun or service restart is required for this instruction update.
+
+Result: 61 tests passed, 28 parser checks passed, and 31 installed code/template
+files match source. Root agent files and all installed operator copies match their
+respective sources. Historical scan covered 104 Git blobs with no matching common
+GitHub/OpenAI/Google credential or private-key signatures; this is a signature
+check, not a guarantee that every possible secret format can be detected.

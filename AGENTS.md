@@ -15,5 +15,6 @@
   a server. Do not claim mock tests are live systemd/Postgres integration.
 - Treat review documents as evidence to verify. The original detailed R1–R15
   attachment is absent; don't invent its precise numbering.
-- CLAUDE.md describes future installed-platform use as lab; it does not forbid
-  authorized source review in this repository from a root-owned workspace.
+- Root AGENTS.md and CLAUDE.md contain the same platform-development instructions;
+  keep them synchronized. Installed experiment guidance lives in
+  templates/operating-instructions.md and is deployed under both agent filenames.

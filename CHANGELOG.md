@@ -168,3 +168,10 @@ announcing success before anything was verified. Changes:
 - Regenerating `install.md` wholesale from the record on every `labdoctor` run:
   it would discard hand-added notes, which are the part that matters. `labdoctor
   --write-install-md` reports instead of overwriting.
+
+## Agent entry points and GitHub preparation — 2026-09-07
+
+- Name the project Randomjunk Lab (`randomjunk-lab`) and add README Start here links.
+- Align root AGENTS.md/CLAUDE.md around platform development; move experiment
+  operating guidance to templates/operating-instructions.md and update bootstrap.
+- Preserve installed experiment guidance independently of source-development rules.

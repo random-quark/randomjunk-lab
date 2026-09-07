@@ -78,9 +78,9 @@ chown -R root:root /usr/local/share/lab
 chmod -R a+rX /usr/local/share/lab
 install -d -m 755 /usr/local/share/lab/docs
 install -m 644 "$REPO_DIR/docs/"*.md /usr/local/share/lab/docs/
-install -m 644 "$REPO_DIR/CLAUDE.md" /srv/lab/AGENTS.md
-install -m 644 "$REPO_DIR/CLAUDE.md" /srv/lab/CLAUDE.md
-install -o lab -g lab -m 644 "$REPO_DIR/CLAUDE.md" /home/lab/AGENTS.md
+install -m 644 "$REPO_DIR/templates/operating-instructions.md" /srv/lab/AGENTS.md
+install -m 644 "$REPO_DIR/templates/operating-instructions.md" /srv/lab/CLAUDE.md
+install -o lab -g lab -m 644 "$REPO_DIR/templates/operating-instructions.md" /home/lab/AGENTS.md
 install -m 755 "$REPO_DIR/sbin/labctl" /usr/local/sbin/labctl
 for script in newlab labrm labs labdoctor notify; do
   install -m 755 "$REPO_DIR/bin/$script" "/usr/local/bin/$script"

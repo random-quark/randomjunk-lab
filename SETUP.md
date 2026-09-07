@@ -59,7 +59,7 @@ The committed production config has no on-demand TLS.
 ## Operate as lab
 
 Root handles installation; `sudo -iu lab` enters the deployment account.
-The installer places operating instructions at `/srv/lab/AGENTS.md`,
+The installer copies `templates/operating-instructions.md` to operating instructions at `/srv/lab/AGENTS.md`,
 `/srv/lab/CLAUDE.md` and `/home/lab/AGENTS.md`, and read-only reference docs under
 `/usr/local/share/lab/docs`. Do not run everyday experiment code as root. The controller runs fixed scaffolding
 and static export workers as lab; systemd runs each app as labapp-NAME.

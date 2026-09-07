@@ -1,4 +1,4 @@
-# Lab server — revision 3
+# Randomjunk Lab
 
 A small experiments platform for Ubuntu 24.04: Caddy, static sites, optional
 FastAPI, SQLite or PostgreSQL/pgvector, and restic backups. Python dependencies
@@ -10,6 +10,19 @@ and [review checklist](docs/review-checklist.md). Remote backup configuration,
 GitHub authorization and iPhone checks remain separate follow-up tasks. Other
 machines still require an explicitly authorized installation and validation.
 
+## Start here
+
+- **Develop this platform:** read [AGENTS.md](AGENTS.md). [CLAUDE.md](CLAUDE.md)
+  contains the same instructions for Claude Code.
+- **Install on a fresh machine:** read [SETUP.md](SETUP.md).
+- **Create experiments on an installed server:** read `/srv/lab/AGENTS.md`.
+  Its source is [the operating-instructions template](templates/operating-instructions.md).
+- **Reproduce development and tests:** read [docs/development.md](docs/development.md).
+
+The GitHub repository name is `randomjunk-lab`. This repository contains the
+platform and its starter templates; generated experiments keep separate Git
+repositories. Never commit live credentials, databases, certificates or caches.
+
 ## Work on this repository
 
 Read [development instructions](docs/development.md) for exact tooling setup and
@@ -17,7 +30,7 @@ commands. `uv run --locked pytest` runs isolated tests; it does not install the
 platform. `bootstrap.sh` is an explicitly gated **fresh installer**, never a test
 command or upgrade mechanism.
 
-## Layout after a future installation
+## Installed layout
 
 | Path | Ownership and purpose |
 | --- | --- |
@@ -50,4 +63,4 @@ Static source edits need `labctl publish NAME`. Backend source edits need
 
 Read [SETUP.md](SETUP.md), [security](docs/security.md),
 [recovery](docs/recovery.md), [hosted notifications](docs/notifications.md), [migration](docs/migration.md), and
-[agent operating instructions](CLAUDE.md) before installing or administering.
+[agent operating instructions](templates/operating-instructions.md) before installing or administering.
