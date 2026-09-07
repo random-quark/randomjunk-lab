@@ -103,8 +103,10 @@ cd /srv/lab
 ```
 
 A readiness notification was sent with the welcome URL after server checks passed.
-The owner confirmed the earlier Android setup notification. External Android
-page loading is pending confirmation; iPhone was not tested. The external web
+The owner confirmed the earlier Android setup notification and supplied an
+Android browser screenshot showing welcome.randomjunk.dev rendering the expected
+Randomjunk Lab scaffold without a displayed certificate warning. Android page
+loading is confirmed; iPhone and PWA installation were not tested. The external web
 fetch tool refused the new URL under its own URL-safety check; that is not an
 HTTP failure from the server, and no external-fetch success is claimed.
 
@@ -127,3 +129,10 @@ working network configuration. A future reboot/network review can address them.
 - No reboot, old-version migration or iPhone/PWA installation test performed.
 - The root domain has DNS configured; app sites use their own subdomains. The
   welcome URL is the initial live endpoint, not an apex-domain website.
+
+## Owner phone confirmation
+
+The supplied Android screenshot confirms that the expected welcome scaffold
+renders on the phone. This completes the pending phone page-load check, not a
+Tetris implementation or PWA-installation test. The screenshot was not copied
+into the repository or source ZIP.

@@ -55,7 +55,9 @@ Internal test TLS used .test names and per-client CA trust, not production ACME.
 The final welcome site at https://welcome.randomjunk.dev returned HTTP/2 200 with
 normal public certificate verification. Hosted ntfy setup delivery was confirmed
 by the owner on Android; a final readiness notification with the URL was sent.
-External Android page-load confirmation is recorded in installation.md when received.
+The owner subsequently supplied an Android screenshot confirming the expected
+welcome page renders without a displayed certificate warning. iPhone and PWA
+installation remain untested.
 The web-fetch tool declined the new URL on its own safety check, so it provides
 no independent external-fetch evidence. Server-side HTTPS verification succeeded.
 
