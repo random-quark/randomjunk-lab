@@ -1,51 +1,98 @@
-# Recovery
+# Recovery — stage first, activate last
 
-## Rebuild the platform
+No restore is performed automatically by this repository. The staging utility
+only writes a new isolated directory; the installation steps below need separate
+operator authorization. Work from a trusted, quiescent restic restore tree. Do not
+point root restore tools at a concurrently writable or untrusted directory.
 
-1. Fresh Ubuntu 24.04, wildcard DNS pointing at the new IP.
-2. `./bootstrap.sh <domain>`
-3. Restore `/etc/lab/*` from backup — or recreate the three config files by hand.
-4. Restore `/var/lib/caddy` **before** starting Caddy, so existing certificates
-   and the ACME account are reused rather than re-issued.
+## Recover a snapshot to an isolated location
 
-## Restore one experiment
+Using root's configured restic environment (see SETUP.md), list snapshots and
+select an explicit successful `lab-v3` snapshot ID. Restore it under a new private
+staging directory, **never directly over `/`**. Confirm restic verifies the
+restored data, and locate `/var/backups/lab/TIMESTAMP/manifest.json` in that tree.
+All paths below are examples; replace the timestamp and app name deliberately.
 
-    restic snapshots
-    restic restore latest --target / --include /srv/lab/<name>
-    restic restore latest --target / --include /srv/lab/.state/<name>.json
+```sh
+uv run --locked python tools/restore-stage.py \
+  /root/restore-tree \
+  /root/restore-tree/var/backups/lab/TIMESTAMP \
+  demo /root/demo-staged
+```
 
-Then, depending on what the record says:
+The destination must not exist. Staging copies real source and persistent data,
+then replaces raw SQLite files with the manifest-mapped consistent snapshots and
+removes stale WAL/SHM/journal companions. It copies the matching Postgres dump as
+an opaque `postgres.dump`. Links and special files are rejected; `.venv` is not
+restored. An `INCOMPLETE` marker means do not install those staged files.
+Verify SQLite integrity and representative rows, inspect source/lockfiles and
+record.json, and keep the original restore tree unchanged.
 
-**Static** — deploy the Caddy site. The simplest reliable route is to recreate
-the scaffolding and copy the files back:
+## Provision stopped resources, then restore
 
-    newlab <name> --static
-    restic restore latest --target / --include /srv/lab/<name>/public
+On the installed target, choose an unused name. Read the staged record to preserve
+kind, database selection, privacy and grants; do not blindly copy old identity IDs,
+ports, passwords, Caddy config or authoritative state over the new machine.
 
-**SQLite app**
+For example, as lab:
 
-    newlab <name> --app --db sqlite
-    # restore the snapshot taken by VACUUM INTO
-    restic restore latest --target /tmp/r --include /var/backups/lab/sqlite-<name>-data-<name>.db
-    cp /tmp/r/var/backups/lab/sqlite-*.db /srv/lab/<name>/data/<name>.db
+```sh
+newlab demo --app --db sqlite --prepare-only
+```
 
-**Postgres app**
+Use `--static` or `--app --db postgres` where appropriate; include `--private` and
+the recorded `--secrets` names after configuring those keys on the target. This
+creates a fresh environment/identity/database as needed, but does not start an
+app or publish a site. It intentionally creates a scaffold first; replace that
+scaffold's app/ contents with the reviewed staged application, including uv.lock.
 
-    newlab <name> --app --db postgres
-    restic restore latest --target /tmp/r --include /var/backups/lab/pg-lab_<name>.sql.gz
-    zcat /tmp/r/var/backups/lab/pg-lab_<name>.sql.gz | sudo -u postgres psql -d lab_<name>
+As the administrator, while the app remains stopped:
 
-`newlab` creates a fresh role and password, so the app's `DATABASE_URL` is
-correct after restore. If you instead restore roles from `globals.sql.gz`, the
-passwords come with them and the env file must match.
+1. Copy staged app/ contents into `/srv/lab/demo/app/` and set ownership to
+   lab:lab. Remove the scaffold-only files that are absent from the restored
+   source. Do not copy a previous `.venv` or `.env`. Source needs 0755 directory
+   traversal and normally 0644 readable files; executable scripts retain their
+   explicitly reviewed modes.
+2. Copy staged data/ contents into `/srv/lab/demo/data/`, set ownership to
+   labapp-demo:labapp-demo and restrict directory/file access to that runtime.
+   For SQLite, use the staged snapshot, not the raw live backup copy. Confirm no
+   old WAL/SHM/journal companion is reintroduced.
+3. Rebuild the environment as lab, inside app/, with system Python:
+   `UV_PYTHON_DOWNLOADS=never uv sync --locked --python /usr/bin/python3`.
+   Add `--extra postgres` for a Postgres application. Missing/mismatched lockfiles
+   require explicit repair, not a silent dependency upgrade.
+4. For Postgres, restore into the newly provisioned database while the service
+   is stopped. Names normalize hyphens to underscores (`pg-demo` → `lab_pg_demo`).
+   Use `pg_restore --exit-on-error --no-owner --no-acl --role=lab_demo
+   --dbname=lab_demo` as postgres with the dump on stdin. The template requires
+   pgvector; omit the extension entry from a reviewed restore list if pg_restore
+   would otherwise try to recreate the already provisioned vector extension.
+   Review the list first rather than masking errors. Validate table ownership,
+   data and vector operations. This SQL restore step has **not** been exercised
+   against a real server in the source-review phase.
+5. Fresh DB passwords generated by provisioning stay in the target's protected
+   credential file. Do not overwrite them with old globals. Restore master key
+   values separately as needed; grant names are applied through labctl.
+6. `sudo /usr/local/sbin/labctl publish demo` starts/checks a backend and publishes
+   the site (or snapshots a static site). Then test actual application behavior,
+   database access, privacy, and `labctl verify demo`.
 
-Dependencies rebuild from `uv.lock` — `.venv` is excluded from backups on purpose.
+If any step fails, leave the service stopped and keep the record/staged source.
+Do not run newlab against restored existing paths or use removal as a restore
+shortcut. For a different target name, review hardcoded app names/SQLite paths in
+application code; platform-generated values adapt, arbitrary app code may not.
 
-## What backups do not cover
+## Whole-machine recovery
 
-- **Retained snapshots outlive deletion.** `labrm` removes an experiment from the
-  machine; restic keeps 7 daily, 4 weekly and 6 monthly snapshots. Data lives on
-  in B2 until those expire.
-- **Installed PWA state on a phone** is client-side and survives server deletion.
-- **`RESTIC_PASSWORD`.** Lose it and every snapshot is unreadable. It is not in
-  the backup, by definition.
+Use the reviewed fresh installer only on a new target. It starts an empty Caddy
+configuration; no experiment hostnames are published yet. Stop Caddy before
+restoring its data directory, preserve caddy ownership, and start it only after
+its certificates/account data are in place. Restore individual apps through the
+staging sequence. Recover secrets/configuration with correct root permissions;
+do not blindly restore old UID/GID mappings, legacy sudoers or unit overrides.
+
+Cluster globals contain role passwords and may conflict with the new cluster;
+keep them for administrator-led full-cluster recovery, not ordinary single-app
+restore. Retained backups and client-side PWA caches outlive app removal.
+An independent restic password is essential even though backup.env is included
+inside encrypted snapshots.

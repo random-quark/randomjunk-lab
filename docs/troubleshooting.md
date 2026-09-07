@@ -1,59 +1,36 @@
-# Troubleshooting
+# Troubleshooting revision 3
 
-## Certificate will not issue
+`labs` summarizes status. `labdoctor` performs read-only reconciliation and
+continues past bad records; it is not a public-readiness certificate. Installed
+commands require the protected v3 layout. No commands here were run against live
+services during source review.
 
-- `dig +short <name>.<domain>` — has the wildcard propagated?
-- Are ports 80 **and** 443 reachable from outside?
-- `journalctl -u caddy -n 80`
-- Rate limited? Let's Encrypt allows 50 certificates per registered domain per
-  7 days. Check `journalctl -u caddy | grep -i "too many"`. Wait, or use the
-  staging issuer for platform testing.
+- **create-failed / prepared:** resources are retained. Inspect the record and
+  app journal, fix the cause, then publish only if preparation completed. If
+  abandoning the app, use labrm; no --force metadata bypass exists.
+- **verification-pending:** run `labctl verify NAME` after checking DNS, reachability,
+  certificate issuance and the service. Private probes use stored credentials.
+- **environment-pending:** a grant update was interrupted. Desired grants are in
+  the record. Reissue the grant or publish to regenerate the environment, then
+  restart and verify. Never hand-edit generated env files.
+- **removal-failed:** stop failure prevents destructive steps; fix the service
+  problem before retrying. Later cleanup failures retain a record. Do not delete
+  data manually to hide a failed stop.
+- **corrupt/missing record:** restore protected metadata from a checkpoint and
+  reconcile actual resources as administrator. Don't invent permission to remove
+  unrecorded resources. A repeated already-clean removal is harmless.
+- **Caddy mismatch:** inspect why the generated file and records differ. A failed
+  reload restores the prior file; a failed rollback reload needs administrator
+  action. `labctl reconcile-caddy` republishes recorded sites under the lock.
+  Doctor checks files, not the active admin API.
+- **static edit not visible:** publish it. Caddy serves an immutable snapshot.
+  Symlinks/special files or more than 64 MiB/10,000 files/32 levels are rejected.
+- **backend won't read code:** code/venv files must be readable/traversable by the
+  runtime. Build as lab with system Python; don't use a home-only interpreter.
+  Secrets are injected, not read through python-dotenv.
+- **backup failure:** inspect lab-backup.service and its failure notification.
+  Missing config, enumeration, snapshots, upload, retention and check errors fail
+  the job. Incomplete local generations are not reused. Keep independent backup
+  credentials and test actual recovery; a successful upload alone is insufficient.
 
-## Service will not start
-
-    sudo /usr/local/sbin/labctl logs <name>
-
-Common causes:
-
-- Missing dependency — check `pyproject.toml`, then `uv sync` in the app dir.
-- `ProtectHome=true` plus a uv-managed interpreter under a home directory. The
-  venv must be built with `--python /usr/bin/python3`; `UV_PYTHON_DOWNLOADS=never`
-  is set in `newlab` to prevent uv fetching its own.
-- Writing outside `data/`. That is the only writable path in the unit.
-
-## Caddy deployment refused
-
-`labctl caddy-deploy` validates the whole candidate config and rolls back. The
-message names the reason. Structural checks it enforces: the site address must be
-`<name>.<domain>`, `import` is not allowed, and any `root` must point inside the
-app's own directory.
-
-## `newlab` failed partway
-
-It rolls back automatically. Confirm with:
-
-    labdoctor
-    labrm --force <name>     # if anything remains
-
-The resource record in `/srv/lab/.state/<name>.json` is kept when removal is
-incomplete, so a retry knows what to clean.
-
-## Ports out of step
-
-`labdoctor` compares `ports.tsv` against the records and against what is actually
-listening. Allocation happens under a `flock`, so a collision means something
-bypassed `newlab`.
-
-## An app is spending money
-
-    sudo /usr/local/sbin/labctl service stop <name>
-
-Then revoke the key at the provider. A public endpoint calling a paid API needs
-its own authentication and rate limiting — the key being server-side does not
-stop strangers spending it.
-
-## PWA showing an old app on a reused subdomain
-
-An installed service worker outlives the server-side app. Bump `CACHE` in
-`sw.js`, or unregister via DevTools. Best avoided by not reusing a name for a
-different app.
+Do not paste raw logs, env files, DB URLs, private passwords or dump contents.

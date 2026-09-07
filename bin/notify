@@ -22,6 +22,6 @@ done < <(grep -E '^(NTFY_URL|NTFY_TOPIC)=' "$CONF")
 
 TITLE=${1:-lab}
 BODY=${2:-}
-curl -fsS -H "Title: $TITLE" -H "Tags: white_check_mark" \
+curl -fsS --connect-timeout 5 --max-time 15 -H "Title: $TITLE" -H "Tags: white_check_mark" \
   ${BODY:+-H "Click: $BODY"} -d "$BODY" \
   "${NTFY_URL:-https://ntfy.sh}/$NTFY_TOPIC" >/dev/null

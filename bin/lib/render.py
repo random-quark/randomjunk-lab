@@ -9,13 +9,14 @@ re-inserts the match, and HTML, JSON and Python each need different escaping.
 import html
 import json
 import pathlib
+import re
 import sys
 
 BY_SUFFIX = {
     ".html": html.escape,
     ".json": lambda s: json.dumps(s)[1:-1],
     ".webmanifest": lambda s: json.dumps(s)[1:-1],
-    ".py": lambda s: s.replace("\\", "\\\\").replace('"', '\\"'),
+    ".py": lambda s: json.dumps(s)[1:-1],
     ".js": lambda s: json.dumps(s)[1:-1],
 }
 TEXT_SUFFIXES = {".html", ".js", ".json", ".webmanifest", ".py", ".md", ".txt",
@@ -36,8 +37,7 @@ def main() -> int:
         if "{{" not in text:
             continue
         escape = BY_SUFFIX.get(path.suffix, lambda s: s)
-        for key, raw in values.items():
-            text = text.replace("{{" + key + "}}", escape(raw))
+        text = re.sub(r'\{\{([A-Z_]+)\}\}', lambda m: escape(values[m[1]]) if m[1] in values else m[0], text)
         path.write_text(text, encoding="utf-8")
     return 0
 

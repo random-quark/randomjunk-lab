@@ -1,6 +1,45 @@
 # Changelog
 
-## Revision 2 — after external review
+## Revision 3 — source hardening and isolated review, 2026-09-07
+
+This revision has not been installed. Live integration remains a separate phase.
+The original detailed R1–R15 report was absent; the source checklist is in
+`docs/review-checklist.md`.
+
+- Replaced the shell privileged helper with a Python standard-library controller
+  and fixed unprivileged workers. This boundary change was required to avoid
+  root traversal of deployment-owned paths and to serialize entire lifecycles.
+- Root-owned app containers now contain lab-owned `app/` and runtime-owned
+  `data/`. Authoritative JSON, credentials and locks moved to `/var/lib/lab`.
+- Base units specify an unprivileged identity and require provisioning. Start
+  operations check effective identity. Environment files are mandatory/root-only.
+- Secret grants merge with earlier grants/database settings; intended grants
+  survive interrupted env writes. Removed runtime dotenv loading. Postgres has
+  an explicit psycopg extra and a committed app lockfile; vector absence fails.
+- Caddy uses structured records and a complete generated site set. Candidate
+  validation precedes publication; reload failures restore the prior file.
+  Static files are unprivileged-exported immutable snapshots with no symlinks.
+- Backend static routing opens and serves contained regular-file descriptors,
+  including index/fallback branches, with no symlink-following race.
+- Creation failures preserve diagnostic resources/intents. Teardown stops first
+  and blocks dependent destruction on failure. Removed unrecorded force cleanup.
+- Private HTTP checks authenticate and do not follow redirects/use env proxies.
+  HTTP verification is explicitly distinct from application/database readiness.
+- Backup SQLite engines run as runtime users and use the backup API, encoded
+  filenames and a manifest. Unique generations avoid reused/colliding dumps.
+  Missing config/producer failures fail explicitly; systemd OnFailure covers process
+  failures. Timer stays disabled at install.
+- Added isolated restore staging and stopped prepare-only provisioning. Corrected
+  restore ordering, stale WAL handling and restic-password documentation.
+- Added fresh-install refusal for existing drafts, migration guidance, reproducible
+  development setup, regression tests and an explicit deferred integration matrix.
+- Documented that deployment-code control includes access to granted secrets.
+  Caddy's private admin socket is caddy-owned, not inaccurately called root-only.
+- Removed packaged bytecode. Retained prior revisions below as historical notes;
+  their layouts and guarantees no longer describe current behavior.
+
+## Historical revision 2 (superseded)
+
 
 The first draft was reviewed and found not ready for unattended use. The problems
 were privilege boundaries, partial-failure recovery, reliable teardown, and

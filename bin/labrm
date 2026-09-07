@@ -1,70 +1,10 @@
 #!/usr/bin/env bash
-#
-# labrm — the single teardown implementation. Used both to delete a finished
-# experiment and to clean up after a failed creation.
-#
-#   labrm <name>            interactive, asks for confirmation
-#   labrm --yes <name>      no prompt
-#   labrm --force <name>    also proceed when there is no resource record
-#
-# Idempotent by construction: every resource name is derived from the app name,
-# so each step is attempted and an already-absent resource is success. The
-# resource record is deleted LAST, and only if everything else succeeded — a
-# partial failure leaves enough metadata to retry.
-#
 set -euo pipefail
-. /usr/local/lib/lab/labcommon.sh
-
-ASSUME_YES=0; FORCE=0; NAME=""
-while [[ $# -gt 0 ]]; do
-  case "$1" in
-    --yes|-y) ASSUME_YES=1; shift ;;
-    --force)  FORCE=1; ASSUME_YES=1; shift ;;
-    -*)       die "unknown flag: $1" ;;
-    *)        [[ -z $NAME ]] || die "unexpected argument: $1"; NAME=$1; shift ;;
-  esac
-done
-
-[[ -n $NAME ]] || die "usage: labrm [--yes] [--force] <name>"
-valid_name "$NAME" || die "invalid name: '$NAME'"
-
-REC=$(record_path "$NAME")
-if [[ ! -f $REC && $FORCE -eq 0 ]]; then
-  die "no resource record for '$NAME' (use --force to clean up anyway)"
+YES=0
+if [[ ${1:-} == --yes || ${1:-} == -y ]]; then YES=1; shift; fi
+[[ $# -eq 1 ]] || { echo 'usage: labrm [--yes] NAME' >&2; exit 2; }
+if [[ $YES -eq 0 ]]; then
+  read -r -p "Type $1 to confirm removal: " answer
+  [[ $answer == "$1" ]] || exit 1
 fi
-
-if [[ $ASSUME_YES -eq 0 ]]; then
-  echo "About to remove '$NAME':"
-  [[ -f $REC ]] && sed -n 's/^/  /p' "$REC"
-  read -rp "Type the name to confirm: " confirm
-  [[ $confirm == "$NAME" ]] || die "aborted"
-fi
-
-with_lock
-FAILED=()
-step() {  # step <description> <command...>
-  local desc=$1; shift
-  if "$@"; then
-    printf '  ok    %s\n' "$desc"
-  else
-    printf '  FAIL  %s\n' "$desc" >&2
-    FAILED+=("$desc")
-  fi
-}
-
-info "Removing $NAME"
-step "systemd service"   $LABCTL service-remove "$NAME"
-step "caddy site"        $LABCTL caddy-remove   "$NAME"
-step "postgres database" $LABCTL db-remove      "$NAME"
-step "port registration" release_port           "$NAME"
-step "app directory"     $LABCTL dir-remove     "$NAME"
-step "basic-auth secret" rm -f "$STATE_DIR/$NAME.secret"
-
-if [[ ${#FAILED[@]} -gt 0 ]]; then
-  [[ -f $REC ]] && record_state "$NAME" "removal-failed"
-  die "removal incomplete (${#FAILED[@]} step(s) failed): ${FAILED[*]}
-The resource record has been kept at $REC — fix the cause and re-run labrm."
-fi
-
-rm -f "$REC"
-info "$NAME removed."
+exec sudo /usr/local/sbin/labctl remove "$1"

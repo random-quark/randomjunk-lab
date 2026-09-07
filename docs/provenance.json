@@ -1,0 +1,12 @@
+{
+  "source_archive": "labserver_twice_revised.zip",
+  "source_archive_sha256": "eb207cad451a8277fb3ca360c0d670d367419a60ad951a516fb4890be70beb18",
+  "unchanged_source_commit": "9b229047a93d910ff223c791d1ba60761528531b",
+  "python_version": "3.12.3",
+  "uv_version": "0.8.22",
+  "uv_installer_sha256": "f1ac30b1849f90b17ca93a9c2d40f74d7ad79cf57ad5a179bc5c9948848a70cd",
+  "caddy_version": "2.10.2",
+  "caddy_archive_sha512": "747df7ee74de188485157a383633a1a963fd9233b71fbb4a69ddcbcc589ce4e2cc82dacf5dbbe136cb51d17e14c59daeb5d9bc92487610b0f3b93680b2646546",
+  "date": "2026-09-07",
+  "scope": "source development and isolated tests; no platform installation"
+}

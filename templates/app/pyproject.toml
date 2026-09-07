@@ -1,16 +1,12 @@
-# Dependencies are declared here and locked in uv.lock so the environment can be
-# rebuilt from a backup — .venv itself is excluded from backups deliberately.
 [project]
-name = "{{NAME}}"
+# Stable package name lets every scaffold use the same reproducible lockfile.
+name = "lab-experiment"
 version = "0.1.0"
 requires-python = ">=3.12"
-dependencies = [
-    "fastapi>=0.115",
-    "uvicorn[standard]>=0.30",
-    "python-dotenv>=1.0",
-    "sqlalchemy>=2.0",
-    # psycopg[binary]>=3.2      # uncommented by newlab when --db postgres
-]
+dependencies = ["fastapi>=0.115,<1", "uvicorn[standard]>=0.30,<1", "sqlalchemy>=2.0,<3"]
+
+[project.optional-dependencies]
+postgres = ["psycopg[binary]>=3.2,<4"]
 
 [tool.uv]
 package = false

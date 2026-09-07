@@ -1,55 +1,69 @@
-"""{{TITLE}} — FastAPI app scaffolded by newlab.
-
-Routing note: static files are NOT mounted at "/". A StaticFiles mount at the
-root captures every request before later routes, which makes an SPA fallback
-unreachable and turns a missing asset into an index.html response. Instead the
-catch-all below serves real files itself and only falls back to index.html for
-navigation requests, so a missing .js still returns a proper 404.
-
-After editing:  sudo /usr/local/sbin/labctl service restart {{NAME}}
-Logs:           sudo /usr/local/sbin/labctl logs {{NAME}}
-"""
+"""{{TITLE}}. Settings and grants arrive through systemd, not a local dotenv."""
+import mimetypes
 import os
-import pathlib
+from pathlib import Path
+import stat
 
-from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import FileResponse
+from fastapi.responses import StreamingResponse
+from starlette.background import BackgroundTask
 
-# /etc/lab/apps/<name>.env is supplied by systemd and holds only the secrets
-# this app was explicitly granted. .env holds non-secret settings.
-load_dotenv(".env", override=False)
-
-APP_NAME = os.getenv("APP_NAME", "{{NAME}}")
-DATABASE_URL = os.getenv("DATABASE_URL")
-
-PUBLIC = pathlib.Path(__file__).parent / "public"
-
+PUBLIC = Path(__file__).parent / 'public'
 app = FastAPI(title="{{TITLE}}")
 
-
-@app.get("/api/health")
+@app.get('/api/health')
 def health():
-    """Liveness check. newlab waits on this, so keep it dependency-free."""
-    return {"ok": True, "app": APP_NAME, "db": bool(DATABASE_URL)}
+    """Liveness only; this does not assert database/application readiness."""
+    return {'ok': True, 'app': os.getenv('APP_NAME', '{{NAME}}')}
 
+def open_public(relative):
+    """Open every component without following links, then serve that same fd."""
+    parts = relative.split('/') if relative else []
+    if any(part in ('.', '..') or '\\' in part or '\x00' in part for part in parts):
+        raise HTTPException(status_code=404)
+    parts = [part for part in parts if part]
+    fd = os.open(PUBLIC, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    try:
+        for part in parts:
+            next_fd = os.open(part, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=fd)
+            os.close(fd)
+            fd = next_fd
+        if stat.S_ISDIR(os.fstat(fd).st_mode):
+            next_fd = os.open('index.html', os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=fd)
+            os.close(fd)
+            fd = next_fd
+            parts.append('index.html')
+        info = os.fstat(fd)
+        if not stat.S_ISREG(info.st_mode):
+            raise HTTPException(status_code=404)
+        stream = os.fdopen(fd, 'rb')
+        fd = None
+        return stream, info.st_size, mimetypes.guess_type('/'.join(parts))[0] or 'application/octet-stream'
+    finally:
+        if fd is not None:
+            os.close(fd)
 
-@app.get("/{full_path:path}", include_in_schema=False)
+@app.get('/{full_path:path}', include_in_schema=False)
 def static_or_spa(full_path: str, request: Request):
-    root = PUBLIC.resolve()
-    candidate = (PUBLIC / full_path).resolve()
-
-    # A directory means its index.html — "/" and "/docs/" both work.
-    if candidate.is_dir():
-        candidate = candidate / "index.html"
-
-    # Serve the real file when it exists and is genuinely inside public/.
-    # is_relative_to on the resolved path is what blocks ../ traversal.
-    if candidate.is_file() and candidate.is_relative_to(root):
-        return FileResponse(candidate)
-
-    # Only navigations fall back to the shell; a missing asset is a 404.
-    if "text/html" in request.headers.get("accept", ""):
-        return FileResponse(PUBLIC / "index.html")
-
-    raise HTTPException(status_code=404)
+    # Reject traversal before considering SPA fallback.
+    if any(part in ('.', '..') or '\\' in part or '\x00' in part for part in full_path.split('/')):
+        raise HTTPException(status_code=404)
+    try:
+        stream, size, media_type = open_public(full_path)
+    except (OSError, HTTPException):
+        if ('text/html' not in request.headers.get('accept', '') or
+                full_path.startswith('api/') or '.' in full_path.rsplit('/', 1)[-1]):
+            raise HTTPException(status_code=404)
+        try:
+            stream, size, media_type = open_public('index.html')
+        except (OSError, HTTPException):
+            raise HTTPException(status_code=404)
+    def chunks():
+        try:
+            while chunk := stream.read(65536):
+                yield chunk
+        finally:
+            stream.close()
+    return StreamingResponse(chunks(), media_type=media_type,
+                             headers={'Content-Length': str(size)},
+                             background=BackgroundTask(stream.close))

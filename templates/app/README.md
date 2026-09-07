@@ -1,20 +1,15 @@
 # {{TITLE}}
 
-{{URL}}
+FastAPI scaffold for {{NAME}}. Code lives in app/; persistent data lives in the
+sibling data/ directory. Settings and secrets arrive through systemd. Do not add
+a production .env or put provider secrets in source.
 
-FastAPI + static PWA shell, scaffolded by `newlab`. **This is scaffolding — the
-requested app has not been built yet.**
+Use uv with the committed lockfile. Postgres requires `uv sync --locked --extra
+postgres --python /usr/bin/python3`; other variants omit the extra.
 
-    main.py        the API; serves public/ via an explicit catch-all route
-    public/        the PWA (index.html, app.js, sw.js, manifest, icons)
-    pyproject.toml + uv.lock — the reproducible dependency set
-    .env           non-secret settings (APP_NAME, PORT, SQLite URL)
-    install.md     what exists outside this directory
-    data/          the only directory this app may write to
+`/api/health` is liveness only. Test database connectivity and application
+behavior separately. Static routing rejects traversal, symlinks and special files;
+missing assets return 404 while HTML navigation can use the SPA shell.
 
-Secrets are NOT in this directory. They live in `/etc/lab/apps/{{NAME}}.env`,
-owned by root and readable only by this app's user, and are injected by systemd.
-Request more with `labctl secrets-grant`.
-
-    sudo /usr/local/sbin/labctl service restart {{NAME}}
-    sudo /usr/local/sbin/labctl logs {{NAME}}
+After edits, restart through labctl and verify. Record external resources in
+install.md. Phone/PWA behavior must be tested on the actual client when needed.
