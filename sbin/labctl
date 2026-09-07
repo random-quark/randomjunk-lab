@@ -1,0 +1,287 @@
+#!/usr/bin/env bash
+#
+# labctl — the ONLY privileged operation available to the lab user.
+#
+# Root-owned, root-only-writable. Invoked via a single sudoers rule:
+#     lab ALL=(root) NOPASSWD: /usr/local/sbin/labctl
+#
+# Because that rule permits any arguments, every check that matters happens
+# HERE. Rules:
+#   * one operation, explicit arguments, no pass-through
+#   * app names validated before use, always reconstructed rather than echoed
+#   * never source, eval or execute a file that the lab user can write
+#   * every resource name derived from the validated app name, so labctl can
+#     only ever touch resources inside its own namespace
+#
+set -euo pipefail
+
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+export SYSTEMD_PAGER=cat SYSTEMD_COLORS=0 PAGER=cat
+
+LAB_ROOT=/srv/lab
+STATE_DIR=/srv/lab/.state
+CADDY_SITES=/etc/caddy/sites
+CADDY_ADMIN=unix//run/caddy/admin.sock
+SECRETS_MASTER=/etc/lab/secrets.env      # root:root 0600 — lab CANNOT read this
+APP_SECRETS_DIR=/etc/lab/apps            # root:root 0710
+RESERVED='state|docs|lost+found|templates|backup'
+
+die() { printf 'labctl: %s\n' "$*" >&2; exit 1; }
+
+# --- validation ---------------------------------------------------------------
+# DNS label rules: lowercase alnum and hyphens, no leading/trailing hyphen.
+valid_name() {
+  local n=$1
+  [[ ${#n} -ge 2 && ${#n} -le 31 ]] || return 1
+  [[ $n =~ ^[a-z0-9]([a-z0-9-]*[a-z0-9])?$ ]] || return 1
+  [[ ! $n =~ ^($RESERVED)$ ]] || return 1
+  return 0
+}
+
+need_name() {
+  [[ $# -eq 1 ]] || die "expected exactly one app name, got $#"
+  valid_name "$1" || die "invalid app name: '$1'"
+  NAME=$1
+  UNIT="lab-app@${NAME}.service"
+  APP_USER="labapp-${NAME}"
+  APP_DIR="${LAB_ROOT}/${NAME}"
+  DB_NAME="lab_${NAME//-/_}"
+  DB_USER="$DB_NAME"
+  SITE_FILE="${CADDY_SITES}/${NAME}.caddy"
+  APP_ENV="${APP_SECRETS_DIR}/${NAME}.env"
+}
+
+domain() { cat "${LAB_ROOT}/.domain"; }
+
+psql_su() { sudo -u postgres psql -v ON_ERROR_STOP=1 "$@"; }
+
+# --- service ------------------------------------------------------------------
+op_service_create() {
+  need_name "$@"
+  id -u "$APP_USER" >/dev/null 2>&1 || \
+    useradd --system --no-create-home --shell /usr/sbin/nologin "$APP_USER"
+
+  # Per-instance drop-in: each experiment runs as its own unprivileged user,
+  # so one compromised app cannot read another app's secrets.
+  local dropin="/etc/systemd/system/${UNIT}.d"
+  mkdir -p "$dropin"
+  cat > "$dropin/identity.conf" <<CONF
+[Service]
+User=${APP_USER}
+Group=${APP_USER}
+EnvironmentFile=-${APP_ENV}
+ReadWritePaths=${APP_DIR}/data
+CONF
+
+  touch "$APP_ENV"
+  chown "root:${APP_USER}" "$APP_ENV"
+  chmod 640 "$APP_ENV"
+
+  # App dir: lab writes (deployment identity), app user only reads.
+  # data/ is the one place the app itself may write.
+  install -d -o lab -g "$APP_USER" -m 750 "$APP_DIR"
+  install -d -o "$APP_USER" -g "$APP_USER" -m 750 "$APP_DIR/data"
+
+  systemctl daemon-reload
+  echo "service-create ok ${NAME}"
+}
+
+op_service() {
+  local action=${1:-}; shift || true
+  case "$action" in
+    start|stop|restart|status|is-active) ;;
+    enable|disable) ;;
+    *) die "unsupported service action: '${action}'" ;;
+  esac
+  need_name "$@"
+
+  case "$action" in
+    enable)  systemctl enable "$UNIT"  >/dev/null; systemctl start   "$UNIT" ;;
+    disable)
+      # Idempotent: an already-absent unit is success, a real stop failure is not.
+      if systemctl cat "$UNIT" >/dev/null 2>&1; then
+        systemctl stop "$UNIT"
+        systemctl disable "$UNIT" >/dev/null
+      fi ;;
+    status)     systemctl --no-pager --lines=30 status "$UNIT" || true ;;
+    is-active)  systemctl is-active "$UNIT" || true ;;
+    *)          systemctl "$action" "$UNIT" ;;
+  esac
+}
+
+op_service_remove() {
+  need_name "$@"
+  if systemctl cat "$UNIT" >/dev/null 2>&1; then
+    systemctl stop "$UNIT" || die "could not stop $UNIT"
+    systemctl disable "$UNIT" >/dev/null 2>&1 || true
+  fi
+  rm -rf "/etc/systemd/system/${UNIT}.d"
+  rm -f  "$APP_ENV"
+  systemctl daemon-reload
+  id -u "$APP_USER" >/dev/null 2>&1 && userdel "$APP_USER" || true
+  echo "service-remove ok ${NAME}"
+}
+
+op_logs() {
+  need_name "$@"
+  journalctl --no-pager -u "$UNIT" -n 60
+}
+
+# --- secrets ------------------------------------------------------------------
+# The master secrets file is root-only. Agents never read it; they ask for
+# named keys and labctl copies just those into the app's own env file.
+op_secrets_list() {
+  [[ -f $SECRETS_MASTER ]] || die "no $SECRETS_MASTER"
+  grep -oE '^[A-Z][A-Z0-9_]*=' "$SECRETS_MASTER" | tr -d '=' | sort
+}
+
+op_secrets_grant() {
+  local keys=${1:-}; shift || true
+  need_name "$@"
+  [[ -n $keys ]] || die "usage: secrets-grant KEY[,KEY...] <name>"
+  [[ $keys =~ ^[A-Z0-9_,]+$ ]] || die "key names must be A-Z, 0-9, underscore"
+  [[ -f $APP_ENV ]] || die "no env file for ${NAME} — run service-create first"
+
+  local tmp; tmp=$(mktemp)
+  chmod 640 "$tmp"
+  printf '# Granted by labctl on %s. Managed file — edits are overwritten.\n' \
+    "$(date -Iseconds)" > "$tmp"
+  local key found
+  IFS=, read -ra KEYLIST <<<"$keys"
+  for key in "${KEYLIST[@]}"; do
+    found=$(grep -m1 "^${key}=" "$SECRETS_MASTER" || true)
+    [[ -n $found ]] || die "no such key in master secrets: ${key}"
+    printf '%s\n' "$found" >> "$tmp"
+  done
+  mv "$tmp" "$APP_ENV"
+  chown "root:${APP_USER}" "$APP_ENV"
+  chmod 640 "$APP_ENV"
+  echo "secrets-grant ok ${NAME}: ${keys}"
+}
+
+# --- postgres -----------------------------------------------------------------
+op_db_create() {
+  need_name "$@"
+  local pass; pass=$(head -c 32 /dev/urandom | base64 | tr -dc 'A-Za-z0-9' | head -c 28)
+
+  if ! psql_su -tAc "SELECT 1 FROM pg_roles WHERE rolname='${DB_USER}'" | grep -q 1; then
+    psql_su -c "CREATE ROLE \"${DB_USER}\" LOGIN PASSWORD '${pass}';"
+  else
+    psql_su -c "ALTER ROLE \"${DB_USER}\" PASSWORD '${pass}';"
+  fi
+
+  # Created by the postgres superuser, so PG16's restricted role-membership
+  # rules for non-superuser creators never come into play.
+  if ! psql_su -tAc "SELECT 1 FROM pg_database WHERE datname='${DB_NAME}'" | grep -q 1; then
+    psql_su -c "CREATE DATABASE \"${DB_NAME}\" OWNER \"${DB_USER}\";"
+  fi
+
+  # CREATE EXTENSION needs superuser, so it happens here or not at all.
+  if psql_su -d "$DB_NAME" -c 'CREATE EXTENSION IF NOT EXISTS vector;' >/dev/null 2>&1; then
+    echo "pgvector: enabled"
+  else
+    echo "pgvector: NOT AVAILABLE (extension missing or not installed)" >&2
+  fi
+
+  # The URL goes straight into the app's root-owned env file. It is never
+  # printed, so it cannot end up in a log, install.md or git history.
+  local tmp; tmp=$(mktemp)
+  grep -v '^DATABASE_URL=' "$APP_ENV" 2>/dev/null > "$tmp" || true
+  printf 'DATABASE_URL=postgresql+psycopg://%s:%s@127.0.0.1:5432/%s\n' \
+    "$DB_USER" "$pass" "$DB_NAME" >> "$tmp"
+  mv "$tmp" "$APP_ENV"
+  chown "root:${APP_USER}" "$APP_ENV"
+  chmod 640 "$APP_ENV"
+  echo "db-create ok ${DB_NAME}"
+}
+
+op_db_remove() {
+  need_name "$@"
+  # Deliberate policy: terminate live connections rather than fail. This is a
+  # scratch box and a half-removed database is worse than a dropped session.
+  psql_su -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity
+              WHERE datname='${DB_NAME}' AND pid <> pg_backend_pid();" >/dev/null 2>&1 || true
+  psql_su -c "DROP DATABASE IF EXISTS \"${DB_NAME}\";"
+  psql_su -c "DROP ROLE IF EXISTS \"${DB_USER}\";"
+  echo "db-remove ok ${DB_NAME}"
+}
+
+# --- caddy --------------------------------------------------------------------
+# Staged file comes from lab, so it is untrusted input. It is structurally
+# checked, then the WHOLE candidate config is validated before anything is
+# installed, and rolled back if the reload fails.
+op_caddy_deploy() {
+  local staged=${1:-}; shift || true
+  need_name "$@"
+  [[ -f $staged ]] || die "no staged file: ${staged}"
+  [[ $staged == /srv/lab/.state/* ]] || die "staged file must live in ${STATE_DIR}"
+
+  local dom; dom=$(domain)
+  grep -qE "^${NAME}\.${dom//./\\.} \{" "$staged" \
+    || die "staged config must define exactly ${NAME}.${dom}"
+  grep -qE '^\s*import\s' "$staged" && die "import is not allowed in site files"
+  # A site may only serve files from its own directory.
+  if grep -qE '^\s*root\s' "$staged"; then
+    grep -E '^\s*root\s' "$staged" | grep -qvE "\s${LAB_ROOT}/${NAME}(/|\s|$)" \
+      && die "root directive must point inside ${LAB_ROOT}/${NAME}"
+  fi
+
+  local backup=""
+  [[ -f $SITE_FILE ]] && { backup=$(mktemp); cp "$SITE_FILE" "$backup"; }
+
+  install -o root -g root -m 644 "$staged" "$SITE_FILE"
+
+  if ! caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile >/dev/null 2>&1; then
+    if [[ -n $backup ]]; then cp "$backup" "$SITE_FILE"; else rm -f "$SITE_FILE"; fi
+    die "candidate Caddy config is invalid — previous config left in place"
+  fi
+
+  if ! caddy reload --config /etc/caddy/Caddyfile --address "$CADDY_ADMIN" >/dev/null 2>&1; then
+    if [[ -n $backup ]]; then cp "$backup" "$SITE_FILE"; else rm -f "$SITE_FILE"; fi
+    caddy reload --config /etc/caddy/Caddyfile --address "$CADDY_ADMIN" >/dev/null 2>&1 || true
+    die "Caddy reload failed — rolled back"
+  fi
+  [[ -n $backup ]] && rm -f "$backup"
+  echo "caddy-deploy ok ${NAME}"
+}
+
+op_caddy_remove() {
+  need_name "$@"
+  rm -f "$SITE_FILE"
+  caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile >/dev/null 2>&1 \
+    || die "config invalid after removing ${NAME} — not reloading"
+  caddy reload --config /etc/caddy/Caddyfile --address "$CADDY_ADMIN" >/dev/null 2>&1 \
+    || die "Caddy reload failed after removing ${NAME}"
+  echo "caddy-remove ok ${NAME}"
+}
+
+# --- app directory removal ----------------------------------------------------
+op_dir_remove() {
+  need_name "$@"
+  # Refuse to follow a symlink out of the lab root.
+  local real; real=$(readlink -f "$APP_DIR" || true)
+  [[ $real == "${LAB_ROOT}/${NAME}" ]] || die "refusing: ${APP_DIR} is not a real directory in ${LAB_ROOT}"
+  rm -rf "$APP_DIR"
+  echo "dir-remove ok ${NAME}"
+}
+
+# --- dispatch -----------------------------------------------------------------
+[[ ${EUID} -eq 0 ]] || die "must run via sudo"
+op=${1:-}; shift || true
+case "$op" in
+  service-create) op_service_create "$@" ;;
+  service)        op_service "$@" ;;
+  service-remove) op_service_remove "$@" ;;
+  logs)           op_logs "$@" ;;
+  secrets-list)   op_secrets_list "$@" ;;
+  secrets-grant)  op_secrets_grant "$@" ;;
+  db-create)      op_db_create "$@" ;;
+  db-remove)      op_db_remove "$@" ;;
+  caddy-deploy)   op_caddy_deploy "$@" ;;
+  caddy-remove)   op_caddy_remove "$@" ;;
+  dir-remove)     op_dir_remove "$@" ;;
+  *) die "unknown operation: '${op}'
+operations: service-create | service <action> | service-remove | logs
+            secrets-list | secrets-grant KEYS | db-create | db-remove
+            caddy-deploy FILE | caddy-remove | dir-remove" ;;
+esac

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{{TITLE}}</title>
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#111418">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+  :root { color-scheme: light dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100dvh;
+    display: grid; place-items: center;
+    font: 16px/1.5 system-ui, -apple-system, sans-serif;
+    padding: max(1rem, env(safe-area-inset-top)) 1rem max(1rem, env(safe-area-inset-bottom));
+  }
+  main { max-width: 34rem; text-align: center; }
+  h1 { font-size: clamp(1.6rem, 6vw, 2.4rem); margin: 0 0 .5rem; }
+  code { background: color-mix(in srgb, currentColor 12%, transparent);
+         padding: .15em .4em; border-radius: .3em; font-size: .9em; }
+</style>
+</head>
+<body>
+<main>
+  <h1>{{TITLE}}</h1>
+  <p>Scaffolding only — the requested app has not been built yet.
+     Files live in <code>public/</code>; there is no build step and no server process.</p>
+</main>
+<script src="/app.js" type="module"></script>
+</body>
+</html>

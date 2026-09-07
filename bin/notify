@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# notify — push a message to Theo's phone via ntfy, as the lab (agent) user.
+#
+# Config lives in /etc/lab/notify.env (root-owned, world-readable: the topic is
+# the only value here and it must be readable by the lab user to send).
+# The BACKUP job does not use this path — see /usr/local/bin/lab-notify-root.
+set -euo pipefail
+CONF=/etc/lab/notify.env
+[[ -r $CONF ]] || { echo "notify: cannot read $CONF" >&2; exit 1; }
+
+NTFY_URL=""; NTFY_TOPIC=""
+# Parse strictly; never source a config file as shell.
+while IFS='=' read -r k v; do
+  case "$k" in
+    NTFY_URL)   NTFY_URL=$v ;;
+    NTFY_TOPIC) NTFY_TOPIC=$v ;;
+  esac
+done < <(grep -E '^(NTFY_URL|NTFY_TOPIC)=' "$CONF")
+
+[[ -n $NTFY_TOPIC && $NTFY_TOPIC != CHANGE-ME* ]] || {
+  echo "notify: NTFY_TOPIC not configured in $CONF" >&2; exit 1; }
+
+TITLE=${1:-lab}
+BODY=${2:-}
+curl -fsS -H "Title: $TITLE" -H "Tags: white_check_mark" \
+  ${BODY:+-H "Click: $BODY"} -d "$BODY" \
+  "${NTFY_URL:-https://ntfy.sh}/$NTFY_TOPIC" >/dev/null

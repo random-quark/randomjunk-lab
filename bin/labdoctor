@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+#
+# labdoctor — reconcile the resource records against what is actually on the
+# machine. Run it after an interrupted create/remove, or periodically to find
+# orphans and abandoned experiments.
+#
+#   labdoctor                     report only
+#   labdoctor --write-install-md  regenerate install.md from the records
+#
+set -euo pipefail
+. /usr/local/lib/lab/labcommon.sh
+
+WRITE_MD=0
+[[ ${1:-} == --write-install-md ]] && WRITE_MD=1
+
+problems=0
+note() { printf '  \033[1;33m!\033[0m %s\n' "$*"; problems=$((problems+1)); }
+
+shopt -s nullglob
+echo "== experiments with a resource record =="
+for rec in "$STATE_DIR"/*.json; do
+  name=$(basename "$rec" .json)
+  state=$(record_get "$name" state)
+  kind=$(record_get "$name" kind)
+  printf '\n%s (%s, %s)\n' "$name" "$kind" "$state"
+
+  [[ $state == created ]] || note "state is '$state' — an interrupted operation; 'labrm --force $name' will clean up"
+  [[ -d $LAB_ROOT/$name ]] || note "directory missing: $LAB_ROOT/$name"
+  [[ -f /etc/caddy/sites/$name.caddy ]] || note "Caddy site missing"
+
+  port=$(record_get "$name" resources.port)
+  if [[ -n $port ]]; then
+    grep -qP "^${name}\t${port}\$" "$PORTS_FILE" || note "port $port not in ports.tsv"
+    active=$($LABCTL service is-active "$name" 2>/dev/null || echo unknown)
+    [[ $active == active ]] || note "service is '$active'"
+  fi
+
+  age=$(( ( $(date +%s) - $(date -d "$(record_get "$name" created)" +%s) ) / 86400 ))
+  (( age > 90 )) && note "created ${age} days ago — still wanted?"
+
+  if [[ $WRITE_MD -eq 1 && -d $LAB_ROOT/$name ]]; then
+    echo "  (install.md left as-is; hand-added notes there are not reproducible from the record)"
+  fi
+done
+
+echo
+echo "== resources with no record (orphans) =="
+for d in "$LAB_ROOT"/*/; do
+  n=$(basename "$d")
+  [[ $n == docs ]] && continue
+  [[ -f $STATE_DIR/$n.json ]] || note "directory $d has no resource record"
+done
+for f in /etc/caddy/sites/*.caddy; do
+  n=$(basename "$f" .caddy)
+  [[ -f $STATE_DIR/$n.json ]] || note "Caddy site $f has no resource record"
+done
+while read -r n _; do
+  [[ $n == \#* || -z $n ]] && continue
+  [[ -f $STATE_DIR/$n.json ]] || note "port registration for '$n' has no resource record"
+done < "$PORTS_FILE"
+
+echo
+if [[ $problems -eq 0 ]]; then
+  echo "No problems found."
+else
+  echo "$problems problem(s) found."
+  exit 1
+fi

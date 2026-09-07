@@ -1,0 +1,16 @@
+# Dependencies are declared here and locked in uv.lock so the environment can be
+# rebuilt from a backup — .venv itself is excluded from backups deliberately.
+[project]
+name = "{{NAME}}"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "python-dotenv>=1.0",
+    "sqlalchemy>=2.0",
+    # psycopg[binary]>=3.2      # uncommented by newlab when --db postgres
+]
+
+[tool.uv]
+package = false

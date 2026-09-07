@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# lab-notify-root — notification path for root-run jobs.
+#
+# Separate from /usr/local/bin/notify on purpose: the backup job runs as root
+# and must not read, source or execute anything the lab user can write. Its
+# config is root-owned and parsed line by line, never sourced.
+set -euo pipefail
+CONF=/etc/lab/backup.env    # root:root 0600
+NTFY_URL=""; NTFY_TOPIC=""
+while IFS='=' read -r k v; do
+  case "$k" in
+    NTFY_URL)   NTFY_URL=$v ;;
+    NTFY_TOPIC) NTFY_TOPIC=$v ;;
+  esac
+done < <(grep -E '^(NTFY_URL|NTFY_TOPIC)=' "$CONF" || true)
+[[ -n $NTFY_TOPIC ]] || { echo "lab-notify-root: no NTFY_TOPIC in $CONF" >&2; exit 1; }
+curl -fsS -H "Title: ${1:-lab backup}" -H "Priority: high" -H "Tags: rotating_light" \
+  -d "${2:-}" "${NTFY_URL:-https://ntfy.sh}/$NTFY_TOPIC" >/dev/null

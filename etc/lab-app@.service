@@ -1,0 +1,36 @@
+# systemd template: one instance per experiment, e.g. lab-app@blog.service
+#
+# The per-instance drop-in written by `labctl service-create` supplies:
+#   User/Group = labapp-<name>   (a distinct unprivileged user per experiment)
+#   EnvironmentFile            = /etc/lab/apps/<name>.env  (root-owned, 0640)
+#   ReadWritePaths             = /srv/lab/<name>/data
+# so no experiment can read another experiment's secrets.
+[Unit]
+Description=lab experiment %i
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+Type=simple
+WorkingDirectory=/srv/lab/%i
+EnvironmentFile=/srv/lab/%i/.env
+ExecStart=/bin/sh -c 'exec .venv/bin/uvicorn main:app --host 127.0.0.1 --port ${PORT}'
+Restart=on-failure
+RestartSec=3
+
+# Resource ceilings so one runaway experiment cannot take the box down.
+MemoryMax=512M
+TasksMax=64
+CPUQuota=100%
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+PrivateDevices=true
+
+[Install]
+WantedBy=multi-user.target
