@@ -1,5 +1,17 @@
 # Changelog
 
+## Configuration decision — hosted ntfy, 2026-09-07
+
+- Use hosted ntfy.sh, with expected usage at most about 50 notifications/day.
+  No self-hosted ntfy server, additional domain or service is needed.
+- Document Android/iPhone subscription setup and one readiness notification after
+  application testing and HTTP verification. The owner requested these messages;
+  no repeated approval is needed after configuring/testing delivery.
+- Keep experiment compatibility with both phones as a requirement, with actual
+  iPhone/PWA verification recorded separately. Corrected a stale world-readable
+  notification-config comment; installer permissions remain root:lab 0640.
+- Documentation/comment changes only; nothing installed and no messages sent.
+
 ## Revision 3 — source hardening and isolated review, 2026-09-07
 
 This revision has not been installed. Live integration remains a separate phase.

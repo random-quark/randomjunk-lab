@@ -54,6 +54,15 @@ service, and a matching liveness response. It does not test database connectivit
 business behavior, phone installation, or backup recovery. Test those separately.
 Public apps spending provider money require their own authentication/rate limits.
 
-Send a notification only after the requested behavior has actually been tested
-and the owner has authorized sending it. Record external resources and manual
-steps in app/install.md; do not overwrite hand-written notes.
+The owner has requested hosted ntfy readiness notifications. Once the topic is
+configured and delivery is tested, send one notification after the requested
+behavior and `labctl verify NAME` pass; no separate approval is needed each time.
+Include the app URL, never credentials or private content. Do not notify merely
+because scaffolding or installation completed. See docs/notifications.md.
+
+Target Android and iPhone compatibility for experiments. Test relevant browser
+features on both when possible; report any iPhone/PWA behavior that still needs
+owner testing rather than claiming it was verified.
+
+Record external resources and manual steps in app/install.md; do not overwrite
+hand-written notes.

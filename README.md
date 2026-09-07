@@ -48,5 +48,5 @@ Static source edits need `labctl publish NAME`. Backend source edits need
 `labctl service restart NAME`. HTTP verification is not application testing.
 
 Read [SETUP.md](SETUP.md), [security](docs/security.md),
-[recovery](docs/recovery.md), [migration](docs/migration.md), and
+[recovery](docs/recovery.md), [hosted notifications](docs/notifications.md), [migration](docs/migration.md), and
 [agent operating instructions](CLAUDE.md) before installing or administering.

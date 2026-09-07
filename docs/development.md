@@ -114,3 +114,12 @@ git archive --format=zip --prefix=lab-server/ --output=../labserver-review-v3.zi
 It includes documentation/tests/lockfiles, excludes Git history and ignored
 virtual environments/tooling, and is the candidate to transfer after review.
 Keep this local Git repository if you want the original-to-revised diff.
+
+## Follow-up decision: hosted notifications
+
+The owner chose hosted ntfy.sh (expected at most about 50 messages/day), Android
+as their current phone, and iPhone compatibility as a requirement. Added
+notifications.md, updated setup/agent guidance and corrected the stale permission
+comment in bin/notify. This was a documentation-only configuration decision; no
+server, credentials, topic subscription or notification was created. The source
+ZIP was refreshed from the follow-up Git commit.

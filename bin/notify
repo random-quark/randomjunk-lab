@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # notify — push a message to Theo's phone via ntfy, as the lab (agent) user.
 #
-# Config lives in /etc/lab/notify.env (root-owned, world-readable: the topic is
-# the only value here and it must be readable by the lab user to send).
+# Config lives in /etc/lab/notify.env (root:lab 0640).
+# Hosted topic names are access secrets; do not print them.
 # The BACKUP job does not use this path — see /usr/local/bin/lab-notify-root.
 set -euo pipefail
 CONF=/etc/lab/notify.env

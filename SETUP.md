@@ -40,7 +40,9 @@ must not contain newline/NUL. Do not source these files. The helper writes a
 separately quoted systemd EnvironmentFile; the runtime does not open it itself.
 
 `/etc/lab/notify.env` is root:lab 0640. A private ntfy topic/endpoint is a secret
-and must not be world-readable. Notification sending is optional and explicit.
+and must not be world-readable. The chosen service is hosted ntfy at https://ntfy.sh; no self-hosted ntfy server
+is planned. See [notifications.md](docs/notifications.md) for phone setup and
+readiness notification policy.
 
 Caddy's admin Unix socket lives under a 0700 **caddy-owned** runtime directory;
 root and Caddy can access it, deployment and runtime users cannot. Check actual
