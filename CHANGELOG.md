@@ -175,3 +175,7 @@ announcing success before anything was verified. Changes:
 - Align root AGENTS.md/CLAUDE.md around platform development; move experiment
   operating guidance to templates/operating-instructions.md and update bootstrap.
 - Preserve installed experiment guidance independently of source-development rules.
+
+## Owner settings workflow — 2026-09-07
+
+Added owner settings.txt, current setup-status.md and mandatory proactive owner review instructions; secrets remain outside Git.

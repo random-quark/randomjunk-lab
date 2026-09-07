@@ -115,3 +115,7 @@ files match source. Root agent files and all installed operator copies match the
 respective sources. Historical scan covered 104 Git blobs with no matching common
 GitHub/OpenAI/Google credential or private-key signatures; this is a signature
 check, not a guarantee that every possible secret format can be detected.
+
+## Owner settings workflow — 2026-09-07
+
+Settings workflow update: document-only inputs and instructions; verify source tests/parser and installed source parity. No backup, paid API, reboot or GitHub access changes are implied.

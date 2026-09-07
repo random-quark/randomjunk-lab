@@ -1,0 +1,45 @@
+# Randomjunk Lab — owner settings (NO SECRETS)
+# The setup agent MUST bring this file to the owner's attention before setup.
+# Edit values after =. Blank means ask when needed; skip means deliberately omit.
+# These are preferences for the agent, NOT shell commands or automatic config.
+# Never source/execute this file. Changing it does not reconfigure a live server.
+# Existing choices are filled below. On another machine review every value.
+# Agent: do not invent owner answers or replace blanks with assumed approval.
+
+PROJECT_NAME=Randomjunk Lab
+DOMAIN=randomjunk.dev
+# Required before firewall changes; confirm the actual connection uses this port.
+SSH_PORT=22
+SERVER_IPV4=
+SERVER_IPV6=skip
+
+GITHUB_ORG=random-quark
+GITHUB_LOGIN=lobodelmar
+GITHUB_VISIBILITY=private
+# Separate from platform publishing; ask about restricted lab access when needed.
+EXPERIMENT_GITHUB_ACCESS=
+
+# Comma-separated providers; skip disables integrations. No keys in this file.
+AI_PROVIDERS=openai,gemini,replicate
+# Blank means ask before paid setup verification calls; not an enforced spending cap.
+AI_TEST_BUDGET_USD=
+AI_MONTHLY_BUDGET_USD=
+
+BACKUPS=b2
+B2_BUCKET=
+B2_ENDPOINT=
+# Proposed existing defaults — agent must confirm with owner, not assume accepted.
+BACKUP_TIME=03:30
+BACKUP_TIMEZONE=
+BACKUP_KEEP_DAILY=7
+BACKUP_KEEP_WEEKLY=4
+BACKUP_KEEP_MONTHLY=6
+# yes only after owner confirms recovery credentials are saved OFF this server.
+RECOVERY_DETAILS_SAVED=
+
+NOTIFICATIONS=ntfy
+NTFY_URL=https://ntfy.sh
+# Topic/token belong in protected secrets, not here.
+TARGET_DEVICES=android,iphone
+# Blank means ask before reboot/maintenance, not permission to reboot.
+REBOOT_WINDOW=

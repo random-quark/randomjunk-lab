@@ -4,3 +4,7 @@ __pycache__/
 .pytest_cache/
 .env
 .dev-tools/
+
+# Secret staging files must live outside the repository.
+secrets.env
+*.secrets.env

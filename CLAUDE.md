@@ -18,3 +18,13 @@
 - Root AGENTS.md and CLAUDE.md contain the same platform-development instructions;
   keep them synchronized. Installed experiment guidance lives in
   templates/operating-instructions.md and is deployed under both agent filenames.
+
+## Mandatory owner setup review
+
+For installation or resuming unfinished server setup, read settings.txt,
+setup-status.md and docs/settings-workflow.md FIRST. Proactively bring settings.txt
+to the owner's attention; explain blanks, skip and secure secret entry. Never
+assume the owner found or completed it. Reuse existing answers, ask only for missing
+inputs, and keep the checklist current. At each setup handoff explicitly surface
+unfinished items, especially backups and recovery. Do not declare complete until
+required integrations are tested or the owner explicitly accepts a deferral.

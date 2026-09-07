@@ -161,3 +161,7 @@ Pushed the existing commit history on master and configured origin/upstream.
 Repeat updates from this checkout with `git push origin master` after checks.
 GitHub credentials stay in the root user's gh configuration outside this repository;
 lab has not been granted them. Individual experiments have not been pushed.
+
+## Owner settings workflow — 2026-09-07
+
+Added settings.txt (non-secret owner choices), setup-status.md (agent-maintained current evidence), and docs/settings-workflow.md. These guide agents, not bootstrap parsing; no live settings were applied. Root and installed agent instructions require surfacing this review and unresolved setup work.

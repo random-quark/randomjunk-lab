@@ -4,6 +4,16 @@ This procedure was used for randomjunk.dev on 2026-09-07. See
 [installation.md](docs/installation.md) for actual results and follow-up items.
 Use the fresh installer only on a new target, not to rerun this installation.
 
+## Mandatory settings review before setup
+
+The agent must bring [settings.txt](settings.txt) to the owner's attention and
+review it together before installation or resumed configuration. Do not expect the
+owner to discover it. Existing answers can be reused; ask about missing essentials
+and confirm proposed defaults. Keep [setup-status.md](setup-status.md) current.
+Follow [docs/settings-workflow.md](docs/settings-workflow.md) for secure secret
+entry and completion checks. Settings are agent inputs, not executable shell or
+automatically applied configuration. Do not silently leave backups unfinished.
+
 ## Information needed from the owner
 
 Choose a domain, configure wildcard A/AAAA records for the server's reachable

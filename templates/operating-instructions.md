@@ -79,3 +79,13 @@ Record external resources and manual steps in app/install.md; do not overwrite
 hand-written notes.
 
 Provider selection defaults and key names are documented in /usr/local/share/lab/docs/providers.md.
+
+## When resuming server setup
+
+For server-wide configuration, read settings.txt and setup-status.md in the
+platform source checkout (this server: /root/workspaces/labserver-review/lab-server).
+If lab cannot access it, have the administrator conduct that review; do not change
+permissions to expose root files. Proactively bring settings.txt to the owner,
+reuse known answers and surface unresolved steps at handoff. See
+/usr/local/share/lab/docs/settings-workflow.md. This review applies to server setup,
+not a requirement to re-answer every setup question for each ordinary experiment.

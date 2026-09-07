@@ -6,11 +6,16 @@ use uv and committed lockfiles.
 
 **Status:** installed and live-tested on `randomjunk.dev`. See the
 [installation record](docs/installation.md), [test evidence](docs/verification.md)
-and [review checklist](docs/review-checklist.md). Remote backup configuration,
+and [review checklist](docs/review-checklist.md). Remote backup configuration
 and iPhone checks remain separate follow-up tasks. Other
 machines still require an explicitly authorized installation and validation.
 
 ## Start here
+
+**Setting up or continuing setup?** Review [settings.txt](settings.txt) with your
+agent. Fill in what you know; leave unknowns blank and use `skip` for deliberate
+omissions. Never enter secrets there. The agent must raise this with you and keep
+[setup-status.md](setup-status.md) current. See [the workflow](docs/settings-workflow.md).
 
 - **Develop this platform:** read [AGENTS.md](AGENTS.md). [CLAUDE.md](CLAUDE.md)
   contains the same instructions for Claude Code.
