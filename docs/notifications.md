@@ -49,3 +49,11 @@ failure alerts use the separate root notification path already documented.
 
 Sources: [ntfy FAQ](https://docs.ntfy.sh/faq/),
 [publication and limits](https://docs.ntfy.sh/publish/).
+
+## Notification tap destination
+
+Use `notify "Title" "Message text" "https://app.example.com"` when the body
+contains prose. The third argument is the tap URL. For compatibility,
+`notify "Title" "https://app.example.com"` also sets that URL as the tap action.
+Plain text alone has no custom click action. Never use the whole sentence as a
+URL. Confirm actual phone tapping when validating notification behavior.

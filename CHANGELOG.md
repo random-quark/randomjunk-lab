@@ -187,3 +187,11 @@ with the official native installer as lab; verify command discovery in a fresh l
 login shell. Existing shells need ~/.local/bin added to PATH. Keep owner login
 pending until checked interactively; do not reuse root credentials. Added this
 missing prerequisite to SETUP.md, settings.txt and setup-status.md.
+
+## ntfy tap destination fix — 2026-09-07
+
+The sender previously assigned the full body to Click, breaking prose-plus-link
+notifications. Added a separate optional URL argument, kept URL-only callers
+compatible, omitted click actions for plain text, and used a quoted header array
+and literal request data. Added captured-curl regression tests; no test topics or
+credentials are used. Actual phone tap confirmation remains an owner check.

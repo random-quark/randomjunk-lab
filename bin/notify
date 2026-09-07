@@ -22,6 +22,20 @@ done < <(grep -E '^(NTFY_URL|NTFY_TOPIC)=' "$CONF")
 
 TITLE=${1:-lab}
 BODY=${2:-}
-curl -fsS --connect-timeout 5 --max-time 15 -H "Title: $TITLE" -H "Tags: white_check_mark" \
-  ${BODY:+-H "Click: $BODY"} -d "$BODY" \
-  "${NTFY_URL:-https://ntfy.sh}/$NTFY_TOPIC" >/dev/null
+CLICK=${3:-}
+# Preserve existing notify TITLE URL callers; prose bodies need an explicit URL.
+if [[ $# -lt 3 && $BODY =~ ^https?://[^[:space:]]+$ ]]; then
+  CLICK=$BODY
+fi
+if [[ -n $CLICK && ! $CLICK =~ ^https?://[^[:space:]]+$ ]]; then
+  echo "notify: click destination must be an http(s) URL without whitespace" >&2
+  exit 1
+fi
+if [[ $TITLE == *$'\n'* || $TITLE == *$'\r'* ]]; then
+  echo "notify: title must be a single line" >&2
+  exit 1
+fi
+headers=(-H "Title: $TITLE" -H "Tags: white_check_mark")
+[[ -z $CLICK ]] || headers+=(-H "Click: $CLICK")
+curl -fsS --connect-timeout 5 --max-time 15 "${headers[@]}" \
+  --data-raw "$BODY" "${NTFY_URL:-https://ntfy.sh}/$NTFY_TOPIC" >/dev/null

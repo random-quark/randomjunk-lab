@@ -130,3 +130,11 @@ missing prerequisite to SETUP.md, settings.txt and setup-status.md.
 
 Verified lab login-shell discovery and Claude 2.1.263. All 61 source tests and
 28 parser checks passed. Interactive Claude account login remains owner action.
+
+## ntfy tap destination fix — 2026-09-07
+
+The sender previously assigned the full body to Click, breaking prose-plus-link
+notifications. Added a separate optional URL argument, kept URL-only callers
+compatible, omitted click actions for plain text, and used a quoted header array
+and literal request data. Added captured-curl regression tests; no test topics or
+credentials are used. Actual phone tap confirmation remains an owner check.

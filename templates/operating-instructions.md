@@ -89,3 +89,11 @@ permissions to expose root files. Proactively bring settings.txt to the owner,
 reuse known answers and surface unresolved steps at handoff. See
 /usr/local/share/lab/docs/settings-workflow.md. This review applies to server setup,
 not a requirement to re-answer every setup question for each ordinary experiment.
+
+## Notification tap destination
+
+Use `notify "Title" "Message text" "https://app.example.com"` when the body
+contains prose. The third argument is the tap URL. For compatibility,
+`notify "Title" "https://app.example.com"` also sets that URL as the tap action.
+Plain text alone has no custom click action. Never use the whole sentence as a
+URL. Confirm actual phone tapping when validating notification behavior.
