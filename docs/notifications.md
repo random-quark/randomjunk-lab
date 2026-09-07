@@ -50,10 +50,15 @@ failure alerts use the separate root notification path already documented.
 Sources: [ntfy FAQ](https://docs.ntfy.sh/faq/),
 [publication and limits](https://docs.ntfy.sh/publish/).
 
-## Notification tap destination
+## App-link notification format
 
-Use `notify "Title" "Message text" "https://app.example.com"` when the body
-contains prose. The third argument is the tap URL. For compatibility,
-`notify "Title" "https://app.example.com"` also sets that URL as the tap action.
-Plain text alone has no custom click action. Never use the whole sentence as a
-URL. Confirm actual phone tapping when validating notification behavior.
+Use `notify "Title" "https://app.example.com"` for app readiness. The message body
+contains only the URL, with Copy link and Open in browser buttons. No custom click
+destination is set, so the notification opens normally in ntfy. Link text inside
+ntfy still follows the client's link behavior; the Copy link button copies exactly
+the URL. The owner confirmed both buttons work on Android.
+
+Legacy `notify "Title" "Description" "https://app.example.com"` calls remain valid,
+but the explicit URL replaces the body to preserve the same format. Put meaningful
+context in the title. Plain-text messages without a URL retain their body and have
+no actions. Copy support varies by client/version; real iPhone behavior is untested.

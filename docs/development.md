@@ -181,3 +181,11 @@ notifications. Added a separate optional URL argument, kept URL-only callers
 compatible, omitted click actions for plain text, and used a quoted header array
 and literal request data. Added captured-curl regression tests; no test topics or
 credentials are used. Actual phone tap confirmation remains an owner check.
+
+## Owner-confirmed notification actions — 2026-09-07
+
+Made the tested URL-only body plus Copy link/Open in browser buttons the default
+for app-link notifications. Removed the custom click override so tapping the
+notification retains ntfy's normal behavior. Owner confirmed both actions work on
+Android. Updated JSON payload regression tests and operating instructions; iPhone
+behavior remains untested. No extra readiness test notification is necessary.
