@@ -1,0 +1,15 @@
+[project]
+name = "lab-static-experiment"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = []
+
+[tool.uv]
+package = false
+
+[dependency-groups]
+dev = ["pytest>=8,<9", "playwright>=1.50,<2", "httpx>=0.28,<1", "pytest-xdist>=3,<4"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["slow: real timing or external integration; not skipped by default"]

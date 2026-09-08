@@ -34,3 +34,21 @@ services during source review.
   credentials and test actual recovery; a successful upload alone is insufficient.
 
 Do not paste raw logs, env files, DB URLs, private passwords or dump contents.
+
+## Development helper and browser pitfalls
+
+- Never use pkill -f from the agent shell: its pattern may match the agent's own
+  command/process tree. Retain process handles/PIDs; labdev owns and terminates
+  its own process group. SIGKILL/power loss cannot run cleanup: inspect leftover
+  /tmp/labdev-* and exact process ownership before cleanup.
+- Playwright input timing differs from human touch. Velocity-sensitive behavior
+  needs deterministic timestamp/model tests plus a separate event-wiring check.
+  Do not mistake a slow automation gesture for proof of broken physics.
+- labshot returns nonzero for console/page errors, failed requests or HTTP errors.
+  A screenshot can still be produced on failure: inspect report.json. It observes
+  initial load, not later interaction. Private sites may return 401: use an app
+  test with an explicitly authenticated context; don't put passwords in URLs.
+- A custom worker is not overwritten. New template apps edit sw.template.js then
+  publish to regenerate sw.js. For backend source changes, restart as well.
+- Install native Playwright Chromium as lab after uv sync. Missing OS libraries
+  are an administrator task using reviewed apt packages, never lab-owned code as root.

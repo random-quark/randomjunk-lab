@@ -203,3 +203,14 @@ for app-link notifications. Removed the custom click override so tapping the
 notification retains ntfy's normal behavior. Owner confirmed both actions work on
 Android. Updated JSON payload regression tests and operating instructions; iPhone
 behavior remains untested. No extra readiness test notification is necessary.
+
+## Reviewed experiment feedback — 2026-09-09
+
+- Research named referents, share early previews/screenshots and distinguish building
+  from ready; timestamped two-notification workflow with existing copy/open buttons.
+- Explicit personal/shared browser scope and a visible PWA completion checklist.
+- Scaffold install-offer UX and opt-in content-hashed shell generation at publish,
+  preserving existing workers and waiting before service-worker activation.
+- labdev temporary local servers/SQLite/process cleanup; labshot screenshots/errors;
+  common fixtures for both app kinds and bounded deterministic animation adapters.
+- Directional tests, explicit slow runs/limited parallelism, shorter factual app docs.

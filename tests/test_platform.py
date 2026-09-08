@@ -458,3 +458,19 @@ def test_doctor_accepts_installed_agent_instruction_files(ctl,monkeypatch,capsys
     (ctl.caddy/'lab-sites.caddy').write_text('')
     assert not ctl.doctor()
     assert 'orphan app entry' not in capsys.readouterr().out
+
+@pytest.mark.parametrize('kind', ['static','app'])
+def test_pwa_worker_failure_stops_publication_before_activation(ctl, kind):
+    ctl.save(rec(kind=kind))
+    before=ctl.path('demo').read_bytes()
+    ctl.run=Mock(side_effect=LabError('PWA generation failed'))
+    ctl.snapshot_public=Mock();ctl.environment=Mock();ctl.caddy_publish=Mock()
+    with pytest.raises(LabError,match='PWA generation failed'):
+        ctl.publish('demo')
+    args,kwargs=ctl.run.call_args
+    assert str(args[0][2]).endswith('/pwa_build.py')
+    assert kwargs['user']=='lab'
+    assert ctl.path('demo').read_bytes()==before
+    ctl.snapshot_public.assert_not_called()
+    ctl.environment.assert_not_called()
+    ctl.caddy_publish.assert_not_called()

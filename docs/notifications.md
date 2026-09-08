@@ -9,12 +9,12 @@ native apps; no self-hosted iOS upstream-relay configuration is needed. Experime
 websites also target both phones, but ntfy compatibility does not establish that
 an experiment's browser APIs or PWA behavior work on iPhone.
 
-## During the eventual installation phase
+## Configuration
 
 1. Install the ntfy app on the phone(s) and allow notifications.
 2. Choose a long, randomly generated topic name and subscribe on the default
    ntfy.sh server. Keep the topic out of chat, source control, URLs in reports,
-   and public documentation. No actual topic has been chosen in this review.
+   and public documentation. This server already has a configured topic; never print it.
 3. Root sets `NTFY_URL=https://ntfy.sh` and `NTFY_TOPIC=<chosen-topic>` in
    `/etc/lab/notify.env` (root:lab 0640). Use the same destination in
    `/etc/lab/backup.env` (root:root 0600) if backup alerts should reach that phone.
@@ -30,17 +30,26 @@ control can be addressed separately.
 
 ## Readiness policy
 
-Once delivery is configured/tested, the owner's request authorizes one readiness
-message per completed requested experiment/change. Send it only after actual
-behavioral testing and `labctl verify NAME` succeed. Don't send success on mere
-scaffold creation, failed verification or an incomplete task. No new permission
-question is needed for every requested readiness message.
+For each requested new experiment, send two messages, not a stream:
 
-As lab, after those checks, the existing command is:
+1. After the first successful publication and reachability check, send a building
+   link even if functionality is incomplete. Keep privacy and costly endpoints safe.
+2. After behavioral testing and labctl verify NAME pass, send the ready message.
+
+Use machine-local HH:MM in the title; inspect `date '+%H:%M %Z'` if unsure of its
+zone. Preserve the URL-only body and Copy link/Open in browser actions. As lab:
 
 ```sh
-notify "tetris is ready" "https://tetris.EXPERIMENT-DOMAIN"
+notify "Movie Wheel · started $(date +%H:%M) · building" "https://movie-wheel.EXPERIMENT-DOMAIN"
+# Only after full verification:
+notify "Movie Wheel · ready $(date +%H:%M)" "https://movie-wheel.EXPERIMENT-DOMAIN"
 ```
+
+No new permission is needed. Record sends to avoid duplicates after context
+switches. Send nothing between them while the owner is active; one extra useful
+milestone is acceptable if they are away during a long build. Republish/restart
+alone never triggers another notification. Changes to existing experiments need
+a completion notification, not a fictitious new first-publish notification.
 
 Use the real app URL. For private apps the link still requires their own login;
 never include the password. Notifications are deliberately sent by the agent

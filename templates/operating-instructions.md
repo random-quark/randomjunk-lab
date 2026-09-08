@@ -17,9 +17,10 @@ is `/srv/lab/NAME/data/`, owned by `labapp-NAME`; deployment code must not conta
 secrets. The helper injects environment values through systemd, so don't create
 or load a local .env in the production scaffold.
 
-For a new requested app, prefer `newlab NAME ... --prepare-only`, implement and
-exercise the actual experience locally, then `sudo /usr/local/sbin/labctl publish NAME`.
-Preparation also supports development; do not publish a scaffold as a finished app.
+For a new app, use `newlab NAME ... --prepare-only` while preparing its first
+rough preview, then publish early with `sudo /usr/local/sbin/labctl publish NAME`.
+A clearly labeled building preview is encouraged; never present it as finished.
+Keep private apps private and protect costly or shared-data endpoints from the start.
 Check repository-local Git identity and required test tooling before implementation.
 See /usr/local/share/lab/docs/experiment-workflow.md for the completion workflow,
 browser setup, offline/PWA checks and reproducibility records.
@@ -30,6 +31,9 @@ administrator installs reviewed OS package names through the system package mana
 
 After static edits: `sudo /usr/local/sbin/labctl publish NAME`.
 After backend edits: `sudo /usr/local/sbin/labctl service restart NAME`.
+After shell edits in either kind: `sudo /usr/local/sbin/labctl publish NAME`
+regenerates the opt-in content-hashed service worker. Edit public/sw.template.js,
+not generated public/sw.js. Existing custom workers remain unchanged unless migrated.
 For dependencies, run `uv sync --locked --python /usr/bin/python3` as lab in app/;
 include `--extra postgres` for Postgres apps. Deliberate dependency changes use
 uv to update and commit the lock before syncing.
@@ -65,15 +69,67 @@ service, and a matching liveness response. It does not test database connectivit
 business behavior, phone installation, or backup recovery. Test those separately.
 Public apps spending provider money require their own authentication/rate limits.
 
-The owner has requested hosted ntfy readiness notifications. Once the topic is
-configured and delivery is tested, send one notification after the requested
-behavior and `labctl verify NAME` pass; no separate approval is needed each time.
-Include the app URL, never credentials or private content. Do not notify merely
-because scaffolding or installation completed. See /usr/local/share/lab/docs/notifications.md.
+## Who uses these
 
-Target Android and iPhone compatibility for experiments. Test relevant browser
-features on both when possible; report any iPhone/PWA behavior that still needs
-owner testing rather than claiming it was verified.
+The owner uses Brave and Chrome on Android. Always provide manual install
+instructions when the browser does not offer beforeinstallprompt. For a personal
+experiment prioritize that phone; do not silently drop an explicitly requested
+platform. Shared/party apps must also work on iPhone Safari and desktop. Record
+personal/shared scope and tested devices versus assumptions in install.md.
+
+## Reference and preview before polish
+
+When a request names a real object/show/product, look it up or inspect the supplied
+reference before rendering. Describe the intended shape in one or two concrete
+sentences. State assumptions and keep working; do not block on optional feedback.
+Get a rough working preview on the real URL early. Share a screenshot through the
+available attachment/image tool (SendUserFile if available), not merely a tool
+image only you can see. If attachments are unavailable, share the preview URL.
+Invite correction without waiting for it; show major visual changes again.
+
+## Every user-facing experiment ships with
+
+- [ ] Manifest with name, scope, start URL, display and theme colours.
+- [ ] Original appropriate icons: PNG 180/192/512 and maskable 512, committed.
+- [ ] Shell service worker with an automatically content-hashed cache revision.
+- [ ] In-app install offer: native prompt when available, browser-menu fallback,
+      remembered dismissal, hidden in standalone, and a way to reopen it.
+- [ ] Phone viewport checked for layout and console errors; shared apps checked
+      at desktop size and iPhone Safari when available, with limits recorded.
+- [ ] Offline shell works and network-dependent features explain their status.
+- [ ] Short install.md: URL, data, reproduction, current test result and caveats.
+
+Non-web experiments or explicitly requested exceptions should record why a PWA
+item is not applicable. A clean manifest alone does not prove the install flow.
+Exercise the visible offer on the live URL. New templates provide this flow in
+pwa.js: preserve it when replacing app.js, or supply an equivalent tested UX.
+
+## Progress and completion notifications
+
+For a requested new experiment, send two timestamped ntfy messages with the URL:
+first successful publish: “NAME · started HH:MM · building”; after behavior tests
+and labctl verify pass: “NAME · ready HH:MM”. Use machine-local time (check its
+zone). Do not send duplicates for every republish. No extra permission is needed.
+Stay quiet between them while the owner is active; at most one useful milestone
+when they are away on a long build. Never call an incomplete preview ready.
+For a change to an existing app, don't invent another first-publish event; send
+its completion message after checks. See docs/notifications.md for examples.
+
+## Development and tests
+
+Use `labdev NAME` for a loopback preview with a reserved ephemeral port and temporary
+SQLite database; Ctrl-C/SIGTERM cleans up its process group and test data. It does
+not load production keys or support automatic Postgres test provisioning.
+Use `labshot NAME --viewport 390x844 --out DIR [--url /path]` for a published-page
+screenshot plus error report. Local URLs use app/tools/labshot.py directly.
+Run these as lab. Browser tooling lives in the experiment's uv dev dependencies.
+Keep private credentials out of screenshots, command lines and shared reports.
+
+Test direction against a fixed landmark, including the relevant axis. Step models
+or control the browser clock instead of sleeping through animations. Real elapsed
+time is only for tests of actual timing/network/lifecycle behavior. Run the full
+suite before completion; no default slow-test exclusion or unbounded parallelism.
+Use exact process handles/PIDs for cleanup, never pkill -f from the agent shell.
 
 Record external resources and manual steps in app/install.md; do not overwrite
 hand-written notes.

@@ -59,13 +59,24 @@ newlab notes --app --db postgres --private
 sudo /usr/local/sbin/labctl publish hello
 sudo /usr/local/sbin/labctl verify notes
 labs
+labdev hello  # local preview; Ctrl-C cleans up
+labshot hello --out /tmp/hello-preview
 labdoctor
 labrm hello
 ```
 
-Static source edits need `labctl publish NAME`. Backend source edits need
-`labctl service restart NAME`. HTTP verification is not application testing.
+Shell edits in either app kind need `labctl publish NAME` to regenerate the worker.
+Backend Python edits also need `labctl service restart NAME`. HTTP verification
+is not application testing.
 
 Read [SETUP.md](SETUP.md), [security](docs/security.md),
 [recovery](docs/recovery.md), [hosted notifications](docs/notifications.md), [migration](docs/migration.md), and
 [agent operating instructions](templates/operating-instructions.md) before installing or administering.
+
+## Experiment development workflow
+
+New static and backend scaffolds include an in-app PWA offer, content-hashed shell
+worker generation, uv-locked test tooling, and tools/tests shared fixtures. Start a
+local preview with labdev, publish an early safe preview, and share screenshots
+with labshot. See [the workflow](docs/experiment-workflow.md). Existing apps are
+not rewritten: custom workers opt in only through an explicit migration.

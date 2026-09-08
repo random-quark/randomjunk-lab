@@ -10,7 +10,8 @@ local game. Do not redirect an experiment to another hosting service by default.
 As lab, select static or backend plus the smallest suitable database. Use
 `newlab NAME --app --db sqlite --prepare-only` for a small persistent app;
 use `--static --prepare-only` when no backend is required. Preparation creates
-resources without publishing a placeholder. The installed helper remains the
+resources before a first preview. Publish a rough, labeled building preview early;
+finish behavioral verification before claiming readiness. The installed helper remains the
 only route for privileged lifecycle changes; do not rerun bootstrap.
 
 In app/, check `git var GIT_AUTHOR_IDENT`. If no identity is configured, use a
@@ -74,16 +75,60 @@ Offline writes need a bounded persistent queue and idempotent server handling.
 Do not rely solely on the online event: transient failures can outlast it. Retry
 pending writes on returning to the app and on a bounded schedule while online;
 stop requests when there is no work. Test offline-to-online recovery directly.
-Version shell caches and avoid mixing a new shell into a running game.
+New templates preserve public/sw.template.js; labctl publish hashes regular public
+files and regenerates public/sw.js as lab for both app kinds. No skipWaiting is
+used, so existing tabs keep their worker until closed. Existing custom sw.js files
+without a template are left alone. To migrate, preserve the custom logic in
+sw.template.js, add __LAB_CACHE__ (optionally __LAB_ASSETS__), explicitly remove the
+old generated target as lab, then publish and test update/offline behavior. Never
+blindly replace an existing app's worker. Backend Python edits also need a restart.
+Hashed cache names prevent missed version bumps; this is not atomic versioned
+backend deployment, and clients must finish caching while their assets are available.
+
+## Show it before you polish it
+
+Look up a named real-world referent before rendering it. State the assumed shape
+concretely and continue without waiting for optional feedback. A Price Is Right
+wheel, for example, must not be guessed from the generic word “wheel”.
+
+Publish an early preview within the requested privacy/billing constraints and
+send its building link. Share a phone-sized screenshot through the available
+user-visible attachment mechanism; SendUserFile is one option, not a universal
+requirement. A screenshot visible only to the agent does not count as sharing.
+Ask for correction and continue working. Repeat after substantial visual changes.
+
+## Tests that catch the actual mistake
+
+For directional behavior, pick a fixed panel/grid line/particle and assert its
+final location and sign on the axis the user sees. “Rotation changed” is inadequate
+for checking drag direction. Bound settling distance as well as reaching idle.
+
+Use the scaffolded tests/conftest.py fixtures and tools/README.md. Drive dt-based
+models to completion with an explicit adapter and a bounded step count that fails
+if rest is never reached. Use controllable browser clocks for timers/RAF. Do not
+wait through whole decorative animations; retain real-time tests only when real
+timing itself is the subject. Playwright move timing is not representative of a
+finger's velocity; use controlled input timestamps for velocity-model tests and
+separately check actual browser event wiring. Do not assume a universal event rate.
+
+Plain pytest runs all tests. Mark genuinely slow integration cases; an explicit
+`pytest -m 'not slow'` is useful during iteration, not completion evidence. xdist is
+available but off by default: use a small explicit worker count only after proving
+isolation. Per-worker fixtures reserve separate ports and DBs. Measure with
+`pytest --durations=10`; don't promise a speedup without a before/after measurement.
 
 ## Release and handoff
 
-1. Record the commands, dependencies, data location, tests and limits in install.md.
-2. Commit and publish with `sudo /usr/local/sbin/labctl publish NAME` as lab.
-3. Check live behavior and run `sudo /usr/local/sbin/labctl verify NAME`.
-4. Stop temporary servers and remove exact test fixtures. Preserve useful evidence.
-5. Send one configured ntfy readiness notification with the real URL after success.
-6. Record the result and hand over the link plus any real-device checks still needed.
+1. First safe preview: publish, check reachability, send the timestamped building
+   notification and share a screenshot. Continue without waiting for optional input.
+2. Iterate with focused checks; preserve scope/privacy and protect costly endpoints.
+3. Run the full relevant suite, publish final assets (and restart backend code when
+   changed), then check the visible install flow and labctl verify NAME.
+4. Keep install.md short: URL, data location, reproduce commands, current evidence,
+   known limits and outstanding owner checks. Detailed results belong in saved test
+   reports/commit history, not repeated chronological prose in install.md.
+5. Stop temporary servers/remove exact fixtures and send timestamped ready message.
+6. Commit code, lockfiles and documentation; share the final URL and actual limits.
 
 For small public leaderboards, validate and parameterize input, bound retention,
 and document that client-submitted scores are not cheat-proof. SQLite backups

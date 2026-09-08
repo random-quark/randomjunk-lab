@@ -8,7 +8,7 @@ pairs=[(ROOT/'sbin/labctl',Path('/usr/local/sbin/labctl')),
        (ROOT/'etc/lab-app@.service',Path('/etc/systemd/system/lab-app@.service')),
        (ROOT/'backup/lab-backup.sh',Path('/usr/local/bin/lab-backup')),
        (ROOT/'backup/lab-notify-root',Path('/usr/local/bin/lab-notify-root'))]
-for name in ('newlab','labrm','labs','labdoctor','notify'):
+for name in ('newlab','labrm','labs','labdoctor','notify','labdev','labshot'):
     pairs.append((ROOT/'bin'/name,Path('/usr/local/bin')/name))
 for source in (ROOT/'bin/lib').glob('*.py'):
     pairs.append((source,Path('/usr/local/lib/lab')/source.name))

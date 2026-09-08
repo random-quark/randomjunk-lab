@@ -146,3 +146,33 @@ for app-link notifications. Removed the custom click override so tapping the
 notification retains ntfy's normal behavior. Owner confirmed both actions work on
 Android. Updated JSON payload regression tests and operating instructions; iPhone
 behavior remains untested. No extra readiness test notification is necessary.
+
+## Applied feedback verification — 2026-09-09
+
+- Isolated source suite plus hash/worker-failure tests; parser checks run again
+  after the final edits (result recorded below).
+- Unprivileged runtime check generated both static and SQLite backend scaffolds:
+  7 checks each passed (10.09s static, 14.46s backend on this run). This is new helper
+  coverage, not a measurement of the original Movie Wheel suite's speedup.
+- Actual Chromium: native-offer event adapter, manual/iPhone-UA fallback,
+  remembered dismissal, standalone hiding, offline shell reload, and worker update
+  waiting with an old controlled tab. Offline banner tested with an explicit
+  offline event/state because Chromium SW network emulation did not consistently
+  change navigator.onLine; no claim of a real phone connectivity test.
+- Screenshot subprocess writes screenshot/report and returns failure for 404;
+  deterministic model helper reaches rest in 120 steps and fails at its limit.
+- Concurrent development servers have distinct reserved ports and databases;
+  injected dummy provider key is absent in child env; SIGTERM removes process/data.
+- Installed commands tested with disposable pf-static and pf-backend apps: prepare,
+  publish, edit an asset, republish, verify changed worker over HTTPS, labshot,
+  labdev and cleanup. No readiness messages were sent for these disposable fixtures.
+- Existing compass-blocks, movie-wheel, tetris and welcome custom SW hashes were
+  recorded for preservation checks. No existing experiment source was migrated.
+- Phone Safari and real Android installation/gesture behavior remain owner checks;
+  Chromium with an iPhone user agent tests fallback selection, not Safari itself.
+
+Final result: 76 isolated tests passed (two upstream TestClient deprecation
+warnings), 41 source parse checks passed. Both disposable published apps were
+removed. All four existing apps passed labctl verify, their worker hashes were
+unchanged, and labdoctor reported 0 problems. Final installed/source comparison
+is required after copying the last reviewed files.

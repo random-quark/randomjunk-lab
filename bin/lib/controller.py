@@ -352,6 +352,9 @@ class Controller:
         rec = self.record(app)
         if rec['status'] in ('removing', 'removal-failed') or not rec['resources'].get('code'):
             raise LabError('app is not prepared for publication')
+        # Fixed worker reads/writes app assets as lab; existing custom SWs opt out.
+        self.run(['/usr/bin/python3', '-I', self.lib/'pwa_build.py',
+                  self.root/app/'app/public'], user='lab')
         new_snapshot = None
         if rec['kind'] == 'static':
             new_snapshot = self.snapshot_public(rec)

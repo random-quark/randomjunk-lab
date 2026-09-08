@@ -189,3 +189,34 @@ for app-link notifications. Removed the custom click override so tapping the
 notification retains ntfy's normal behavior. Owner confirmed both actions work on
 Android. Updated JSON payload regression tests and operating instructions; iPhone
 behavior remains untested. No extra readiness test notification is necessary.
+
+## Experiment tooling revision — 2026-09-09
+
+Applied reviewed Claude feedback from /home/lab/platform-feedback/2026-09-09-platform-feedback.md.
+Added common dev fixtures/tools copied into both app kinds, locked pytest/Playwright/
+xdist dependencies without default parallelism/skips, labdev and labshot wrappers,
+and an unprivileged opt-in content-hash PWA builder invoked by publication.
+Updated bootstrap installs these files only on fresh machines. Existing app sources
+and custom workers are not migrated automatically. Existing-server deployment
+copies reviewed helpers/templates/docs; never rerun bootstrap.
+
+New scaffold test/development source is in templates/common, copied by scaffold.py.
+Template projects have independent uv locks. Run uv lock --project templates/app
+and templates/static when intentionally changing dependencies. Browser binaries
+remain per-lab-user tooling and are not downloaded by scaffold generation.
+
+Reproduce isolated runtime checks: make a readable staging copy of templates/,
+bin/lib/ and tools/ outside /root (excluding .venv and __pycache__), then run as lab:
+`python3 STAGE/tools/check-experiment-runtime.py --source STAGE`.
+This creates only temporary apps, runs browser/tests as lab and deletes their
+source and test databases on exit. It does not call labctl or publish sites.
+
+Existing-server update used `python3 -I tools/deploy-feedback.py --apply` from the
+trusted root-owned checkout. It serializes with the platform lifecycle lock,
+backs up replaced files and records modes/ownership before installing helpers,
+templates and docs. It removes only the two obsolete installed template sw.js
+files; it never migrates app workers. Backup manifest is an administrator rollback
+record: restore listed preexisting files with their saved ownership/mode and remove
+only listed newly introduced files under the same lifecycle lock. Do not roll back
+live app data or rerun bootstrap. Current backup directory:
+/root/workspaces/labserver-review/deployments/feedback-mk0e1qvc.

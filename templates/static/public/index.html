@@ -23,13 +23,25 @@
   h1 { font-size: clamp(1.6rem, 6vw, 2.4rem); margin: 0 0 .5rem; }
   code { background: color-mix(in srgb, currentColor 12%, transparent);
          padding: .15em .4em; border-radius: .3em; font-size: .9em; }
+dialog { max-width: min(28rem, 90vw); border-radius: .75rem; }
+  button { min-height: 44px; padding: .6rem 1rem; cursor: pointer; }
 </style>
 </head>
 <body>
 <main>
   <h1>{{TITLE}}</h1>
   <p>Scaffolding only — the requested app has not been built yet.
-     Files live in <code>public/</code>; there is no build step and no server process.</p>
+     Files live in <code>public/</code>; replace this scaffold with the requested experience.</p>
+
+<button id="lab-install-open" type="button">Install app</button>
+<p id="lab-offline-status" role="status"></p>
+<dialog id="lab-install-panel" aria-labelledby="lab-install-title">
+  <h2 id="lab-install-title">Keep {{TITLE}} handy</h2>
+  <p id="lab-install-help"></p>
+  <button id="lab-install-native" type="button" hidden>Install app</button>
+  <button id="lab-install-later" type="button">Not now</button>
+</dialog>
+<script src="/pwa.js" type="module"></script>
 </main>
 <script src="/app.js" type="module"></script>
 </body>
