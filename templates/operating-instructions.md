@@ -160,3 +160,11 @@ Legacy `notify "Title" "Description" "https://app.example.com"` calls remain val
 but the explicit URL replaces the body to preserve the same format. Put meaningful
 context in the title. Plain-text messages without a URL retain their body and have
 no actions. Copy support varies by client/version; real iPhone behavior is untested.
+
+## Database library choice
+
+For small SQLite apps, Python's sqlite3 with parameterized queries is sufficient.
+SQLAlchemy is optional, independent of database choice; add it deliberately as lab
+with `uv add 'sqlalchemy>=2.0,<3'` in app/ when Core or ORM helps the design. Commit
+the updated pyproject.toml and uv.lock. Postgres includes psycopg, not SQLAlchemy.
+Installing SQLAlchemy alone does not make an existing app portable between databases.

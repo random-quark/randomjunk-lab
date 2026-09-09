@@ -60,6 +60,11 @@ def can(user,flag,path):
     return command(['test',flag,path],user=user,check=False).returncode==0
 
 def inject_db_probe(app):
+    # This probe deliberately uses SQLAlchemy; ordinary scaffolds do not need it.
+    project='/srv/lab/'+app+'/app'
+    command(['uv','add','--project',project,'--no-sync','sqlalchemy>=2.0,<3'],user='lab')
+    extras=['--extra','postgres'] if app=='check-pg' else []
+    command(['uv','sync','--project',project,'--locked','--python','/usr/bin/python3',*extras],user='lab')
     snippet='''\n@app.get('/api/check-db')
 def check_db():
     from sqlalchemy import create_engine, text

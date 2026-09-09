@@ -223,3 +223,12 @@ behavior remains untested. No extra readiness test notification is necessary.
   the browser per worker. Bounded model failures include model name and limit.
 - Clarified style references, screen-relative sensors, inspected previews before
   notification, and desktop coverage for any shared component.
+
+## Optional SQLAlchemy — 2026-09-09
+
+Removed unused SQLAlchemy from new backend defaults; keep psycopg in the Postgres
+extra. Agents add SQLAlchemy explicitly when useful. The live integration DB probe
+now adds its own SQLAlchemy dependency as lab before using it. Platform test
+dependencies retain SQLAlchemy. Existing experiments retain their dependencies.
+Reproduce with `uv lock --project templates/app`, required source checks, and the
+staged runtime check as lab; deploy with tools/deploy-feedback.py --apply.

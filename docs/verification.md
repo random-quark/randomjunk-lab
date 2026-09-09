@@ -195,3 +195,12 @@ migrated or restarted.
 Installed verification passed: 44 code/template files, all documentation and three
 operating instruction copies match source; labdoctor reports 0 problems. Rollback
 backup: /root/workspaces/labserver-review/deployments/feedback-wailov1e.
+
+## Optional SQLAlchemy verification — 2026-09-09
+
+76 source tests passed (two upstream deprecation warnings); 41 parse checks passed.
+Generated runtime checks as lab: static 8 passed, 2 database-only skips (14.75s);
+backend 10 passed (34.03s), with SQLAlchemy absent from its resolved dependencies.
+The destructive empty-platform live integration suite was not run on this populated
+server; its DB probe explicitly adds SQLAlchemy before use. Existing apps keep
+their committed dependencies. Deployment/parity uses the same documented tools.

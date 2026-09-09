@@ -230,3 +230,12 @@ Deploy from the trusted checkout using `python3 -I tools/deploy-feedback.py --ap
 then `python3 -I tools/verify-installed.py`; compare the three installed operating
 instruction copies and installed docs with source. This refreshes platform files
 only; existing experiment code/data and service workers are preserved.
+
+## Optional SQLAlchemy — 2026-09-09
+
+Removed unused SQLAlchemy from new backend defaults; keep psycopg in the Postgres
+extra. Agents add SQLAlchemy explicitly when useful. The live integration DB probe
+now adds its own SQLAlchemy dependency as lab before using it. Platform test
+dependencies retain SQLAlchemy. Existing experiments retain their dependencies.
+Reproduce with `uv lock --project templates/app`, required source checks, and the
+staged runtime check as lab; deploy with tools/deploy-feedback.py --apply.

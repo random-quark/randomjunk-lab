@@ -144,3 +144,11 @@ A successful source commit or service restart is not evidence of remote backup.
 Apps with any shared component, including a leaderboard in a personal game, need
 a desktop viewport check as well as phone coverage. Record actual browser/device
 evidence and untested iPhone behavior.
+
+## Database library choice
+
+For small SQLite apps, Python's sqlite3 with parameterized queries is sufficient.
+SQLAlchemy is optional, independent of database choice; add it deliberately as lab
+with `uv add 'sqlalchemy>=2.0,<3'` in app/ when Core or ORM helps the design. Commit
+the updated pyproject.toml and uv.lock. Postgres includes psycopg, not SQLAlchemy.
+Installing SQLAlchemy alone does not make an existing app portable between databases.
