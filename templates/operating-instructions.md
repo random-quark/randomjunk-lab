@@ -74,15 +74,16 @@ Public apps spending provider money require their own authentication/rate limits
 The owner uses Brave and Chrome on Android. Always provide manual install
 instructions when the browser does not offer beforeinstallprompt. For a personal
 experiment prioritize that phone; do not silently drop an explicitly requested
-platform. Shared/party apps must also work on iPhone Safari and desktop. Record
+platform. Apps with any shared component (including a leaderboard) must also work on iPhone Safari and desktop. Record
 personal/shared scope and tested devices versus assumptions in install.md.
 
 ## Reference and preview before polish
 
-When a request names a real object/show/product, look it up or inspect the supplied
+When a request names a real object/show/product or visual style, look it up or inspect the supplied
 reference before rendering. Describe the intended shape in one or two concrete
 sentences. State assumptions and keep working; do not block on optional feedback.
-Get a rough working preview on the real URL early. Share a screenshot through the
+Get a rough working preview on the real URL early. Capture and inspect a phone-sized
+screenshot before notifying or sharing; fix obvious layout errors first. Share it through the
 available attachment/image tool (SendUserFile if available), not merely a tool
 image only you can see. If attachments are unavailable, share the preview URL.
 Invite correction without waiting for it; show major visual changes again.
@@ -92,8 +93,9 @@ Invite correction without waiting for it; show major visual changes again.
 - [ ] Manifest with name, scope, start URL, display and theme colours.
 - [ ] Original appropriate icons: PNG 180/192/512 and maskable 512, committed.
 - [ ] Shell service worker with an automatically content-hashed cache revision.
-- [ ] In-app install offer: native prompt when available, browser-menu fallback,
-      remembered dismissal, hidden in standalone, and a way to reopen it.
+- [ ] Visible Install app button: opens native-prompt guidance or browser-menu fallback
+      only on a user tap; hidden in standalone. Never auto-open a modal on load,
+      a timer, or an install event. An optional non-modal banner must not steal focus.
 - [ ] Phone viewport checked for layout and console errors; shared apps checked
       at desktop size and iPhone Safari when available, with limits recorded.
 - [ ] Offline shell works and network-dependent features explain their status.
@@ -107,7 +109,7 @@ pwa.js: preserve it when replacing app.js, or supply an equivalent tested UX.
 ## Progress and completion notifications
 
 For a requested new experiment, send two timestamped ntfy messages with the URL:
-first successful publish: “NAME · started HH:MM · building”; after behavior tests
+after first publish, reachability check and screenshot inspection: “NAME · started HH:MM · building”; after behavior tests
 and labctl verify pass: “NAME · ready HH:MM”. Use machine-local time (check its
 zone). Do not send duplicates for every republish. No extra permission is needed.
 Stay quiet between them while the owner is active; at most one useful milestone

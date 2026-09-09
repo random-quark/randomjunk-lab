@@ -176,3 +176,22 @@ warnings), 41 source parse checks passed. Both disposable published apps were
 removed. All four existing apps passed labctl verify, their worker hashes were
 unchanged, and labdoctor reported 0 problems. Final installed/source comparison
 is required after copying the last reviewed files.
+
+## Second feedback verification — 2026-09-09
+
+76 source tests passed (two upstream deprecation warnings); 41 parse checks passed.
+Generated scaffolds tested as lab in temporary directories: static 8 passed,
+2 database-only checks skipped (10.58s); SQLite backend 10 passed (47.58s).
+Coverage includes explicit install/dismiss/reopen, install events preserving form
+focus, two independently clean backend databases, named model-limit failures,
+offline shell, waiting worker updates, screenshot error reporting and cleanup.
+Fresh servers trade additional startup time for per-test database isolation; these
+results do not establish a performance improvement. Actual phone Safari, native
+installation and physical sensor axes were not tested in this platform update.
+Deployment uses the documented locked backup/copy tool; installed parity and
+operator/doc copies are checked after deployment. Existing experiments are not
+migrated or restarted.
+
+Installed verification passed: 44 code/template files, all documentation and three
+operating instruction copies match source; labdoctor reports 0 problems. Rollback
+backup: /root/workspaces/labserver-review/deployments/feedback-wailov1e.

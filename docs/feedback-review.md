@@ -22,3 +22,13 @@ errors, not interactive behavior or actual phone installation. Existing custom
 workers and apps are preserved; only new scaffolds get these defaults. Automatic
 hashing is not a fully atomic versioned backend asset deployment. No promise of
 sub-20-second suites is made; timing improvements depend on each app's tests.
+
+## Scaffolding in practice — 2026-09-09
+
+Adopted user-initiated installation without timed dialogs, matching shell tests,
+per-test server/SQLite isolation with a shared browser, and named bounded-model
+failures. Rejected top-score-plus-offset as a substitute for isolation. Adopted
+visual-style reference research, screen-relative sensor guidance, inspected
+screenshots before preview notifications, and desktop checks for shared components.
+Existing experiments are not migrated. Reported build/test speedups are anecdotal,
+not platform benchmark guarantees.

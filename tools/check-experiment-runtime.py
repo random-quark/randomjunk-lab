@@ -31,6 +31,8 @@ def test_native_offer_and_offline(page, base_url):
         e.userChoice=Promise.resolve({outcome:'dismissed'});
         dispatchEvent(e);
     }""")
+    assert page.locator('#lab-install-panel').is_hidden()
+    page.locator('#lab-install-open').click()
     page.locator('#lab-install-native').click()
     assert page.evaluate('window.promptCalled')
     page.context.set_offline(True)
@@ -41,6 +43,28 @@ def test_native_offer_and_offline(page, base_url):
     page.evaluate("Object.defineProperty(navigator,'onLine',{value:false,configurable:true}); dispatchEvent(new Event('offline'));")
     assert 'Offline' in page.locator('#lab-offline-status').inner_text()
     assert not errors
+
+def test_install_event_does_not_interrupt_form(page):
+    page.goto('/')
+    page.evaluate("""() => {
+      const input=document.createElement('input'); input.id='test-name';
+      document.body.append(input); input.focus();
+      const event=new Event('beforeinstallprompt');
+      event.prompt=async()=>{}; event.userChoice=Promise.resolve({outcome:'dismissed'});
+      dispatchEvent(event);
+    }""")
+    page.locator('#test-name').fill('MY SCORE')
+    assert page.locator('#lab-install-panel').is_hidden()
+    assert page.locator('#test-name').input_value()=='MY SCORE'
+    assert page.evaluate('document.activeElement.id')=='test-name'
+
+@pytest.mark.parametrize('round_number',[1,2])
+def test_database_starts_clean_for_each_test(base_url,round_number):
+    if not (ROOT/'main.py').exists():
+        pytest.skip('static fixture has no database')
+    import urllib.request
+    with urllib.request.urlopen(base_url+'/api/dev-check') as response:
+        assert json.load(response)['rows']==1
 
 def test_worker_revision_waits_for_old_tabs(page, base_url):
     import os, subprocess
@@ -78,8 +102,8 @@ def test_fast_forward_and_bound(page, fast_forward):
     count=fast_forward(''' + '"""' + r'''() => {window.position=0;window.labTestStep=dt=>{window.position+=dt;return window.position>=6000;};}''' + '"""' + r''')
     assert count==120
     assert page.evaluate('window.position')==6000
-    with pytest.raises(Error,match='did not reach idle'):
-        fast_forward('() => {window.labTestStep=dt=>false}',max_steps=3)
+    with pytest.raises(Error,match='wheel did not reach idle within 3 steps'):
+        fast_forward('() => {window.labTestStep=dt=>false}',max_steps=3,model_name='wheel')
 
 def test_server_isolation_and_cleanup(app_server):
     import urllib.request

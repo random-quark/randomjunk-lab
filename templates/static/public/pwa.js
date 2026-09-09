@@ -1,7 +1,6 @@
 // Reusable install UX. Keep this separate from app.js when replacing the scaffold.
 let installEvent = null;
 const standalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone;
-const seen = () => { try { return localStorage.getItem('lab-install-dismissed') === 'yes'; } catch { return false; } };
 const remember = () => { try { localStorage.setItem('lab-install-dismissed', 'yes'); } catch {} };
 const panel = document.getElementById('lab-install-panel');
 const open = document.getElementById('lab-install-open');
@@ -27,8 +26,8 @@ install.addEventListener('click', async () => {
   installEvent = null;
   try { await event.prompt(); await event.userChoice; panel.close(); } finally { update(); }
 });
+// Installation opens only on an explicit Install app tap, never on a timer.
 update();
-if (!standalone() && !seen()) panel.showModal();
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {
   document.getElementById('lab-offline-status').textContent = 'Offline setup is unavailable. You can continue online.';
 });

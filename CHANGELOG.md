@@ -214,3 +214,12 @@ behavior remains untested. No extra readiness test notification is necessary.
 - labdev temporary local servers/SQLite/process cleanup; labshot screenshots/errors;
   common fixtures for both app kinds and bounded deterministic animation adapters.
 - Directional tests, explicit slow runs/limited parallelism, shorter factual app docs.
+
+## Scaffolding in practice — 2026-09-09
+
+- Install dialogs open only from the Install app button; install events do not
+  interrupt input. Updated generated shell and browser regression checks.
+- Fresh server/SQLite database per test prevents ranking-state leakage; reuse
+  the browser per worker. Bounded model failures include model name and limit.
+- Clarified style references, screen-relative sensors, inspected previews before
+  notification, and desktop coverage for any shared component.

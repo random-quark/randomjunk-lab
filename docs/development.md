@@ -220,3 +220,13 @@ record: restore listed preexisting files with their saved ownership/mode and rem
 only listed newly introduced files under the same lifecycle lock. Do not roll back
 live app data or rerun bootstrap. Current backup directory:
 /root/workspaces/labserver-review/deployments/feedback-mk0e1qvc.
+
+## Second feedback update — 2026-09-09
+
+Reproduce with `uv run --locked pytest`, `uv run --locked python tools/check-source.py`,
+then the staged unprivileged runtime check described above. Regression checks cover
+explicit installation, uninterrupted form input and independent clean backend DBs.
+Deploy from the trusted checkout using `python3 -I tools/deploy-feedback.py --apply`,
+then `python3 -I tools/verify-installed.py`; compare the three installed operating
+instruction copies and installed docs with source. This refreshes platform files
+only; existing experiment code/data and service workers are preserved.

@@ -64,10 +64,12 @@ but does not prove real Android/iPhone installation, speakers, or browser gestur
 Record those remaining owner checks explicitly. Do not add tests that merely
 repeat markup or implementation details.
 
-For a PWA, test first-visit install guidance, dismissal and reopening, actual shell
+For a PWA, test the first-visit Install app button, dismissal and reopening, actual shell
 caching, offline reload/play, and reconnect behavior. An install button must use
 native prompting only when the browser exposes it; provide manual instructions
-otherwise. iPhone installation requires its own device check. Start sound from a
+otherwise. Never open install dialogs automatically, including on timers or install
+events; keep gameplay and forms usable. An optional non-modal banner must not
+steal focus. iPhone installation requires its own device check. Start sound from a
 user gesture and silence it on pause/background. Browser policy references:
 https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeinstallprompt_event
 
@@ -87,12 +89,13 @@ backend deployment, and clients must finish caching while their assets are avail
 
 ## Show it before you polish it
 
-Look up a named real-world referent before rendering it. State the assumed shape
+Look up a named real-world referent or visual style before rendering it. State the assumed shape
 concretely and continue without waiting for optional feedback. A Price Is Right
 wheel, for example, must not be guessed from the generic word “wheel”.
 
 Publish an early preview within the requested privacy/billing constraints and
-send its building link. Share a phone-sized screenshot through the available
+capture and inspect a phone-sized screenshot before sending its building link.
+Fix obvious layout errors, then share that screenshot through the available
 user-visible attachment mechanism; SendUserFile is one option, not a universal
 requirement. A screenshot visible only to the agent does not count as sharing.
 Ask for correction and continue working. Repeat after substantial visual changes.
@@ -114,13 +117,16 @@ separately check actual browser event wiring. Do not assume a universal event ra
 Plain pytest runs all tests. Mark genuinely slow integration cases; an explicit
 `pytest -m 'not slow'` is useful during iteration, not completion evidence. xdist is
 available but off by default: use a small explicit worker count only after proving
-isolation. Per-worker fixtures reserve separate ports and DBs. Measure with
+isolation. Each test gets a fresh server and SQLite database; each worker reuses one browser.
+Seed known records for ranking/retention tests. Do not compensate for leaked state
+by choosing the current highest score plus an offset. API and browser checks of
+one scenario must target the same isolated database. Measure with
 `pytest --durations=10`; don't promise a speedup without a before/after measurement.
 
 ## Release and handoff
 
-1. First safe preview: publish, check reachability, send the timestamped building
-   notification and share a screenshot. Continue without waiting for optional input.
+1. First safe preview: publish, check reachability, capture and inspect a screenshot,
+   fix obvious visual errors, then send the building notification and share it. Continue without waiting for optional input.
 2. Iterate with focused checks; preserve scope/privacy and protect costly endpoints.
 3. Run the full relevant suite, publish final assets (and restart backend code when
    changed), then check the visible install flow and labctl verify NAME.
@@ -134,3 +140,7 @@ For small public leaderboards, validate and parameterize input, bound retention,
 and document that client-submitted scores are not cheat-proof. SQLite backups
 must include committed WAL content via the SQLite backup API/platform workflow.
 A successful source commit or service restart is not evidence of remote backup.
+
+Apps with any shared component, including a leaderboard in a personal game, need
+a desktop viewport check as well as phone coverage. Record actual browser/device
+evidence and untested iPhone behavior.

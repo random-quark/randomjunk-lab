@@ -85,3 +85,20 @@ these is genuinely required — but that means Xcode and provisioning profiles.
 
 "Worked on localhost, broke on the server" is almost always the secure-context
 rule. Lab subdomains are HTTPS, so it should not bite here.
+
+## Map sensor axes to the screen
+
+DeviceOrientation beta/gamma use the device's natural coordinate frame, not the
+current screen frame. Gamma alone is not screen-relative tilt in landscape.
+Transform the orientation into screen coordinates using the current screen angle,
+or explicitly support portrait with a visible rotate-device fallback when a lock
+is unavailable. Do not treat Euler angles as universally interchangeable axes.
+Test direction against a fixed visible landmark at 0/90/180/270 degrees, including
+sign, permission denial and unavailable-sensor fallback.
+
+For tilt controls prefer a suitable relative orientation source; compass bearing
+needs an earth-referenced source. Feature-detect and check event.absolute for
+legacy orientation events. Choosing legacy deviceorientation does not guarantee
+that magnetometer input is excluded or that latency is lower. Record measured
+behavior on real target phones; browser emulation does not validate sensors.
+Coordinate/reference definitions: https://www.w3.org/TR/orientation-event/

@@ -32,7 +32,8 @@ control can be addressed separately.
 
 For each requested new experiment, send two messages, not a stream:
 
-1. After the first successful publication and reachability check, send a building
+1. After the first successful publication, reachability check, and screenshot
+   capture/inspection (fix obvious visual errors first), send a building
    link even if functionality is incomplete. Keep privacy and costly endpoints safe.
 2. After behavioral testing and labctl verify NAME pass, send the ready message.
 
