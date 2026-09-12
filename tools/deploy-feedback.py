@@ -26,7 +26,7 @@ def main():
     pairs=[]
     for source in (ROOT/'bin/lib').glob('*.py'):
         pairs.append((source,Path('/usr/local/lib/lab')/source.name,0o644))
-    for name in ('labdev','labshot'):
+    for name in ('labdev','labshot','labbuild','labpreflight'):
         pairs.append((ROOT/'bin'/name,Path('/usr/local/bin')/name,0o755))
     for source in (ROOT/'templates').rglob('*'):
         if source.is_file() and not any(p in ('.venv','__pycache__') for p in source.parts):

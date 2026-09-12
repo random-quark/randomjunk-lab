@@ -128,7 +128,7 @@ one scenario must target the same isolated database. Measure with
 1. First safe preview: publish, check reachability, capture and inspect a screenshot,
    fix obvious visual errors, then send the building notification and share it. Continue without waiting for optional input.
 2. Iterate with focused checks; preserve scope/privacy and protect costly endpoints.
-3. Run the full relevant suite, publish final assets (and restart backend code when
+3. Run `labbuild NAME` and `labbuild NAME --check`, then the full relevant suite; publish final assets (and restart backend code when
    changed), then check the visible install flow and labctl verify NAME.
 4. Keep install.md short: URL, data location, reproduce commands, current evidence,
    known limits and outstanding owner checks. Detailed results belong in saved test
@@ -152,3 +152,32 @@ SQLAlchemy is optional, independent of database choice; add it deliberately as l
 with `uv add 'sqlalchemy>=2.0,<3'` in app/ when Core or ORM helps the design. Commit
 the updated pyproject.toml and uv.lock. Postgres includes psycopg, not SQLAlchemy.
 Installing SQLAlchemy alone does not make an existing app portable between databases.
+
+## Supported preflight and build
+
+Launch ordinary work as lab with /srv/lab/NAME/app as the writable workspace.
+Run `labpreflight NAME` (optionally `--engines chromium webkit firefox`). It checks
+identity, source writes, Git, tool discovery, engine launch/version and phone/desktop
+screenshot output without reading provider keys or touching runtime data. Failure
+returns nonzero. Install browser downloads as lab; review missing OS packages with
+an administrator. Never broaden permissions or Git safe-directory globally to fix
+a session. The checker cannot inspect a coding client's sandbox policy.
+
+Run `labbuild NAME` before offline tests; `labbuild NAME --check` fails for stale
+generated workers without modifying them. Custom workers remain app-managed.
+Both build and publish use the same deterministic shell generator. Publish still
+regenerates from current source, so avoid edits between tests and publication.
+These commands do not activate a release or restart services. Backend apps serve
+public files from their working tree: use an isolated checkout for truly unpublished
+changes. This is not immutable-release deployment or atomic rollback.
+
+Keep install.md to current facts and links (aim for one screen, not a hard truncation).
+Update current-state sections in place; preserve owner notes. Put release history in
+CHANGELOG.md and reports/screenshots in artifacts/YYYY-MM-DD/. Keep evidence locally
+with a useful index; artifacts are ignored by Git, so deliberately retain sanitized
+reports elsewhere when needed for portable reproduction. Optional decisions.md holds
+accepted requirements/corrections, not transcripts. Never load all history by default.
+
+Physical-device checklist, only where relevant: install/reopen, permission denial,
+microphone, sharing, wake lock, background push and offline reopening. Record actual
+Android/iPhone results separately from Linux Chromium/WebKit emulation.

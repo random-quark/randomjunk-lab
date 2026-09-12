@@ -14,6 +14,10 @@ def main():
     command = sys.argv[1]
     parser = argparse.ArgumentParser(prog=command)
     parser.add_argument('name')
+    if command == 'labbuild':
+        parser.add_argument('--check', action='store_true')
+    if command == 'labpreflight':
+        parser.add_argument('--engines', nargs='+', choices=['chromium','webkit','firefox'], default=['chromium'])
     if command == 'labshot':
         parser.add_argument('--out')
         parser.add_argument('--viewport', default='390x844')
@@ -26,6 +30,20 @@ def main():
     root = Path('/srv/lab') / args.name / 'app'
     if not root.is_dir():
         parser.error('experiment app directory not found')
+    if command == 'labbuild':
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        from pwa_build import build
+        try:
+            changed = build(root/'public', check=args.check)
+        except ValueError as error:
+            parser.error(str(error))
+        print('custom worker: freshness unmanaged' if not (root/'public/sw.template.js').exists() else ('built shell' if changed else 'shell is current'))
+        return
+    if command == 'labpreflight':
+        python = root/'.venv/bin/python'
+        if not python.exists():
+            parser.error('missing environment: run uv sync --locked as lab in app/')
+        os.execv(str(python), [str(python), str(COMMON/'preflight.py'), '--app-dir', str(root), '--engines', *args.engines])
     if command == 'labdev':
         os.execv('/usr/bin/python3', ['/usr/bin/python3', str(COMMON/'labdev.py'), '--app-dir', str(root)])
     metadata = root / 'lab.json'

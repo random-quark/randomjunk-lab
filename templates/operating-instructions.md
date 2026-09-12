@@ -21,7 +21,8 @@ For a new app, use `newlab NAME ... --prepare-only` while preparing its first
 rough preview, then publish early with `sudo /usr/local/sbin/labctl publish NAME`.
 A clearly labeled building preview is encouraged; never present it as finished.
 Keep private apps private and protect costly or shared-data endpoints from the start.
-Check repository-local Git identity and required test tooling before implementation.
+Start as lab in the app directory; run `labpreflight NAME` before implementation.
+Use `--engines chromium webkit` when both engines are required.
 See /usr/local/share/lab/docs/experiment-workflow.md for the completion workflow,
 browser setup, offline/PWA checks and reproducibility records.
 
@@ -29,6 +30,7 @@ Never run app-owned scripts, virtualenv executables or dependency hooks as root,
 including browser dependency installers. Browser tests/downloads run as lab; an
 administrator installs reviewed OS package names through the system package manager.
 
+Before tests: `labbuild NAME`, then `labbuild NAME --check`.
 After static edits: `sudo /usr/local/sbin/labctl publish NAME`.
 After backend edits: `sudo /usr/local/sbin/labctl service restart NAME`.
 After shell edits in either kind: `sudo /usr/local/sbin/labctl publish NAME`
@@ -133,8 +135,9 @@ time is only for tests of actual timing/network/lifecycle behavior. Run the full
 suite before completion; no default slow-test exclusion or unbounded parallelism.
 Use exact process handles/PIDs for cleanup, never pkill -f from the agent shell.
 
-Record external resources and manual steps in app/install.md; do not overwrite
-hand-written notes.
+Keep install.md current: behavior, reproduction, latest evidence link and open checks.
+Move release history to CHANGELOG.md and dated artifacts/; preserve owner notes.
+Keep optional decisions in decisions.md. Do not append session narratives here.
 
 Provider selection defaults and key names are documented in /usr/local/share/lab/docs/providers.md.
 

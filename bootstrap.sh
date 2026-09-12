@@ -28,7 +28,7 @@ INSTALL_TMP=$(mktemp -d)
 trap 'rm -rf -- "$INSTALL_TMP"' EXIT
 export DEBIAN_FRONTEND=noninteractive
 apt-get update
-apt-get install -y ca-certificates curl gnupg debian-keyring debian-archive-keyring apt-transport-https \
+apt-get install -y ripgrep ca-certificates curl gnupg debian-keyring debian-archive-keyring apt-transport-https \
   git python3 python3-venv librsvg2-bin postgresql postgresql-contrib restic ufw fail2ban unattended-upgrades
 # Pin uv; do not execute a remote pipe. Archive checksums in the install log.
 curl -fLsS https://astral.sh/uv/0.8.22/install.sh -o "$INSTALL_TMP/uv-install.sh"
@@ -82,7 +82,7 @@ install -m 644 "$REPO_DIR/templates/operating-instructions.md" /srv/lab/AGENTS.m
 install -m 644 "$REPO_DIR/templates/operating-instructions.md" /srv/lab/CLAUDE.md
 install -o lab -g lab -m 644 "$REPO_DIR/templates/operating-instructions.md" /home/lab/AGENTS.md
 install -m 755 "$REPO_DIR/sbin/labctl" /usr/local/sbin/labctl
-for script in newlab labrm labs labdoctor notify labdev labshot; do
+for script in newlab labrm labs labdoctor notify labdev labshot labbuild labpreflight; do
   install -m 755 "$REPO_DIR/bin/$script" "/usr/local/bin/$script"
 done
 install -m 755 "$REPO_DIR/backup/lab-backup.sh" /usr/local/bin/lab-backup

@@ -144,6 +144,11 @@ def main():
             subprocess.run(['/usr/bin/python3','-I',str(source/'bin/lib/scaffold.py'),
                             str(source/'templates'/kind),str(target),'fixture-'+kind,
                             'Fixture '+kind,'http://localhost','example.test','sqlite' if kind=='app' else 'none'],check=True)
+            # Preflight uses only synthetic pages, never the app or its credentials.
+            check=subprocess.run([str(target/'.venv/bin/python'),str(target/'tools/preflight.py'),'--app-dir',str(target)],capture_output=True,text=True)
+            report=json.loads(check.stdout)
+            assert report['browsers']['chromium']['screenshots']=='phone and desktop passed', report
+            assert all(item.startswith('missing tool:') for item in report['failures']), report
             if kind=='app':
                 p=target/'main.py';s=p.read_text();s=s.replace("@app.get('/api/health')",'''@app.get('/api/dev-check')
 def dev_check():

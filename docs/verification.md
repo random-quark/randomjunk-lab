@@ -204,3 +204,16 @@ backend 10 passed (34.03s), with SQLAlchemy absent from its resolved dependencie
 The destructive empty-platform live integration suite was not run on this populated
 server; its DB probe explicitly adds SQLAlchemy before use. Existing apps keep
 their committed dependencies. Deployment/parity uses the same documented tools.
+
+## Build/preflight/handoff update — 2026-09-12
+
+78 source tests and 45 parse checks passed. Fresh scaffolds as lab: static 8 passed
+and 2 DB-only skips (15.29s), backend 10 passed (43.77s). Both generated preflights
+launched Chromium and wrote phone/desktop screenshots. Freshness regression proves
+a new JS asset is detected without rewriting a stale worker during --check.
+Installed yamyam preflight passed as lab (Chromium 151.0.7922.34), shell freshness
+passed, labdoctor reported 0 problems, and 47 installed files matched source.
+WebKit preflight correctly returned failure with missing OS libraries; no Safari
+or physical-phone coverage is claimed. No app code/data or services changed.
+Installed ripgrep 14.1.0-1 through apt; no bootstrap rerun. Deployment rollback
+files: /root/workspaces/labserver-review/deployments/feedback-ko0nkyc0.

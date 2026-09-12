@@ -34,7 +34,7 @@ def main():
             command += ['--extra', 'postgres']
         subprocess.run(command, cwd=root, env=env, check=True)
     (root/'.gitignore').write_text('.venv/\n.env\n__pycache__/\n*.pyc\n.pytest_cache/\nartifacts/\n')
-    (root/'install.md').write_text(f'# {app}\n\nCode: {target}\n\nRuntime data: /srv/lab/{app}/data\n\nURL: {url}\n\nAuthoritative state is root-owned /var/lib/lab/records/{app}.json.\nUse labctl verify {app} to check HTTP; test application behavior separately.\n\n## Additional resources and notes\n\nRecord any external resources here.\n')
+    (root/'install.md').write_text(f'# {app}\n\nCode: {target}\n\nRuntime data: /srv/lab/{app}/data\n\nURL: {url}\n\nAuthoritative state is root-owned /var/lib/lab/records/{app}.json.\nUse labctl verify {app} to check HTTP; test application behavior separately.\n\n## Current state\n\nUpdate this section in place: behavior, reproduction commands, release, test evidence and remaining device checks.\n\n## Resources and recovery\n\nRecord external resources and recovery steps. Keep secrets out.\n\n## Owner notes\n\nPreserve owner-authored notes. Store release history in CHANGELOG.md; dated test reports/screenshots in artifacts/YYYY-MM-DD/. Link the latest evidence here.\n')
     subprocess.run(['git', 'init', '-q', str(root)], check=True)
     subprocess.run(['git', '-C', str(root), 'add', '-A'], check=True)
     subprocess.run(['git', '-C', str(root), '-c', 'user.name=lab', '-c', 'user.email=lab@localhost', 'commit', '-qm', 'Initial scaffold'], check=True)

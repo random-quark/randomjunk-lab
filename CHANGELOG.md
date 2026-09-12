@@ -232,3 +232,15 @@ now adds its own SQLAlchemy dependency as lab before using it. Platform test
 dependencies retain SQLAlchemy. Existing experiments retain their dependencies.
 Reproduce with `uv lock --project templates/app`, required source checks, and the
 staged runtime check as lab; deploy with tools/deploy-feedback.py --apply.
+
+## Yamyam workflow feedback — 2026-09-12
+
+Added unprivileged labbuild NAME [--check] and labpreflight NAME [--engines ...].
+Build reuses publication's generator; freshness checking never writes. Preflight
+checks source/Git/tool access and real browser launch/screenshots, without secrets.
+New runbooks separate current state, owner notes and history; operator guidance
+links detailed workflow instead of accumulating app-specific rules. Existing apps
+are not rewritten. Backend working-tree assets still require an isolated checkout
+for unpublished development. Backups remain deferred by the owner.
+Reproduce: required source checks, staged runtime check as lab, then deploy with
+python3 -I tools/deploy-feedback.py --apply and verify-installed.py.
