@@ -101,7 +101,13 @@ def caddy_site(rec, dom, root, public='/var/lib/lab-public', tls_mode='productio
     """Only structured platform data can influence Caddy directives."""
     app = name(rec['name'])
     domain(dom)
-    lines = [f'{app}.{dom} {{', '\tencode gzip']
+    aliases = rec.get('aliases', [])
+    if not isinstance(aliases, list) or any(not isinstance(a, str) for a in aliases):
+        raise LabError('invalid aliases')
+    hosts = [app] + [name(a) for a in aliases]
+    if len(set(hosts)) != len(hosts):
+        raise LabError('duplicate aliases')
+    lines = [', '.join(f'{host}.{dom}' for host in hosts) + ' {', '\tencode gzip']
     if tls_mode == 'internal' and dom.endswith('.test'):
         lines.append('\ttls internal')
     elif tls_mode != 'production':

@@ -223,6 +223,25 @@ class Controller:
                 result.append(rec)
         return result
 
+    def alias(self, app, alias):
+        """Add a same-domain hostname without moving code, data or identity."""
+        app, alias = name(app), name(alias)
+        rec = self.record(app)
+        if alias == app or alias in rec.get('aliases', []):
+            return
+        for path in (self.state/'records').glob('*.json'):
+            other = self.record(path.stem)
+            if alias == other['name'] or alias in other.get('aliases', []):
+                raise LabError('hostname already belongs to an app')
+        changed = dict(rec, aliases=sorted(rec.get('aliases', []) + [alias]))
+        # Persist first; failed publication restores metadata as well as Caddy.
+        self.save(changed)
+        try:
+            self.caddy_publish(self.published())
+        except Exception:
+            self.save(rec)
+            raise
+
     def allocate_port(self):
         used = {self.record(p.stem)['port'] for p in (self.state/'records').glob('*.json')}
         for port in range(8100, 8999):
@@ -244,6 +263,9 @@ class Controller:
         grants = keys(args.secrets)
         if len(args.title or app) > 160 or any(ord(c) < 32 for c in (args.title or app)):
             raise LabError('title must be a single line, at most 160 characters')
+        for path in (self.state/'records').glob('*.json'):
+            if app in self.record(path.stem).get('aliases', []):
+                raise LabError('app hostname is reserved by an alias')
         container = self.root/app
         if self.path(app).exists() or os.path.lexists(container):
             raise LabError('app or record exists; inspect with labdoctor')
@@ -594,6 +616,9 @@ def parser():
     create.add_argument('--secrets', default='')
     for op in ('remove', 'verify', 'logs', 'publish'):
         sub.add_parser(op).add_argument('name', type=name)
+    alias = sub.add_parser('alias')
+    alias.add_argument('name', type=name)
+    alias.add_argument('hostname', type=name)
     service = sub.add_parser('service')
     service.add_argument('action', choices=['start', 'stop', 'restart', 'enable', 'disable', 'status', 'is-active'])
     service.add_argument('name', type=name)
@@ -618,6 +643,7 @@ def main(argv=None):
         with locked(ctl.state/'lock'):
             if args.op == 'create': ctl.create(args)
             elif args.op == 'remove': ctl.remove(args.name)
+            elif args.op == 'alias': ctl.alias(args.name, args.hostname)
             elif args.op == 'publish': ctl.publish(args.name)
             elif args.op == 'service': return ctl.service(args.action, args.name)
             elif args.op == 'verify': return 0 if ctl.verify(args.name) else 1

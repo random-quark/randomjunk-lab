@@ -474,3 +474,33 @@ def test_pwa_worker_failure_stops_publication_before_activation(ctl, kind):
     ctl.snapshot_public.assert_not_called()
     ctl.environment.assert_not_called()
     ctl.caddy_publish.assert_not_called()
+
+
+def test_alias_preserves_target_and_auth():
+    r=rec();r.update(aliases=['newname'],private=True,auth_hash=HASH)
+    text=caddy_site(r,'example.test','/srv/lab')
+    assert text.startswith('demo.example.test, newname.example.test {')
+    assert 'basic_auth' in text and 'reverse_proxy 127.0.0.1:8100' in text
+    for aliases in [['evil.example'], ['demo'], ['bad\nname'], 'newname']:
+        r['aliases']=aliases
+        with pytest.raises(LabError):caddy_site(r,'example.test','/srv/lab')
+
+def test_alias_persistence_collision_and_rollback(ctl):
+    r=rec();r['resources']['caddy']=True;ctl.save(r)
+    ctl.caddy_publish=Mock()
+    ctl.alias('demo','newname')
+    assert ctl.record('demo')['aliases']==['newname']
+    assert ctl.published()[0]['aliases']==['newname']
+    ctl.alias('demo','newname')
+    assert ctl.caddy_publish.call_count==1
+    ctl.save(rec('other'))
+    with pytest.raises(LabError):ctl.alias('other','newname')
+    with pytest.raises(LabError):ctl.alias('demo','other')
+    ctl.caddy_publish=Mock(side_effect=LabError('reload failed'))
+    with pytest.raises(LabError):ctl.alias('demo','third')
+    assert ctl.record('demo')['aliases']==['newname']
+
+def test_create_cannot_claim_alias(ctl):
+    r=rec();r['aliases']=['newname'];ctl.save(r)
+    args=controller.parser().parse_args(['create','newname','--static'])
+    with pytest.raises(LabError,match='reserved by an alias'):ctl.create(args)

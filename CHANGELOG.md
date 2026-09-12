@@ -244,3 +244,17 @@ are not rewritten. Backend working-tree assets still require an isolated checkou
 for unpublished development. Backups remain deferred by the owner.
 Reproduce: required source checks, staged runtime check as lab, then deploy with
 python3 -I tools/deploy-feedback.py --apply and verify-installed.py.
+
+## 2026-09-12 — additional app hostnames
+
+`sudo /usr/local/sbin/labctl alias yamyam yumyum` adds yumyum.randomjunk.dev
+to the same site and keeps the original hostname, runtime identity and data.
+Aliases are validated same-domain labels in authoritative app records, persist
+through publish/reconcile, cannot collide with app names or other aliases, and
+retain the same private-site authentication. Failed Caddy publication restores
+the previous record; the existing publisher restores its live file.
+
+Validation: `uv run --locked pytest` (81 passed);
+`uv run --locked python tools/check-source.py`.
+Deploy the reviewed helper changes using `python3 tools/deploy-hostnames.py`,
+then run the alias command and verify HTTPS on both hostnames.

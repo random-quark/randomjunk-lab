@@ -217,3 +217,22 @@ WebKit preflight correctly returned failure with missing OS libraries; no Safari
 or physical-phone coverage is claimed. No app code/data or services changed.
 Installed ripgrep 14.1.0-1 through apt; no bootstrap rerun. Deployment rollback
 files: /root/workspaces/labserver-review/deployments/feedback-ko0nkyc0.
+
+## 2026-09-12 — additional app hostnames
+
+`sudo /usr/local/sbin/labctl alias yamyam yumyum` adds yumyum.randomjunk.dev
+to the same site and keeps the original hostname, runtime identity and data.
+Aliases are validated same-domain labels in authoritative app records, persist
+through publish/reconcile, cannot collide with app names or other aliases, and
+retain the same private-site authentication. Failed Caddy publication restores
+the previous record; the existing publisher restores its live file.
+
+Validation: `uv run --locked pytest` (81 passed);
+`uv run --locked python tools/check-source.py`.
+Deploy the reviewed helper changes using `python3 tools/deploy-hostnames.py`,
+then run the alias command and verify HTTPS on both hostnames.
+
+Live hostname verification completed 2026-09-12: certificate issued for
+yumyum.randomjunk.dev; both old and new HTTPS health endpoints work; normal app
+publish/restart preserved the alias; doctor reports 0 problems. App regression
+suite 75 passed, live phone/desktop checks passed. No runtime data or secrets moved.
