@@ -277,3 +277,11 @@ delivery checks. Confirmed RESEND_API_KEY presence, yamyam grant and reference
 file without exposing values. No email sent or DNS/app configuration changed.
 Reproduce installed docs from this checkout with the documented deployment tool;
 compare docs and operating copies afterwards.
+
+## Portable optional email configuration — 2026-09-13
+
+Replaced server-specific email guidance with placeholders and an explicit opt-in.
+Added optional owner settings; actual sending choices live in /etc/lab/email.json
+(root:lab 0640), separate from root-only credentials. This file informs agents; it
+does not automatically inject app settings. Existing email apps remain unchanged.
+No email sent and no DNS or credentials changed.

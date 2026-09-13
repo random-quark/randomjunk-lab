@@ -1,9 +1,36 @@
-# Transactional email — Resend
+# Optional transactional email — Resend
 
-Hosted Resend is configured for outbound email from `notify.randomjunk.dev`.
-No local SMTP server is required. The owner reported domain verification; current
-DNS, key scope, quota and billing must be checked in the Resend dashboard when needed.
-Receiving is disabled according to the handoff; preserve existing mail routing.
+Configure or grant email access only when the owner requests it. Email is not a
+requirement for platform installation or every experiment. Blank, skip or disabled
+EMAIL_PROVIDER means no new email setup; reuse existing local configuration when
+present. Never disable an existing integration merely because a template is blank.
+
+## Owner choices and local configuration
+
+During setup, bring the optional email fields in settings.txt to the owner's
+attention alongside provider choices. If selected, collect EMAIL_PROVIDER=resend,
+EMAIL_SENDING_DOMAIN and EMAIL_DEFAULT_FROM. The sending domain can differ from
+the platform domain. Ask for RESEND_API_KEY through protected secret entry, not
+settings.txt, chat or Git. Preserve existing mail routing and verify the selected
+sending domain in the provider dashboard before sending. No local SMTP server is
+needed. Do not enable inbound mail as part of this setup.
+
+After authorized setup, the administrator records non-secret choices in
+/etc/lab/email.json (root:lab, mode 0640), using this schema:
+
+```json
+{
+  "provider": "resend",
+  "sending_domain": "notify.example.com",
+  "default_from": "Example <mail@notify.example.com>"
+}
+```
+
+These are placeholders, not usable defaults. This local file is agent-readable
+configuration, not automatic app environment injection. Keep actual deployment
+values outside the reusable repository. A default_from of null means choose an
+app-specific sender under the configured domain. Apps must explicitly configure
+their sender and public origin. Missing file/provider means not configured.
 
 ## Connect a backend
 
@@ -19,14 +46,13 @@ sudo /usr/local/sbin/labctl service restart NAME
 
 Grants merge with existing grants. Systemd injects generated app environment values;
 never copy master keys, edit generated env files or create a production .env.
-Choose an app-specific sender such as `Example <example@notify.randomjunk.dev>`
+Choose an app-specific sender such as `Example <example@SENDING_DOMAIN>`
 and that app's public origin. Confirm the key permits this sending domain.
 
 Use server-side `POST https://api.resend.com/emails` with Bearer authentication
-and from/to/subject/text/html fields. No SDK or MCP is required. Reference pattern:
-`/srv/lab/yamyam/app/email_auth.py`; public branding is yumyum but its deployment
-name is yamyam. Sender and public URL are app-specific constants, not platform defaults.
-Reuse the sending pattern, not its book/account schema.
+and from/to/subject/text/html fields. No SDK or MCP is required. Read the sending
+domain and optional default sender from local configuration; do not assume a
+particular existing app or domain is present on another machine.
 
 ## Verification and delivery
 
@@ -39,7 +65,3 @@ mail relay. Keep keys and login links out of logs, screenshots and source contro
 Record sanitized provider message IDs for troubleshooting. API acceptance is not
 inbox delivery: confirm receipt and check spam. Apps share this key's quota and
 sending reputation; app limits are not provider allowances.
-
-Source: 2026-09-13 Resend handoff in /home/lab/platform-feedback/. Platform review
-confirmed key presence, yamyam grant and reference-file existence without exposing
-values. No test email was sent; dashboard/DNS and delivery were not reverified.

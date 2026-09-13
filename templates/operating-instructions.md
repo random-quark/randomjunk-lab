@@ -140,8 +140,8 @@ Move release history to CHANGELOG.md and dated artifacts/; preserve owner notes.
 Keep optional decisions in decisions.md. Do not append session narratives here.
 
 Provider defaults and key names: /usr/local/share/lab/docs/providers.md.
-Transactional email is available through Resend using RESEND_API_KEY and
-notify.randomjunk.dev; see /usr/local/share/lab/docs/email.md before wiring sends.
+Only when email is requested: consult /etc/lab/email.json if present and
+/usr/local/share/lab/docs/email.md. Missing configuration does not authorize setup.
 
 ## When resuming server setup
 

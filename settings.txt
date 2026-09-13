@@ -46,3 +46,11 @@ REBOOT_WINDOW=
 
 # Coding agent used by the deployment user; its login is separate from app API keys.
 DEPLOYMENT_AGENT=claude
+
+# OPTIONAL transactional email. Blank means unselected; skip/disabled omits setup.
+# On an existing host, reuse /etc/lab/email.json; do not erase configured values.
+# Select resend only when requested. The sending domain may differ from DOMAIN.
+EMAIL_PROVIDER=
+EMAIL_SENDING_DOMAIN=
+EMAIL_DEFAULT_FROM=
+# RESEND_API_KEY is entered securely, NEVER in this file.

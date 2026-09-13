@@ -1,6 +1,6 @@
 # Provider defaults for experiments
 
-Configured by the owner: OpenAI, Google Gemini, Replicate, and Resend. Anthropic is not
+Configured by the owner: OpenAI, Google Gemini, Replicate. Anthropic is not
 configured. Keys live in root-only `/etc/lab/secrets.env`; grant only the keys
 needed by a backend through `newlab --secrets` or `labctl secrets-grant`.
 
@@ -10,7 +10,7 @@ needed by a backend through `newlab --secrets` or `labctl secrets-grant`.
 | General text tasks | OpenAI, unless requested otherwise | OPENAI_API_KEY |
 | Image/video understanding or Google-specific features | Gemini | GEMINI_API_KEY |
 | Specialist models available on Replicate | Replicate | REPLICATE_API_TOKEN |
-| Transactional email | Resend | RESEND_API_KEY |
+| Transactional email (only when selected) | Resend | RESEND_API_KEY |
 
 These are agent implementation defaults, not an automatic runtime router or
 permission to send arbitrary data to every provider. Record the chosen model,

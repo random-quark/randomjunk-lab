@@ -51,3 +51,13 @@ For this existing server: adding these files does not enable backups, validate A
 billing, grant lab GitHub access, change retention/timezone, or authorize a reboot.
 The first review must highlight these pending choices. Historical installation
 records remain historical; setup-status.md carries the current state.
+
+## Optional email
+
+Bring EMAIL_PROVIDER, EMAIL_SENDING_DOMAIN and EMAIL_DEFAULT_FROM to the owner's
+attention during setup. Do not require email or ask for email credentials when it
+is unselected, skip or disabled. If requested, collect the key securely and record
+verified non-secret deployment choices in /etc/lab/email.json as described in
+docs/email.md. Reuse existing local choices; a blank questionnaire is not an
+instruction to remove a working integration. Email availability does not authorize
+adding sends to every app.
