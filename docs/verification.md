@@ -236,3 +236,12 @@ Live hostname verification completed 2026-09-12: certificate issued for
 yumyum.randomjunk.dev; both old and new HTTPS health endpoints work; normal app
 publish/restart preserved the alias; doctor reports 0 problems. App regression
 suite 75 passed, live phone/desktop checks passed. No runtime data or secrets moved.
+
+## Resend toolkit discovery — 2026-09-13
+
+Added a short operating-instruction pointer, provider-table entry and focused
+email guide covering sender domain, backend grants, reusable reference and safe
+delivery checks. Confirmed RESEND_API_KEY presence, yamyam grant and reference
+file without exposing values. No email sent or DNS/app configuration changed.
+Reproduce installed docs from this checkout with the documented deployment tool;
+compare docs and operating copies afterwards.

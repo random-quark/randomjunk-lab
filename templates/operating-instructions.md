@@ -139,7 +139,9 @@ Keep install.md current: behavior, reproduction, latest evidence link and open c
 Move release history to CHANGELOG.md and dated artifacts/; preserve owner notes.
 Keep optional decisions in decisions.md. Do not append session narratives here.
 
-Provider selection defaults and key names are documented in /usr/local/share/lab/docs/providers.md.
+Provider defaults and key names: /usr/local/share/lab/docs/providers.md.
+Transactional email is available through Resend using RESEND_API_KEY and
+notify.randomjunk.dev; see /usr/local/share/lab/docs/email.md before wiring sends.
 
 ## When resuming server setup
 

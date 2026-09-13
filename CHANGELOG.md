@@ -258,3 +258,12 @@ Validation: `uv run --locked pytest` (81 passed);
 `uv run --locked python tools/check-source.py`.
 Deploy the reviewed helper changes using `python3 tools/deploy-hostnames.py`,
 then run the alias command and verify HTTPS on both hostnames.
+
+## Resend toolkit discovery — 2026-09-13
+
+Added a short operating-instruction pointer, provider-table entry and focused
+email guide covering sender domain, backend grants, reusable reference and safe
+delivery checks. Confirmed RESEND_API_KEY presence, yamyam grant and reference
+file without exposing values. No email sent or DNS/app configuration changed.
+Reproduce installed docs from this checkout with the documented deployment tool;
+compare docs and operating copies afterwards.
