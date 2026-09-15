@@ -275,3 +275,11 @@ Added optional owner settings; actual sending choices live in /etc/lab/email.jso
 (root:lab 0640), separate from root-only credentials. This file informs agents; it
 does not automatically inject app settings. Existing email apps remain unchanged.
 No email sent and no DNS or credentials changed.
+
+## Optional OpenRouter — 2026-09-15
+
+Added OPENROUTER_API_KEY to optional credential import and provider guidance,
+with openrouter selectable in the owner questionnaire. Existing host credential
+was merged under the platform lock and verified root-only without printing it.
+No app grants, restarts or paid API calls. Reproduce through protected provider
+staging during full provisioning, or an administrator merge on an existing host.

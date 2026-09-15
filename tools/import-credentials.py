@@ -22,7 +22,7 @@ def main():
     required={'OPENAI_API_KEY','GEMINI_API_KEY','REPLICATE_API_TOKEN'}
     if not all(providers.get(k) for k in required):
         raise LabError('required provider keys missing')
-    if set(providers)-required-{'ANTHROPIC_API_KEY'}:
+    if set(providers)-required-{'ANTHROPIC_API_KEY','OPENROUTER_API_KEY'}:
         raise LabError('unrecognized provider key names')
     notification=secure_input(source/'ntfy.env')
     if notification.get('NTFY_URL')!='https://ntfy.sh' or not notification.get('NTFY_TOPIC'):

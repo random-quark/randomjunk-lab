@@ -20,7 +20,8 @@ GITHUB_VISIBILITY=private
 EXPERIMENT_GITHUB_ACCESS=
 
 # Comma-separated providers; skip disables integrations. No keys in this file.
-AI_PROVIDERS=openai,gemini,replicate
+AI_PROVIDERS=openai,gemini,replicate,openrouter
+# Optional openrouter uses OPENROUTER_API_KEY entered in protected providers.env.
 # Blank means ask before paid setup verification calls; not an enforced spending cap.
 AI_TEST_BUDGET_USD=
 AI_MONTHLY_BUDGET_USD=

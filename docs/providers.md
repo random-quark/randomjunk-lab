@@ -1,6 +1,6 @@
 # Provider defaults for experiments
 
-Configured by the owner: OpenAI, Google Gemini, Replicate. Anthropic is not
+Configured by the owner: OpenAI, Google Gemini, Replicate, OpenRouter. Anthropic is not
 configured. Keys live in root-only `/etc/lab/secrets.env`; grant only the keys
 needed by a backend through `newlab --secrets` or `labctl secrets-grant`.
 
@@ -10,6 +10,7 @@ needed by a backend through `newlab --secrets` or `labctl secrets-grant`.
 | General text tasks | OpenAI, unless requested otherwise | OPENAI_API_KEY |
 | Image/video understanding or Google-specific features | Gemini | GEMINI_API_KEY |
 | Specialist models available on Replicate | Replicate | REPLICATE_API_TOKEN |
+| Models accessed through OpenRouter (when selected) | OpenRouter | OPENROUTER_API_KEY |
 | Transactional email (only when selected) | Resend | RESEND_API_KEY |
 
 These are agent implementation defaults, not an automatic runtime router or
@@ -25,3 +26,20 @@ configures hosted ntfy from the staged ntfy.env. This is an administrator step,
 not a command available to app runtime identities. Keep source control secret-free.
 
 For email sender configuration, grants and delivery checks, see [email.md](email.md).
+
+## Optional OpenRouter
+
+Select openrouter in AI_PROVIDERS in settings.txt only when desired. During initial
+provisioning, enter OPENROUTER_API_KEY in the root-owned 0600 staging file
+/root/lab-credentials/providers.env, never in settings.txt or Git. The existing
+importer accepts this optional key alongside its original required providers; it
+also configures ntfy and is not a standalone OpenRouter-only setup command. For
+an existing host, the administrator securely merges this key into
+/etc/lab/secrets.env while preserving other keys.
+
+Grant only to backends that need it: `newlab NAME --app --secrets OPENROUTER_API_KEY`
+or `sudo /usr/local/sbin/labctl secrets-grant OPENROUTER_API_KEY NAME` followed by
+`sudo /usr/local/sbin/labctl service restart NAME`. Keep requests server-side.
+Choose the model explicitly and record it in the app runbook; existing direct
+provider defaults do not change. Key presence does not verify model access or
+credit balance. Paid verification needs an agreed budget.
