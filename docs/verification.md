@@ -261,3 +261,12 @@ with openrouter selectable in the owner questionnaire. Existing host credential
 was merged under the platform lock and verified root-only without printing it.
 No app grants, restarts or paid API calls. Reproduce through protected provider
 staging during full provisioning, or an administrator merge on an existing host.
+
+## WebKit enabled — 2026-09-16
+
+Trusted apt installation completed; versions captured in webkit-packages.txt.
+Matching Playwright browser installation ran as lab. Installed labpreflight yamyam
+--engines chromium webkit passed: Chromium 151.0.7922.34 and WebKit 26.5 each
+launched and produced phone/desktop screenshots. These are synthetic browser
+checks, not app-suite or physical-iPhone verification. 81 source tests and 46
+parse checks passed. No app source/data changed; unrelated restarts deferred.

@@ -181,3 +181,6 @@ accepted requirements/corrections, not transcripts. Never load all history by de
 Physical-device checklist, only where relevant: install/reopen, permission denial,
 microphone, sharing, wake lock, background push and offline reopening. Record actual
 Android/iPhone results separately from Linux Chromium/WebKit emulation.
+
+Browser profile: see [browser-testing.md](browser-testing.md) for the reproducible
+Chromium/WebKit setup. Passing preflight does not run your app tests in both engines.

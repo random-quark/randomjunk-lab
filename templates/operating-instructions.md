@@ -22,7 +22,8 @@ rough preview, then publish early with `sudo /usr/local/sbin/labctl publish NAME
 A clearly labeled building preview is encouraged; never present it as finished.
 Keep private apps private and protect costly or shared-data endpoints from the start.
 Start as lab in the app directory; run `labpreflight NAME` before implementation.
-Use `--engines chromium webkit` when both engines are required.
+For shared web apps use `--engines chromium webkit` and test both engines.
+Browser setup and device-test limits: /usr/local/share/lab/docs/browser-testing.md.
 See /usr/local/share/lab/docs/experiment-workflow.md for the completion workflow,
 browser setup, offline/PWA checks and reproducibility records.
 

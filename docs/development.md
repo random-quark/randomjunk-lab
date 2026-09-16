@@ -293,3 +293,10 @@ with openrouter selectable in the owner questionnaire. Existing host credential
 was merged under the platform lock and verified root-only without printing it.
 No app grants, restarts or paid API calls. Reproduce through protected provider
 staging during full provisioning, or an administrator merge on an existing host.
+
+## WebKit testing profile — 2026-09-16
+
+Installed reviewed Ubuntu graphics/media/text dependencies for Playwright WebKit.
+Browser installation and testing run as lab, OS packages through trusted apt.
+See docs/browser-testing.md (browser-testing.md from this docs directory) for exact
+reproduction and engine/device coverage limits. No bootstrap rerun or app changes.

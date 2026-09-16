@@ -136,3 +136,10 @@ The supplied Android screenshot confirms that the expected welcome scaffold
 renders on the phone. This completes the pending phone page-load check, not a
 Tetris implementation or PWA-installation test. The screenshot was not copied
 into the repository or source ZIP.
+
+## WebKit testing profile — 2026-09-16
+
+Installed reviewed Ubuntu graphics/media/text dependencies for Playwright WebKit.
+Browser installation and testing run as lab, OS packages through trusted apt.
+See docs/browser-testing.md (browser-testing.md from this docs directory) for exact
+reproduction and engine/device coverage limits. No bootstrap rerun or app changes.
