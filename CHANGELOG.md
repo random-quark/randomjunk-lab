@@ -290,3 +290,10 @@ Installed reviewed Ubuntu graphics/media/text dependencies for Playwright WebKit
 Browser installation and testing run as lab, OS packages through trusted apt.
 See docs/browser-testing.md (browser-testing.md from this docs directory) for exact
 reproduction and engine/device coverage limits. No bootstrap rerun or app changes.
+
+## Stripe discovery — 2026-09-16
+
+Documented optional Stripe setup and separate administrator-controlled credential
+access. Owner-entered test key presence/0600 verified without printing values.
+No Stripe API requests, app grants, webhook setup or live activation performed.
+Installed guidance contains names/paths only; credentials remain outside Git.

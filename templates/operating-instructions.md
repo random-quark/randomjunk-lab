@@ -141,6 +141,8 @@ Move release history to CHANGELOG.md and dated artifacts/; preserve owner notes.
 Keep optional decisions in decisions.md. Do not append session narratives here.
 
 Provider defaults and key names: /usr/local/share/lab/docs/providers.md.
+Payments only when requested: /usr/local/share/lab/docs/payments.md explains
+Stripe credential access, test mode and per-app setup.
 Only when email is requested: consult /etc/lab/email.json if present and
 /usr/local/share/lab/docs/email.md. Missing configuration does not authorize setup.
 

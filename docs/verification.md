@@ -270,3 +270,10 @@ Matching Playwright browser installation ran as lab. Installed labpreflight yamy
 launched and produced phone/desktop screenshots. These are synthetic browser
 checks, not app-suite or physical-iPhone verification. 81 source tests and 46
 parse checks passed. No app source/data changed; unrelated restarts deferred.
+
+## Stripe discovery — 2026-09-16
+
+Documented optional Stripe setup and separate administrator-controlled credential
+access. Owner-entered test key presence/0600 verified without printing values.
+No Stripe API requests, app grants, webhook setup or live activation performed.
+Installed guidance contains names/paths only; credentials remain outside Git.

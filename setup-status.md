@@ -20,6 +20,7 @@ configured. Review unresolved rows with the owner at each setup handoff.
 | Experiment GitHub access | needed | Decide restricted access for lab separately; root GitHub credentials are not shared with lab. |
 | Deployment agent executable | tested | 2026-09-07: fresh lab login resolves /home/lab/.local/bin/claude; version 2.1.263 verified. |
 | Deployment agent login | needed | Owner must launch Claude as lab and complete interactive account login. Root login does not establish lab access. |
+| Stripe credentials | configured | 2026-09-16: test-key presence and root-only permissions verified in /etc/lab/stripe.env; API access untested, no app grants or webhook setup. |
 | AI credentials | configured | OpenAI/Gemini/Replicate key presence checked; OpenRouter added 2026-09-15 (presence/0600 checked, API untested); no values recorded here. |
 | AI access / spending | needed | Agree test budget, verify intended model access, and distinguish provider spending controls from preferences. |
 | B2 credentials / endpoint | needed | Bucket, endpoint, key ID and application key missing. Collect securely. |

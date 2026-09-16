@@ -11,6 +11,7 @@ needed by a backend through `newlab --secrets` or `labctl secrets-grant`.
 | Image/video understanding or Google-specific features | Gemini | GEMINI_API_KEY |
 | Specialist models available on Replicate | Replicate | REPLICATE_API_TOKEN |
 | Models accessed through OpenRouter (when selected) | OpenRouter | OPENROUTER_API_KEY |
+| Payments (only when requested) | Stripe | STRIPE_SECRET_KEY (separate root-only file; see payments.md) |
 | Transactional email (only when selected) | Resend | RESEND_API_KEY |
 
 These are agent implementation defaults, not an automatic runtime router or
@@ -43,3 +44,5 @@ or `sudo /usr/local/sbin/labctl secrets-grant OPENROUTER_API_KEY NAME` followed 
 Choose the model explicitly and record it in the app runbook; existing direct
 provider defaults do not change. Key presence does not verify model access or
 credit balance. Paid verification needs an agreed budget.
+
+Stripe has a separate access workflow: see [payments.md](payments.md).

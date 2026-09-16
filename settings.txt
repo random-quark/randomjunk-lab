@@ -55,3 +55,8 @@ EMAIL_PROVIDER=
 EMAIL_SENDING_DOMAIN=
 EMAIL_DEFAULT_FROM=
 # RESEND_API_KEY is entered securely, NEVER in this file.
+
+# OPTIONAL payments: blank/skip means no new setup. Reuse existing local choices.
+PAYMENTS_PROVIDER=
+PAYMENTS_MODE=
+# Owner enters STRIPE_SECRET_KEY securely in /etc/lab/stripe.env, never here.
