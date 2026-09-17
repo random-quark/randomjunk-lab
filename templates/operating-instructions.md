@@ -143,6 +143,10 @@ Keep optional decisions in decisions.md. Do not append session narratives here.
 Provider defaults and key names: /usr/local/share/lab/docs/providers.md.
 Payments only when requested: /usr/local/share/lab/docs/payments.md explains
 Stripe credential access, test mode and per-app setup.
+
+PostgreSQL and SQLite are covered by the server backup job. Before adding another
+database engine or separate data mount, notify the administrator and read
+/usr/local/share/lab/docs/server-backups.md.
 Only when email is requested: consult /etc/lab/email.json if present and
 /usr/local/share/lab/docs/email.md. Missing configuration does not authorize setup.
 

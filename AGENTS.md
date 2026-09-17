@@ -7,6 +7,8 @@
   task authorization. Readiness notifications are requested after verification.
 - Keep changes, reproducible commands, test evidence and limitations in this
   repository. Update CHANGELOG.md, docs/development.md and docs/verification.md.
+- Whole-server backup setup and recovery commands are in docs/server-backups.md.
+  Never enable its cron job together with the older lab-backup.timer.
 - Use uv for Python dependency management and committed lockfiles. No pip.
 - Never execute app-owned code, build hooks or SQLite engines as root. Keep
   privileged code imports and authoritative state under trusted ownership.

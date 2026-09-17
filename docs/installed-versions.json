@@ -8,5 +8,6 @@
   "pgvector": "0.6.0",
   "domain": "randomjunk.dev",
   "date": "2026-09-07",
-  "backup_timer": "disabled pending remote backup configuration"
+  "backup_timer": "legacy lab-backup.timer disabled",
+  "backup_schedule": "root cron restic-backup daily at 03:30 Europe/Berlin"
 }

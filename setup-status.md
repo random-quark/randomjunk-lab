@@ -23,11 +23,11 @@ configured. Review unresolved rows with the owner at each setup handoff.
 | Stripe credentials | configured | 2026-09-16: test-key presence and root-only permissions verified in /etc/lab/stripe.env; API access untested, no app grants or webhook setup. |
 | AI credentials | configured | OpenAI/Gemini/Replicate key presence checked; OpenRouter added 2026-09-15 (presence/0600 checked, API untested); no values recorded here. |
 | AI access / spending | needed | Agree test budget, verify intended model access, and distinguish provider spending controls from preferences. |
-| B2 credentials / endpoint | needed | Bucket, endpoint, key ID and application key missing. Collect securely. |
-| Backup schedule / retention | needed | Confirm settings.txt proposals and timezone; current timer defaults to server-local 03:30. |
-| Recovery password / access | needed | Generate or collect restic password securely; confirm independent off-server recovery copy. |
-| Remote backup / restore drill | needed | Local dummy restore passed only; upload and staged B2 restore still required. |
-| Scheduled backups / failure alerts | needed | Timer disabled until successful remote backup/restore; verify alert delivery and next run when enabled. |
+| B2 credentials / endpoint | tested | 2026-09-17: restricted credentials initialized and accessed the private server1 repository; values remain outside Git. |
+| Backup schedule / retention | configured | Whole-server root cron installed for 03:30 Europe/Berlin with 7 daily, 4 weekly and 6 monthly retention. Older lab-backup.timer remains disabled. |
+| Recovery password / access | tested | Owner confirmed an independent password-manager copy; repository unlock and staged restore passed. |
+| Remote backup / restore drill | tested | 2026-09-17: encrypted B2 upload, 1% data check and byte-identical `/etc/hostname` restore passed. |
+| Scheduled backups / failure alerts | configured | Root cron and logrotate installed; first autonomous 03:30 run not yet observed. This job logs locally and has no failure notification hook. |
 | Reboot / boot-service review | needed | Existing cloud-init and network wait failures; agree maintenance window and verify recovery. No reboot authorized by blank settings. |
 | Android game PWA / audio | needed | Browser emulation passed; owner device installation and sound checks outstanding. |
 | iPhone PWA / audio | needed | Actual device installation/play/audio checks outstanding. |

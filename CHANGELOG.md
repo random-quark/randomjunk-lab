@@ -297,3 +297,12 @@ Documented optional Stripe setup and separate administrator-controlled credentia
 access. Owner-entered test key presence/0600 verified without printing values.
 No Stripe API requests, app grants, webhook setup or live activation performed.
 Installed guidance contains names/paths only; credentials remain outside Git.
+
+## Whole-server encrypted backups — 2026-09-17
+
+Added reproducible Restic script, exclusions, log rotation and recovery guidance
+for owner-authorized private B2 backups. The job starts at `/`, excludes replaceable
+OS/runtime content, snapshots PostgreSQL and SQLite consistently, retains daily /
+weekly / monthly history and verifies 1% after upload. Credentials and repository
+passwords remain root-only outside Git. Live B2 backup and single-file restore
+passed; the first autonomous scheduled run and full-machine rebuild remain pending.

@@ -90,6 +90,19 @@ behavior, reboot recovery, old-draft migration, and any failure cases not listed
 above remain untested. No paid provider API calls were made; billing/model access
 is not established by importing a key.
 
+## Whole-server B2 backup — 2026-09-17
+
+Initialized the private server1 Restic repository using root-only files, ran two
+manual whole-server backups, and retained no secret values in source or command
+output. The corrected final run produced consistent compressed PostgreSQL and
+SQLite snapshots without destination WAL/SHM sidecars, uploaded successfully,
+applied retention and passed `restic check --read-data-subset=1%`.
+
+`restic restore latest --tag server1 --include /etc/hostname` restored into a new
+temporary directory; SHA-256 matched the live file, and the staging directory was
+deleted. Root cron and logrotate configuration were then installed. The first
+autonomous 03:30 run and a full-machine rebuild remain untested.
+
 ## Experiment workflow documentation follow-up — 2026-09-07
 
 The first game exposed operational setup gaps, now covered in

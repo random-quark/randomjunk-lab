@@ -301,6 +301,13 @@ Browser installation and testing run as lab, OS packages through trusted apt.
 See docs/browser-testing.md (browser-testing.md from this docs directory) for exact
 reproduction and engine/device coverage limits. No bootstrap rerun or app changes.
 
+## Whole-server Restic operations — 2026-09-17
+
+The reproducible administrator files live under `admin/backup/`; operational and
+restore guidance is in docs/server-backups.md. They contain no repository keys or
+passwords. The current host uses a separate root cron job; do not enable the older
+app-oriented `lab-backup.timer` alongside it.
+
 ## Stripe discovery — 2026-09-16
 
 Documented optional Stripe setup and separate administrator-controlled credential

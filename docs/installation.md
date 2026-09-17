@@ -143,3 +143,15 @@ Installed reviewed Ubuntu graphics/media/text dependencies for Playwright WebKit
 Browser installation and testing run as lab, OS packages through trusted apt.
 See docs/browser-testing.md (browser-testing.md from this docs directory) for exact
 reproduction and engine/device coverage limits. No bootstrap rerun or app changes.
+
+## Whole-server B2 backup — 2026-09-17
+
+Configured the owner-provided private B2 repository with root-only credential and
+password files outside Git. Installed the reviewed whole-server script, exclusion
+list, root cron at 03:30 Europe/Berlin and weekly log rotation. The older
+`lab-backup.timer` remains disabled to avoid duplicate jobs.
+
+The first run processed 1.579 GiB and stored 645.672 MiB. A corrected second run
+removed transient SQLite destination sidecars, added 2.337 MiB of stored data,
+passed the 1% repository check and restored `/etc/hostname` byte-identically from
+B2. See docs/server-backups.md for scope, retention and recovery commands.
