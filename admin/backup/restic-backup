@@ -9,7 +9,9 @@ LOCK_FILE=/run/lock/restic-backup.lock
 DUMP_DIR=/var/backups/db
 EXCLUDE_FILE=/etc/restic-backup-excludes
 
-install -o root -g root -m 0600 /dev/null "$LOG_FILE" 2>/dev/null || true
+if [ ! -e "$LOG_FILE" ]; then
+  install -o root -g root -m 0600 /dev/null "$LOG_FILE"
+fi
 
 exec 9>"$LOCK_FILE"
 if ! flock -n 9; then
