@@ -112,3 +112,11 @@ Verify with a real backup and confirm the check becomes Up. Test failure routing
 with a mocked curl, not an intentionally broken production backup. Owner must
 confirm email receipt separately; HTTP acceptance alone does not prove delivery.
 Official protocol: https://healthchecks.io/docs/bash/
+
+## Parcel temporary storage
+
+Parcel uploads and generated ZIPs live under /srv/lab/parcel/data/transient/ and
+are excluded from Restic. Its SQLite metadata and application source remain
+backed up. After restoration, missing transfer content is marked unavailable;
+restoring the server does not resurrect expired downloads. Apply the equivalent
+exclusion before enabling uploads on another host.

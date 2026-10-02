@@ -310,3 +310,8 @@ passed; the first autonomous scheduled run and full-machine rebuild remain pendi
 ## Backup monitoring — 2026-10-01
 
 Added optional Healthchecks start/success/failure signals to whole-server backups, with protected configuration and external missed-run monitoring.
+
+## Parcel storage — 2026-10-02
+
+Excluded /srv/lab/parcel/data/transient/** from live and source Restic exclusions
+at owner request. App source and SQLite metadata remain included.

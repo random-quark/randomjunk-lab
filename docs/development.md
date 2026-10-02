@@ -318,3 +318,8 @@ Installed guidance contains names/paths only; credentials remain outside Git.
 ## Backup monitoring — 2026-10-01
 
 Healthchecks setup is reproduced in docs/server-backups.md. Install the reviewed backup script and exclusion list using its commands; create the protected monitoring file separately.
+
+## Parcel storage — 2026-10-02
+
+Excluded /srv/lab/parcel/data/transient/** from live and source Restic exclusions
+at owner request. App source and SQLite metadata remain included.

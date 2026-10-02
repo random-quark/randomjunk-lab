@@ -29,3 +29,5 @@
 **/__pycache__/**
 **/node_modules/**
 /srv/lab/*/browsers/**
+# Parcel transfers expire; keep metadata, not temporary file content.
+/srv/lab/parcel/data/transient/**
