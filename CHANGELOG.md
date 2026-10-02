@@ -306,3 +306,7 @@ OS/runtime content, snapshots PostgreSQL and SQLite consistently, retains daily 
 weekly / monthly history and verifies 1% after upload. Credentials and repository
 passwords remain root-only outside Git. Live B2 backup and single-file restore
 passed; the first autonomous scheduled run and full-machine rebuild remain pending.
+
+## Backup monitoring — 2026-10-01
+
+Added optional Healthchecks start/success/failure signals to whole-server backups, with protected configuration and external missed-run monitoring.

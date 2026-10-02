@@ -23,6 +23,7 @@
 /root/.codex/**
 /root/.restic-env
 /root/.restic-pass
+/root/.restic-healthchecks.env
 **/.cache/**
 **/.venv/**
 **/__pycache__/**

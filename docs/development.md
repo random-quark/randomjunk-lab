@@ -314,3 +314,7 @@ Documented optional Stripe setup and separate administrator-controlled credentia
 access. Owner-entered test key presence/0600 verified without printing values.
 No Stripe API requests, app grants, webhook setup or live activation performed.
 Installed guidance contains names/paths only; credentials remain outside Git.
+
+## Backup monitoring — 2026-10-01
+
+Healthchecks setup is reproduced in docs/server-backups.md. Install the reviewed backup script and exclusion list using its commands; create the protected monitoring file separately.

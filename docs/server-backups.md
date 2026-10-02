@@ -88,3 +88,27 @@ On the current server, the owner confirmed an independent password copy. A B2
 backup, 1% repository check and byte-identical `/etc/hostname` staged restore
 passed on 2026-09-17. This proves access to this repository at that time; it does
 not prove a future scheduled run or a full rebuild on a different machine.
+
+## Optional external monitoring (Healthchecks.io)
+
+During setup, explicitly review BACKUP_MONITORING in settings.txt with the owner.
+Create a check with a one-day period and one-hour grace, and select a verified
+notification integration. Store HEALTHCHECKS_PING_URL with the UUID ping URL in
+/root/.restic-healthchecks.env (root:root, mode 0600), using shell quoting.
+Never commit the URL. This file is excluded from backups; recreate it on recovery.
+
+The script sends /start after acquiring its lock, success only after upload,
+retention and integrity verification finish, and /fail on unsuccessful exit.
+No file contents or logs are sent. The URL goes to curl on stdin, not in arguments.
+Delivery is bounded and best-effort: network failure does not interrupt a backup;
+the external missing-ping alert covers lost contact. Overlapping runs send nothing.
+
+The period is measured from pings, not the 03:30 cron schedule. Manual runs shift
+that deadline until the next scheduled completion. A start without completion
+exceeds grace after one hour. Increase grace if legitimate backups take longer.
+A cron-based check in Europe/Berlin is an alternative for fixed-clock deadlines.
+
+Verify with a real backup and confirm the check becomes Up. Test failure routing
+with a mocked curl, not an intentionally broken production backup. Owner must
+confirm email receipt separately; HTTP acceptance alone does not prove delivery.
+Official protocol: https://healthchecks.io/docs/bash/

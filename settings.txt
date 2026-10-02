@@ -60,3 +60,6 @@ EMAIL_DEFAULT_FROM=
 PAYMENTS_PROVIDER=
 PAYMENTS_MODE=
 # Owner enters STRIPE_SECRET_KEY securely in /etc/lab/stripe.env, never here.
+
+# Optional monitoring: healthchecks or skip; store ping URL in protected root file.
+BACKUP_MONITORING=healthchecks

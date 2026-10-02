@@ -80,3 +80,21 @@ worker generation, uv-locked test tooling, and tools/tests shared fixtures. Star
 local preview with labdev, publish an early safe preview, and share screenshots
 with labshot. See [the workflow](docs/experiment-workflow.md). Existing apps are
 not rewritten: custom workers opt in only through an explicit migration.
+
+## Server backups and monitoring
+
+This server has daily encrypted **Restic backups to Backblaze B2**, running at
+**03:30 Europe/Berlin**. The whole-machine backup covers data and configuration,
+with exclusions for replaceable OS files, caches, logs and selected secrets.
+It includes PostgreSQL dumps and discovered SQLite snapshots; new database
+engines or unusual storage locations still need a backup review.
+
+Retention is **7 daily, 4 weekly and 6 monthly snapshots**. Each run checks 1% of
+repository data. **Healthchecks.io** receives start, success and failure signals
+and monitors for missed or stalled runs, using a one-day period and one-hour
+grace. Email notifications are selected; inbox delivery still needs confirmation.
+
+Logs: `/var/log/restic-backup.log`. See [backup setup and recovery instructions](docs/server-backups.md)
+for exclusions, protected configuration and restore commands. These services are
+configured on this machine; a new installation must configure and verify its own
+backup repository and monitoring check.

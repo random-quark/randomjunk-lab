@@ -290,3 +290,11 @@ Documented optional Stripe setup and separate administrator-controlled credentia
 access. Owner-entered test key presence/0600 verified without printing values.
 No Stripe API requests, app grants, webhook setup or live activation performed.
 Installed guidance contains names/paths only; credentials remain outside Git.
+
+## Healthchecks backup monitoring — 2026-10-01
+
+- 81 pytest tests passed (two upstream deprecation warnings); 47 source parse checks passed.
+- Isolated mocked-curl tests passed for success, failure preserving exit 7, and unavailable monitoring preserving backup success. No live failure alert induced.
+- Installed protected monitoring config (root:root 0600), revised backup script and exclusions. No ping URL committed or logged.
+- Real backup 55849e3e completed dumps, upload, retention/prune and 1% integrity check. Healthchecks accepted start and success signals; no errors found.
+- Existing 03:30 cron retained. Email integration shown enabled by owner; inbox delivery has not been confirmed.

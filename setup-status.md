@@ -27,7 +27,7 @@ configured. Review unresolved rows with the owner at each setup handoff.
 | Backup schedule / retention | configured | Whole-server root cron installed for 03:30 Europe/Berlin with 7 daily, 4 weekly and 6 monthly retention. Older lab-backup.timer remains disabled. |
 | Recovery password / access | tested | Owner confirmed an independent password-manager copy; repository unlock and staged restore passed. |
 | Remote backup / restore drill | tested | 2026-09-17: encrypted B2 upload, 1% data check and byte-identical `/etc/hostname` restore passed. |
-| Scheduled backups / failure alerts | configured | Root cron and logrotate installed; first autonomous 03:30 run not yet observed. This job logs locally and has no failure notification hook. |
+| Scheduled backups / failure alerts | configured | 2026-10-01: daily cron success observed; Healthchecks start and success accepted on manual snapshot 55849e3e. Failure and network handling passed mocked tests. One-day period/one-hour grace and email selected in owner screenshot; owner email receipt still unverified. |
 | Reboot / boot-service review | needed | Existing cloud-init and network wait failures; agree maintenance window and verify recovery. No reboot authorized by blank settings. |
 | Android game PWA / audio | needed | Browser emulation passed; owner device installation and sound checks outstanding. |
 | iPhone PWA / audio | needed | Actual device installation/play/audio checks outstanding. |

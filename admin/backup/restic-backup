@@ -25,20 +25,54 @@ exec > >(
   done | tee -a "$LOG_FILE"
 ) 2>&1
 
+# Optional root-owned configuration; never commit the ping URL.
+HEALTHCHECKS_PING_URL=
+healthchecks_ping() {
+  local suffix="$1"
+  [ -n "$HEALTHCHECKS_PING_URL" ] || return 0
+  # Supply the bearer URL on stdin, never in process arguments or logs.
+  if ! printf 'url = "%s%s"\n' "$HEALTHCHECKS_PING_URL" "$suffix" |
+    curl --config - --silent --fail --output /dev/null \
+      --connect-timeout 5 --max-time 10 --retry 2 --retry-max-time 30 2>/dev/null; then
+    printf '%s\n' 'Warning: Healthchecks status delivery failed.'
+  else
+    printf 'Healthchecks signal delivered: %s\n' "${suffix:-success}"
+  fi
+  return 0
+}
+
 success=false
 staging_dir=
 cleanup() {
   exit_code=$?
+  trap - EXIT
+  set +e
   if [ -n "$staging_dir" ] && [ -d "$staging_dir" ]; then
     find "$staging_dir" -depth -delete
   fi
   if [ "$success" = true ]; then
     printf '%s\n' 'Backup completed successfully.'
+    healthchecks_ping ''
   else
+    [ "$exit_code" -ne 0 ] || exit_code=1
     printf 'Backup failed with exit code %s.\n' "$exit_code"
+    healthchecks_ping /fail
   fi
+  exit "$exit_code"
 }
 trap cleanup EXIT
+trap 'exit 143' TERM
+trap 'exit 130' INT
+
+if [ -f /root/.restic-healthchecks.env ]; then
+  source /root/.restic-healthchecks.env
+  if [[ ! "$HEALTHCHECKS_PING_URL" =~ ^https://hc-ping\.com/[0-9a-fA-F-]{36}$ ]]; then
+    HEALTHCHECKS_PING_URL=
+    printf '%s\n' 'Invalid Healthchecks configuration.'
+    exit 1
+  fi
+fi
+healthchecks_ping /start
 
 printf '%s\n' 'Starting Restic backup.'
 
