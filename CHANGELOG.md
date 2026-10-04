@@ -315,3 +315,8 @@ Added optional Healthchecks start/success/failure signals to whole-server backup
 
 Excluded /srv/lab/parcel/data/transient/** from live and source Restic exclusions
 at owner request. App source and SQLite metadata remain included.
+
+## 2026-10-04 — Optional private remote-browser lab
+
+- Document JD Scout’s scoped browser tooling and service limits; no shared
+  scaffolding or default experiment requirements changed.

@@ -155,3 +155,19 @@ The first run processed 1.579 GiB and stored 645.672 MiB. A corrected second run
 removed transient SQLite destination sidecars, added 2.337 MiB of stored data,
 passed the 1% repository check and restored `/etc/hostname` byte-identically from
 B2. See docs/server-backups.md for scope, retention and recovery commands.
+
+## JD Scout remote-browser proof of concept — 2026-10-04
+
+Owner requested a private JD/MCP experiment. Installed Ubuntu packages using
+`apt-get install -y --no-install-recommends x11vnc novnc` (Xvfb and browser OS
+libraries already present). These are optional tools, not default lab requirements.
+No public VNC listener or machine-wide desktop service was enabled.
+
+Only `lab-app@jd-scout.service` has a new browser.conf drop-in: MemoryMax=1536M,
+TasksMax=256, CPUQuota=150%. Its source/reproduction lives in the experiment's
+`/srv/lab/jd-scout/app/ops/browser.conf` and install.md. Runtime Chromium downloads
+live in `/srv/lab/jd-scout/browsers`; login profiles use private data/.cache and
+are excluded by the existing backup rules. The site credential remains root-only;
+its SHA-256 verifier is injected into the app environment. Do not copy secrets
+into this repository. JD account login and authenticated extraction need owner
+interaction and are not asserted by platform liveness checks.

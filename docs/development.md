@@ -323,3 +323,10 @@ Healthchecks setup is reproduced in docs/server-backups.md. Install the reviewed
 
 Excluded /srv/lab/parcel/data/transient/** from live and source Restic exclusions
 at owner request. App source and SQLite metadata remain included.
+
+### Private interactive browser experiment (2026-10-04)
+
+JD Scout uses upstream JD-Taobao-MCP over stdio plus a manually controlled
+Xvfb/noVNC browser. Its implementation is in its own experiment repository.
+Host preparation and isolation are recorded in docs/installation.md. This is
+optional per-app tooling, not an extension of every newlab scaffold.

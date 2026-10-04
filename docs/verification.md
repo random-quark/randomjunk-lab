@@ -306,3 +306,11 @@ at owner request. App source and SQLite metadata remain included.
 
 Restic dry-run verified a probe under transient/ was excluded and parcel.db was
 included; no snapshot was saved. Platform tests: 81 passed; 47 source checks passed.
+
+### JD Scout host tooling (2026-10-04)
+
+The private app opens JD login through the real upstream MCP, and noVNC connects
+over authenticated HTTPS/WebSocket to a permission-protected Unix socket.
+Unauthenticated JD search reaches the login gate. These checks do not prove
+authenticated product extraction. App-specific test commands and limitations
+live in /srv/lab/jd-scout/app/install.md.
