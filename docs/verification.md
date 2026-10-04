@@ -314,3 +314,7 @@ over authenticated HTTPS/WebSocket to a permission-protected Unix socket.
 Unauthenticated JD search reaches the login gate. These checks do not prove
 authenticated product extraction. App-specific test commands and limitations
 live in /srv/lab/jd-scout/app/install.md.
+
+JD Scout password-only migration verifies that unauthenticated browser/API access
+returns 401 without an HTTP Basic challenge before Caddy Basic auth is removed.
+Application tests cover sessions, forged cookies, cross-origin requests and rates.

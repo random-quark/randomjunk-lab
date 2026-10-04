@@ -320,3 +320,8 @@ at owner request. App source and SQLite metadata remain included.
 
 - Document JD Scout’s scoped browser tooling and service limits; no shared
   scaffolding or default experiment requirements changed.
+
+## JD Scout password-only access
+
+- Record the owner-authorized migration to application-level password access,
+  keeping browser control private without a username prompt.

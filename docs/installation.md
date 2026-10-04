@@ -171,3 +171,11 @@ are excluded by the existing backup rules. The site credential remains root-only
 its SHA-256 verifier is injected into the app environment. Do not copy secrets
 into this repository. JD account login and authenticated extraction need owner
 interaction and are not asserted by platform liveness checks.
+
+### JD Scout password-only gate
+
+Owner requested removing the username prompt. Scoped migration
+`admin/jd-scout-password-gate.py` verifies app-level protection before switching
+only JD Scout from Caddy Basic auth to the app password screen. Password hash and
+session key live in its private data/access.json, never this repository. See the
+experiment install.md. The earlier Basic-auth verifier is retired.

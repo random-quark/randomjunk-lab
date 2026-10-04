@@ -330,3 +330,6 @@ JD Scout uses upstream JD-Taobao-MCP over stdio plus a manually controlled
 Xvfb/noVNC browser. Its implementation is in its own experiment repository.
 Host preparation and isolation are recorded in docs/installation.md. This is
 optional per-app tooling, not an extension of every newlab scaffold.
+
+JD Scout has a scoped administrator migration in admin/jd-scout-password-gate.py.
+It is not a general public/private toggle; it requires the matching app gate.
