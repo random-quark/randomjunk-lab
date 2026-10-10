@@ -14,30 +14,44 @@ def secure_input(path):
         raise LabError('staged credentials must be root-owned regular files with mode 0600')
     return read_env(path)
 
-def main():
-    if os.geteuid()!=0:
-        raise LabError('credential import requires root')
-    source=Path('/root/lab-credentials'); target=Path('/etc/lab')
-    providers=secure_input(source/'providers.env')
-    required={'OPENAI_API_KEY','GEMINI_API_KEY','REPLICATE_API_TOKEN'}
-    if not all(providers.get(k) for k in required):
-        raise LabError('required provider keys missing')
-    if set(providers)-required-{'ANTHROPIC_API_KEY','OPENROUTER_API_KEY'}:
-        raise LabError('unrecognized provider key names')
-    notification=secure_input(source/'ntfy.env')
-    if notification.get('NTFY_URL')!='https://ntfy.sh' or not notification.get('NTFY_TOPIC'):
-        raise LabError('hosted ntfy configuration missing')
-    current=read_env(target/'secrets.env')
-    current.update(providers)
-    atomic_write(target/'secrets.env',''.join(k+'='+v+'\n' for k,v in sorted(current.items())))
-    atomic_write(target/'notify.env',''.join(k+'='+notification[k]+'\n' for k in ('NTFY_URL','NTFY_TOPIC')))
-    os.chown(target/'notify.env',0,pwd.getpwnam('lab').pw_gid)
-    (target/'notify.env').chmod(0o640)
-    backup=read_env(target/'backup.env')
-    backup.update({k:notification[k] for k in ('NTFY_URL','NTFY_TOPIC')})
-    atomic_write(target/'backup.env',''.join(k+'='+v+'\n' for k,v in sorted(backup.items())))
-    print('Imported provider key names: '+', '.join(sorted(providers)))
-    print('Hosted ntfy configured for lab and backup alerts; values hidden.')
+def import_staged(source, target, lab_gid):
+    """Validate selected files before writing; optional integrations are independent."""
+    provider_path = source/'providers.env'
+    notify_path = source/'ntfy.env'
+    providers = notification = None
+    if provider_path.exists() or provider_path.is_symlink():
+        providers = secure_input(provider_path)
+        allowed = {'OPENAI_API_KEY', 'GEMINI_API_KEY', 'REPLICATE_API_TOKEN',
+                   'ANTHROPIC_API_KEY', 'OPENROUTER_API_KEY'}
+        if not providers or set(providers)-allowed or not all(providers.values()):
+            raise LabError('provider file must contain nonempty selected provider keys only')
+    if notify_path.exists() or notify_path.is_symlink():
+        notification = secure_input(notify_path)
+        if (set(notification) != {'NTFY_URL', 'NTFY_TOPIC'} or
+                notification.get('NTFY_URL') != 'https://ntfy.sh' or
+                not notification.get('NTFY_TOPIC')):
+            raise LabError('hosted ntfy configuration missing or unrecognized')
+    if providers is None and notification is None:
+        raise LabError('no staged integrations found; skip import if none were selected')
+    # Read all affected destination files before any writes.
+    current = read_env(target/'secrets.env') if providers is not None else None
+    backup = read_env(target/'backup.env') if notification is not None else None
+    if providers is not None:
+        current.update(providers)
+        atomic_write(target/'secrets.env', ''.join(k+'='+v+'\n' for k,v in sorted(current.items())))
+        print('Imported provider key names: '+', '.join(sorted(providers)))
+    if notification is not None:
+        atomic_write(target/'notify.env', ''.join(k+'='+notification[k]+'\n' for k in ('NTFY_URL','NTFY_TOPIC')))
+        os.chown(target/'notify.env', 0, lab_gid)
+        (target/'notify.env').chmod(0o640)
+        backup.update(notification)
+        atomic_write(target/'backup.env', ''.join(k+'='+v+'\n' for k,v in sorted(backup.items())))
+        print('Hosted ntfy configured for lab and legacy backup alerts; values hidden.')
 
-if __name__=='__main__':
+def main():
+    if os.geteuid() != 0:
+        raise LabError('credential import requires root')
+    import_staged(Path('/root/lab-credentials'), Path('/etc/lab'), pwd.getpwnam('lab').pw_gid)
+
+if __name__ == '__main__':
     main()

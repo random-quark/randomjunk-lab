@@ -4,29 +4,37 @@ A small experiments platform for Ubuntu 24.04: Caddy, static sites, optional
 FastAPI, SQLite or PostgreSQL/pgvector, and restic backups. Python dependencies
 use uv and committed lockfiles.
 
-**Status:** installed and live-tested on `randomjunk.dev`. See the
-[installation record](docs/installation.md), [test evidence](docs/verification.md)
-and [review checklist](docs/review-checklist.md). Remote backup configuration
-and iPhone checks remain separate follow-up tasks. Other
-machines still require an explicitly authorized installation and validation.
+## Set up your own machine
 
-## Start here
+**Give your agent [SETUP.md](SETUP.md). That is the single installation entry point.**
+It guides the agent through the questionnaire, installation, selected integrations,
+backups, monitoring and verification. Use a fresh Ubuntu 24.04 server and your own
+domain/accounts. No AI subscription or provider key is needed for static apps.
 
-**Setting up or continuing setup?** Review [settings.txt](settings.txt) with your
-agent. Fill in what you know; leave unknowns blank and use `skip` for deliberate
-omissions. Never enter secrets there. The agent must raise this with you and keep
-[setup-status.md](setup-status.md) current. See [the workflow](docs/settings-workflow.md).
+Copy this instruction to your agent after downloading/cloning the repository:
 
-- **Develop this platform:** read [AGENTS.md](AGENTS.md). [CLAUDE.md](CLAUDE.md)
-  contains the same instructions for Claude Code.
-- **Install on a fresh machine:** read [SETUP.md](SETUP.md).
-- **Create experiments on an installed server:** read `/srv/lab/AGENTS.md`.
-  Its source is [the operating-instructions template](templates/operating-instructions.md).
-- **Reproduce development and tests:** read [docs/development.md](docs/development.md).
+> Read SETUP.md and help me set up this server. Bring the settings questionnaire
+> to my attention first, ask for missing information as needed, and follow the
+> linked instructions. Keep secrets outside the repo and chat. Verify the setup
+> and tell me what is still pending before declaring it finished.
 
-The private GitHub repository is [random-quark/randomjunk-lab](https://github.com/random-quark/randomjunk-lab). This repository contains the
-platform and its starter templates; generated experiments keep separate Git
-repositories. Never commit live credentials, databases, certificates or caches.
+The agent creates ignored `.local/settings.txt` and `.local/setup-status.md` from
+blank templates. Your answers and progress stay local; secret values go in
+protected server files. Source tests are not proof that a new installation works.
+
+Other entry points:
+
+- **Develop the platform:** [AGENTS.md](AGENTS.md), mirrored in [CLAUDE.md](CLAUDE.md).
+- **Build apps after installation:** launch your agent **as lab in `/srv/lab`**;
+  it reads the installed `AGENTS.md` / `CLAUDE.md`.
+- **Tests and tooling:** [docs/development.md](docs/development.md).
+- **Sharing/audit scope:** [docs/sharing.md](docs/sharing.md).
+
+Repository: [random-quark/randomjunk-lab](https://github.com/random-quark/randomjunk-lab).
+If private, the owner must grant students access or provide a source-only archive.
+This contains the platform and starter templates, not the running experiments or
+server credentials. Use separate machines/keys for independent student ownership;
+`lab` is a trusted deployer, not a sandbox for mutually untrusted users.
 
 ## Work on this repository
 
@@ -83,7 +91,7 @@ not rewritten: custom workers opt in only through an explicit migration.
 
 ## Server backups and monitoring
 
-This server has daily encrypted **Restic backups to Backblaze B2**, running at
+The original server has daily encrypted **Restic backups to Backblaze B2**, running at
 **03:30 Europe/Berlin**. The whole-machine backup covers data and configuration,
 with exclusions for replaceable OS files, caches, logs and selected secrets.
 It includes PostgreSQL dumps and discovered SQLite snapshots; new database
@@ -96,5 +104,5 @@ grace. Email notifications are selected; inbox delivery still needs confirmation
 
 Logs: `/var/log/restic-backup.log`. See [backup setup and recovery instructions](docs/server-backups.md)
 for exclusions, protected configuration and restore commands. These services are
-configured on this machine; a new installation must configure and verify its own
+not activated by cloning the repository; a new installation must configure and verify its own
 backup repository and monitoring check.

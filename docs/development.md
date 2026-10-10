@@ -333,3 +333,11 @@ optional per-app tooling, not an extension of every newlab scaffold.
 
 JD Scout has a scoped administrator migration in admin/jd-scout-password-gate.py.
 It is not a general public/private toggle; it requires the matching app gate.
+
+## Portable setup entry point — 2026-10-10
+
+Fresh-server instructions now start at SETUP.md; questionnaire/status answers live
+in ignored .local/ instead of tracked defaults. tools/import-credentials.py accepts
+provider subsets and independent ntfy selection. Regression tests use isolated
+synthetic values only. No live configuration import was run. Sharing/audit scope
+and source-only archive procedure: sharing.md. Earlier entries above are history.

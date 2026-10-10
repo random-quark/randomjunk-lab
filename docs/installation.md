@@ -1,3 +1,7 @@
+> Historical evidence for the original server only. Do not execute these recorded
+> host-specific commands on a new machine; use [SETUP.md](../SETUP.md). This record
+> contains public host details, not reusable settings or installation authority.
+
 # Installation run — randomjunk.dev — 2026-09-07
 
 Owner authorization: install/manage the platform, ask for prerequisites when needed,

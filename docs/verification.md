@@ -318,3 +318,12 @@ live in /srv/lab/jd-scout/app/install.md.
 JD Scout password-only migration verifies that unauthenticated browser/API access
 returns 401 without an HTTP Basic challenge before Caddy Basic auth is removed.
 Application tests cover sessions, forged cookies, cross-origin requests and rates.
+
+## Sharing and portable setup — 2026-10-10
+
+- Isolated suite: 89 passed; two existing upstream deprecation warnings.
+- Source parsing: 49 Python/shell/TOML checks passed.
+- Credential-import regression tests cover provider-only, ntfy-only, preservation,
+  missing selections, invalid/blank keys, symlinks and validation-before-write.
+- Secret audit scope and results: sharing.md. No fresh-machine installation was
+  performed in this review; the running server was not reconfigured.

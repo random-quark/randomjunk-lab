@@ -6,10 +6,19 @@ credentials. Secrets never belong in this repository, agent chat, commands,
 process arguments or logs.
 
 The installed job backs up `/` and excludes replaceable operating-system files,
-caches, logs and runtime data. Starting from `/` makes future application data
+caches, logs and selected transient files. Application data is included unless
+explicitly excluded. This is not a bootable disk image. Starting from `/` makes future application data
 under locations such as `/opt` or `/var/www` opt-out rather than easy to miss.
 Review the exclusion file whenever the storage layout changes. A new mounted
 filesystem or unusual database engine still needs explicit review.
+
+## Fresh-machine prerequisites
+
+Install Restic (at least 0.16), cron and logrotate through the OS package manager;
+check `restic version`. The core bootstrap installs Restic, but does not configure
+this whole-server job. Review database clients, storage mounts and the exclusion
+list for this specific host. The Parcel exclusion is only an example for that
+app's expiring uploads; it does not imply Parcel is installed.
 
 ## Protected configuration
 
@@ -42,6 +51,26 @@ files with `.db`, `.sqlite` or `.sqlite3` names are discovered automatically.
 When introducing another database engine or a separate data mount, update and
 test this job at the same time. Raw database files may be present in the general
 filesystem snapshot, but only the logical/SQLite snapshots are recovery evidence.
+
+Before the first backup, confirm this is a new, unique repository path and save
+the password independently. As root, with the protected configuration already
+created, initialize it (or inspect snapshots if deliberately connecting to an
+existing repository; never delete an existing repository to make init succeed):
+
+```sh
+source /root/.restic-env
+restic init
+/usr/local/bin/restic-backup
+restic snapshots
+```
+
+These root Restic files deliberately use trusted shell syntax. They are different
+from `/etc/lab/secrets.env` and the literal provider staging files, which must not
+be sourced. Do not use shell tracing or print credentials.
+
+Complete the staged restore/compare below before adding the cron entry. Check
+`timedatectl` and agree its timezone with the owner. Preserve other root cron jobs
+and avoid duplicating an existing restic entry. Verify the cron service is enabled.
 
 The schedule is a single root crontab entry, in the server's local timezone:
 
@@ -106,7 +135,7 @@ the external missing-ping alert covers lost contact. Overlapping runs send nothi
 The period is measured from pings, not the 03:30 cron schedule. Manual runs shift
 that deadline until the next scheduled completion. A start without completion
 exceeds grace after one hour. Increase grace if legitimate backups take longer.
-A cron-based check in Europe/Berlin is an alternative for fixed-clock deadlines.
+A cron-based check in the selected server timezone is an alternative for fixed-clock deadlines.
 
 Verify with a real backup and confirm the check becomes Up. Test failure routing
 with a mocked curl, not an intentionally broken production backup. Owner must

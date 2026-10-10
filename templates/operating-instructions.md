@@ -152,8 +152,9 @@ Only when email is requested: consult /etc/lab/email.json if present and
 
 ## When resuming server setup
 
-For server-wide configuration, read settings.txt and setup-status.md in the
-platform source checkout (this server: /root/workspaces/labserver-review/lab-server).
+For server-wide configuration, start with SETUP.md in the platform source checkout and review its
+.local/settings.txt and .local/setup-status.md. Locate that checkout from the
+installation handoff; do not assume another machine's source path.
 If lab cannot access it, have the administrator conduct that review; do not change
 permissions to expose root files. Proactively bring settings.txt to the owner,
 reuse known answers and surface unresolved steps at handoff. See

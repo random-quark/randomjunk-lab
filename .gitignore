@@ -8,3 +8,11 @@ __pycache__/
 # Secret staging files must live outside the repository.
 secrets.env
 *.secrets.env
+
+# Per-machine questionnaire, status and audit artifacts stay private.
+.local/
+.env.*
+*.pem
+*.key
+.restic-*
+*gitleaks-report*.json

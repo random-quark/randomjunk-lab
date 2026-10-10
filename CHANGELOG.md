@@ -325,3 +325,15 @@ at owner request. App source and SQLite metadata remain included.
 
 - Record the owner-authorized migration to application-level password access,
   keeping browser control private without a username prompt.
+
+## Portable student installation and sharing audit — 2026-10-10
+
+- Make SETUP.md the single fresh-server entry point, linked prominently in README.
+  Replace host-filled settings/status with templates; preserve original answers in
+  ignored .local/ files. Historical installation authority is not reused.
+- Document whole-server B2/Healthchecks setup as the recommended selected option,
+  including init/restore/timezone checks and mutual exclusion with the old timer.
+- Permit independent provider-subset and notification credential imports; validate
+  present staging files before writes and preserve unrelated configuration.
+- Audit reachable Git history and distributable source for secrets. Record scope
+  and limitations in docs/sharing.md. No live services or credentials changed.

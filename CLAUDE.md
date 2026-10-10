@@ -1,10 +1,10 @@
 # Working on the platform source
 
-- The owner authorized installation for randomjunk.dev on 2026-09-07, without
-  a VPS snapshot. See docs/installation.md for live state and evidence. Root
-  administration is authorized for this installation; everyday experiment code
-  and dependency commands run as lab. Future unrelated host changes still need
-  task authorization. Readiness notifications are requested after verification.
+- For a fresh installation, start with SETUP.md. Confirm the actual target and
+  the current owner's choices and authorization. Historical installation records
+  are evidence about another host, never permission or defaults for this one.
+- Root handles authorized platform administration; ordinary experiment code and
+  dependency commands run as lab. Never reuse the original owner's credentials.
 - Keep changes, reproducible commands, test evidence and limitations in this
   repository. Update CHANGELOG.md, docs/development.md and docs/verification.md.
 - Whole-server backup setup and recovery commands are in docs/server-backups.md.
@@ -23,8 +23,8 @@
 
 ## Mandatory owner setup review
 
-For installation or resuming unfinished server setup, read settings.txt,
-setup-status.md and docs/settings-workflow.md FIRST. Proactively bring settings.txt
+For installation or resuming unfinished server setup, read SETUP.md and docs/settings-workflow.md FIRST. Copy settings.txt and
+setup-status.md into ignored .local/ if missing; read those local copies. Proactively bring .local/settings.txt
 to the owner's attention; explain blanks, skip and secure secret entry. Never
 assume the owner found or completed it. Reuse existing answers, ask only for missing
 inputs, and keep the checklist current. At each setup handoff explicitly surface

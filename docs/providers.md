@@ -1,7 +1,8 @@
 # Provider defaults for experiments
 
-Configured by the owner: OpenAI, Google Gemini, Replicate, OpenRouter. Anthropic is not
-configured. Keys live in root-only `/etc/lab/secrets.env`; grant only the keys
+Available integrations include OpenAI, Google Gemini, Replicate, OpenRouter and
+Anthropic. None is configured merely by cloning this repository. The owner selects
+providers in .local/settings.txt. Configured keys live in root-only `/etc/lab/secrets.env`; grant only the keys
 needed by a backend through `newlab --secrets` or `labctl secrets-grant`.
 
 | Task | Default provider | Key name |
@@ -33,8 +34,7 @@ For email sender configuration, grants and delivery checks, see [email.md](email
 Select openrouter in AI_PROVIDERS in settings.txt only when desired. During initial
 provisioning, enter OPENROUTER_API_KEY in the root-owned 0600 staging file
 /root/lab-credentials/providers.env, never in settings.txt or Git. The existing
-importer accepts this optional key alongside its original required providers; it
-also configures ntfy and is not a standalone OpenRouter-only setup command. For
+importer accepts this optional key without requiring other providers. Notification import is independent. For
 an existing host, the administrator securely merges this key into
 /etc/lab/secrets.env while preserving other keys.
 

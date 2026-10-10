@@ -3,34 +3,40 @@
 # Edit values after =. Blank means ask when needed; skip means deliberately omit.
 # These are preferences for the agent, NOT shell commands or automatic config.
 # Never source/execute this file. Changing it does not reconfigure a live server.
-# Existing choices are filled below. On another machine review every value.
+# TEMPLATE: copy to .local/settings.txt before entering machine-specific choices.
+# Do not put student/server identities into this tracked template.
 # Agent: do not invent owner answers or replace blanks with assumed approval.
 
-PROJECT_NAME=Randomjunk Lab
-DOMAIN=randomjunk.dev
+PROJECT_NAME=My Lab
+DOMAIN=
 # Required before firewall changes; confirm the actual connection uses this port.
-SSH_PORT=22
+SSH_PORT=
 SERVER_IPV4=
-SERVER_IPV6=skip
+SERVER_IPV6=
 
-GITHUB_ORG=random-quark
-GITHUB_LOGIN=lobodelmar
+GITHUB_ORG=
+GITHUB_LOGIN=
 GITHUB_VISIBILITY=private
 # Separate from platform publishing; ask about restricted lab access when needed.
 EXPERIMENT_GITHUB_ACCESS=
 
 # Comma-separated providers; skip disables integrations. No keys in this file.
-AI_PROVIDERS=openai,gemini,replicate,openrouter
-# Optional openrouter uses OPENROUTER_API_KEY entered in protected providers.env.
+AI_PROVIDERS=
+# Optional choices: openai, gemini, replicate, openrouter, anthropic; or skip.
+# Each selected provider uses its own protected key. None is required.
 # Blank means ask before paid setup verification calls; not an enforced spending cap.
 AI_TEST_BUDGET_USD=
 AI_MONTHLY_BUDGET_USD=
 
-BACKUPS=b2
+BACKUPS=
 B2_BUCKET=
 B2_ENDPOINT=
-# Proposed existing defaults — agent must confirm with owner, not assume accepted.
+# Suggested defaults — confirm with the owner before enabling backups.
 BACKUP_TIME=03:30
+# whole-server (recommended) OR lab-only; never enable both.
+BACKUP_METHOD=whole-server
+# Unique repository prefix per machine; never reuse another machine's repository.
+BACKUP_SERVER_NAME=
 BACKUP_TIMEZONE=
 BACKUP_KEEP_DAILY=7
 BACKUP_KEEP_WEEKLY=4
@@ -38,7 +44,7 @@ BACKUP_KEEP_MONTHLY=6
 # yes only after owner confirms recovery credentials are saved OFF this server.
 RECOVERY_DETAILS_SAVED=
 
-NOTIFICATIONS=ntfy
+NOTIFICATIONS=
 NTFY_URL=https://ntfy.sh
 # Topic/token belong in protected secrets, not here.
 TARGET_DEVICES=android,iphone
@@ -46,7 +52,7 @@ TARGET_DEVICES=android,iphone
 REBOOT_WINDOW=
 
 # Coding agent used by the deployment user; its login is separate from app API keys.
-DEPLOYMENT_AGENT=claude
+DEPLOYMENT_AGENT=
 
 # OPTIONAL transactional email. Blank means unselected; skip/disabled omits setup.
 # On an existing host, reuse /etc/lab/email.json; do not erase configured values.
@@ -62,4 +68,4 @@ PAYMENTS_MODE=
 # Owner enters STRIPE_SECRET_KEY securely in /etc/lab/stripe.env, never here.
 
 # Optional monitoring: healthchecks or skip; store ping URL in protected root file.
-BACKUP_MONITORING=healthchecks
+BACKUP_MONITORING=
