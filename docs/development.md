@@ -341,3 +341,9 @@ in ignored .local/ instead of tracked defaults. tools/import-credentials.py acce
 provider subsets and independent ntfy selection. Regression tests use isolated
 synthetic values only. No live configuration import was run. Sharing/audit scope
 and source-only archive procedure: sharing.md. Earlier entries above are history.
+
+## Remote onboarding documentation — 2026-10-10
+
+README now documents the initial remote connection before SETUP.md. Checked
+against official CLI, authentication and SSH documentation; no installer or
+authentication commands were executed on this host.

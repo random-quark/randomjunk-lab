@@ -337,3 +337,8 @@ at owner request. App source and SQLite metadata remain included.
   present staging files before writes and preserve unrelated configuration.
 - Audit reachable Git history and distributable source for secrets. Record scope
   and limitations in docs/sharing.md. No live services or credentials changed.
+
+## Remote onboarding — 2026-10-10
+
+Added a short README first step for Codex installation, device login, tmux
+reconnection and desktop SSH access, with setup/admin versus lab separation.

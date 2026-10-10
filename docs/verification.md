@@ -327,3 +327,12 @@ Application tests cover sessions, forged cookies, cross-origin requests and rate
   missing selections, invalid/blank keys, symlinks and validation-before-write.
 - Secret audit scope and results: sharing.md. No fresh-machine installation was
   performed in this review; the running server was not reconfigured.
+
+## Remote onboarding documentation — 2026-10-10
+
+Documentation-only change. Official installation/login/SSH guidance reviewed;
+existing CLI help inspected. Desktop pairing and a fresh-server installation
+were not exercised. Source checks and isolated test results recorded below.
+
+Validation: 89 isolated tests passed (two upstream deprecation warnings),
+49 source parse checks passed, and `git diff --check` passed.
