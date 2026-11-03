@@ -51,6 +51,16 @@ uv to update and commit the lock before syncing.
   to apply. Existing database settings and earlier grants are preserved.
 - `labrm NAME` confirms removal. `labrm --yes NAME` is noninteractive.
 
+Removal must also stop development previews and workers outside the managed service.
+Before `labrm`, identify the app's exact process handles, descendants and listening
+ports; stop its preview launcher and verify its children exit. After removal,
+check processes again using executable, arguments and working-directory paths
+(including paths marked deleted), and confirm its listeners are gone. Never use
+broad name-based kills or stop a shared agent/session. Verify each PID's identity
+immediately before signalling; prefer retained process handles. `labdoctor` does
+not detect all orphan previews: zero problems alone is not removal completion.
+If permissions prevent verification, ask the administrator and report it pending.
+
 Do not edit installed helpers, Caddy configuration, unit files or authoritative
 records from the deployment account. Changes belong in the platform repository.
 Failure leaves metadata for diagnosis; don't assume automatic rollback. A stop

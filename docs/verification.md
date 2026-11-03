@@ -336,3 +336,15 @@ were not exercised. Source checks and isolated test results recorded below.
 
 Validation: 89 isolated tests passed (two upstream deprecation warnings),
 49 source parse checks passed, and `git diff --check` passed.
+
+## Orphan preview cleanup — 2026-10-10
+
+Verified the Paint Week process using its exact deleted cwd and executable
+argument, retained a Linux pidfd and sent SIGTERM through that handle. Process
+exited and its loopback listener on port 40483 disappeared. No broad process
+kill or other service restart. Instructions updated; labrm implementation is
+unchanged, so this is procedural prevention rather than automatic orphan detection.
+
+Validation: 89 isolated tests and 49 source parse checks passed; diff whitespace
+check passed; labdoctor reported 0 problems. Final process inspection found no
+Paint Week path matches.

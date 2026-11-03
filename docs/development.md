@@ -347,3 +347,10 @@ and source-only archive procedure: sharing.md. Earlier entries above are history
 README now documents the initial remote connection before SETUP.md. Checked
 against official CLI, authentication and SSH documentation; no installer or
 authentication commands were executed on this host.
+
+## Orphan preview cleanup — 2026-10-10
+
+Removal instructions now require checking processes outside managed services.
+Deployed the same removal paragraph into /srv/lab/AGENTS.md, /srv/lab/CLAUDE.md
+and /home/lab/AGENTS.md, preserving other installed guidance. Updated installed
+experiment-workflow.md with the source removal section.

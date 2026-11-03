@@ -184,3 +184,19 @@ Android/iPhone results separately from Linux Chromium/WebKit emulation.
 
 Browser profile: see [browser-testing.md](browser-testing.md) for the reproducible
 Chromium/WebKit setup. Passing preflight does not run your app tests in both engines.
+
+## Complete experiment removal
+
+`labrm` stops the managed application service; separately launched previews can
+outlive it, even after their source directory is deleted. Before removal, record
+the app's preview launcher, child processes and listening ports. Stop the launcher
+first, wait for graceful termination, then stop only verified surviving children.
+Use exact process handles or revalidate PIDs against executable/arguments/cwd;
+never `pkill -f NAME` or terminate a shared agent/session process group.
+
+After `labrm`, inspect remaining processes and sockets (administrator inspection
+may be needed across users). Match complete app paths, including `(deleted)` cwd
+or executable paths. Confirm no remaining app listener, managed service, Caddy
+route or platform record, then run `labdoctor`. Report inaccessible checks as
+pending. A clean `labdoctor` result does not prove orphan processes are absent.
+Retained backups and client-side PWA copies are separate from live removal.

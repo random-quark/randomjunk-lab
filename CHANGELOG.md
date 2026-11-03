@@ -342,3 +342,8 @@ at owner request. App source and SQLite metadata remain included.
 
 Added a short README first step for Codex installation, device login, tmux
 reconnection and desktop SSH access, with setup/admin versus lab separation.
+
+## Orphan preview cleanup — 2026-10-10
+
+Added explicit preview/worker cleanup and post-removal process/socket checks.
+Stopped a verified orphan Paint Week preview; no other process was signalled.
