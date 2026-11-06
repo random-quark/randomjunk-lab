@@ -354,3 +354,19 @@ Removal instructions now require checking processes outside managed services.
 Deployed the same removal paragraph into /srv/lab/AGENTS.md, /srv/lab/CLAUDE.md
 and /home/lab/AGENTS.md, preserving other installed guidance. Updated installed
 experiment-workflow.md with the source removal section.
+
+## Desktop SSH onboarding and Ubuntu target — 2026-11-06
+
+Documentation changes make Ubuntu 26.04 LTS the fresh-install target, replace the
+tmux-first README path with desktop SSH, and align deployment-user setup with each
+agent's requirements. docs/setup-wizard.md records the proposed service form, not
+an implemented UI. Browser guidance separates the old package list from the new
+target. No bootstrap or running-server configuration was changed.
+
+Sources: official OpenAI remote-connections and Claude Code desktop SSH docs,
+linked in README.md; Ubuntu release notes at
+https://documentation.ubuntu.com/release-notes/26.04/.
+Validation commands: `uv run --locked pytest` and
+`uv run --locked python tools/check-source.py`. Results and scope are recorded in
+verification.md. Live Ubuntu 26.04 installation and both desktop connections still
+need testing on the owner's new VPS.

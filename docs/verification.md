@@ -348,3 +348,19 @@ unchanged, so this is procedural prevention rather than automatic orphan detecti
 Validation: 89 isolated tests and 49 source parse checks passed; diff whitespace
 check passed; labdoctor reported 0 problems. Final process inspection found no
 Paint Week path matches.
+
+## Desktop SSH onboarding and Ubuntu target — 2026-11-06
+
+Documentation-only changes validated in a disposable source checkout:
+
+- `uv run --locked pytest`: 89 passed; two dependency deprecation warnings.
+- `uv run --locked python tools/check-source.py`: 49 parse checks passed.
+- `git diff --check`: passed.
+- Reviewed official desktop SSH documentation: Claude provisions its engine;
+  Codex requires the remote command on the SSH user's login-shell PATH.
+
+These checks ran with Python 3.12.3 and do not establish Ubuntu 26.04 installation
+compatibility. No live bootstrap, apt/browser package installation, desktop SSH
+session, API call or notification delivery was tested. Ubuntu 24.04 records above
+remain historical; fresh 26.04 validation is pending. The setup wizard is a design
+proposal only, with no UI or service activation code implemented.

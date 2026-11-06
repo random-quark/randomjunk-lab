@@ -1,5 +1,14 @@
 # Changelog
 
+## Desktop SSH onboarding and Ubuntu target — 2026-11-06
+
+- Target new installations at Ubuntu 26.04 LTS; retain 24.04 historical evidence
+  and require live compatibility checks on the new image.
+- Replace tmux-first onboarding with Claude/Codex desktop SSH instructions;
+  distinguish Claude automatic provisioning from Codex remote CLI requirements.
+- Document the proposed optional-service form, prioritizing ntfy and backups.
+  The wizard is a design proposal, not a new installed service.
+
 ## First experiment workflow lessons — 2026-09-07
 
 - Document unpublished development, early local Git/browser checks, meaningful

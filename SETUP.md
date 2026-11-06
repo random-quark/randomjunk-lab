@@ -4,10 +4,17 @@
 file and carry out the steps, following linked references when needed. This is an
 interactive installation guide, not a script to execute with bash.
 
-Target: a **fresh Ubuntu 24.04 server with systemd**, SSH/root administration access,
+Target: a **fresh Ubuntu 26.04 LTS server with systemd**, SSH/root administration access,
 and a domain you control. The installer is not for macOS, Windows, a shared hosting
 account, or an already configured lab host. Existing services require a reviewed
 migration plan; never wipe them or rerun bootstrap to resolve a partial install.
+
+Ubuntu 26.04 is the new installation target, not yet a live-verified platform in
+this repository. The recorded Ubuntu 24.04 results remain historical evidence.
+Before installing, check package availability (including the matching PostgreSQL
+pgvector package), locked Python dependencies and browser support on the actual
+26.04 image. Stop and resolve incompatibilities rather than bypassing lockfiles.
+See [desktop SSH connection instructions](README.md#start-here-connect-your-desktop-agent-over-ssh).
 
 ## 1. Agent: bring the settings to the owner
 
@@ -79,13 +86,16 @@ not a guarantee of byte-identical future package downloads.
 Root administers the platform. Experiment work runs as `lab`, with individual apps
 running as `labapp-NAME`. Never run experiment scripts/dependency hooks as root.
 
-Choose the owner's coding agent. Check/install its current official CLI **as lab**
-and let the owner log in interactively with their own account. Confirm discovery
-and version in a fresh `sudo -iu lab` shell; root's login or PATH does not prove
-lab's access. Use current official installation documentation for the chosen CLI,
-not an old pinned model name from installation history.
+Choose the owner's desktop coding agent and configure SSH access as `lab` with
+their own public key. Follow the [desktop connection guide](README.md#start-here-connect-your-desktop-agent-over-ssh).
+Claude Desktop installs its helper/engine automatically for this user. Codex
+currently needs its CLI available on this user's login-shell PATH and its own
+authentication; verify those as `lab`, not root. A separate terminal CLI is only
+needed if the owner chooses a terminal workflow. Do not require tmux or manually
+starting Remote Control for a desktop SSH session.
 
-Then launch the agent from `/srv/lab`. It reads `/srv/lab/AGENTS.md` or `CLAUDE.md`.
+Open `/srv/lab` in the desktop connection as `lab`. Confirm the remote hostname,
+user and folder; the agent reads `/srv/lab/AGENTS.md` or `CLAUDE.md`.
 The installer deploys these from `templates/operating-instructions.md`; additional
 references are in `/usr/local/share/lab/docs`.
 
