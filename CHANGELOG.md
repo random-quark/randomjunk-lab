@@ -356,3 +356,7 @@ reconnection and desktop SSH access, with setup/admin versus lab separation.
 
 Added explicit preview/worker cleanup and post-removal process/socket checks.
 Stopped a verified orphan Paint Week preview; no other process was signalled.
+
+Hosted ntfy onboarding clarification: the proposed wizard fixes the service to
+https://ntfy.sh, omits a custom-server field and generates a fresh owner topic.
+Documentation-only follow-up; `git diff --check` passed.

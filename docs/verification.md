@@ -364,3 +364,7 @@ compatibility. No live bootstrap, apt/browser package installation, desktop SSH
 session, API call or notification delivery was tested. Ubuntu 24.04 records above
 remain historical; fresh 26.04 validation is pending. The setup wizard is a design
 proposal only, with no UI or service activation code implemented.
+
+Hosted ntfy onboarding clarification: the proposed wizard fixes the service to
+https://ntfy.sh, omits a custom-server field and generates a fresh owner topic.
+Documentation-only follow-up; `git diff --check` passed.

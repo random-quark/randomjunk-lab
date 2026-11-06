@@ -9,7 +9,7 @@ its settings, importer and verification steps instead of creating a second insta
 | Section | Inputs | Purpose / readiness check |
 | --- | --- | --- |
 | Your lab | Name, domain, server address, SSH port, timezone, desktop agent choice | Confirm machine and DNS; distinguish administrator setup from lab experiment access. |
-| Notifications — recommended | ntfy server URL (default https://ntfy.sh), a newly generated topic; phone subscription instructions | Send one agreed test and ask whether it arrived. No API key needed for the current anonymous-topic setup. |
+| Notifications — recommended | Existing hosted ntfy.sh service (fixed, no server field), a newly generated topic; phone subscription instructions | Send one agreed test and ask whether it arrived. No API key needed for the current anonymous-topic setup. |
 | AI — optional | Separate toggles and secret fields for OPENAI_API_KEY, GEMINI_API_KEY, REPLICATE_API_TOKEN, OPENROUTER_API_KEY, ANTHROPIC_API_KEY | Explain capabilities and key creation for each selected provider. Check credentials without paid inference where possible; agree a test budget before paid checks. |
 | Backups — recommended | Backblaze B2 bucket, endpoint, key ID, application key; unique repository and Restic encryption password | Confirm recovery details saved off-server, then backup and restore a small test file. Also collect schedule, timezone and retention. |
 | Backup monitoring — recommended | Healthchecks.io ping URL | Detect missed backups externally, including when this server cannot send an alert. Verify the owner's alert channel. |
@@ -21,6 +21,10 @@ Coding-agent account login is separate from API keys used by hosted apps. A desk
 subscription does not itself configure an application's paid API access.
 
 ## Notification behavior
+
+Use the existing hosted https://ntfy.sh setup; do not offer a custom server or
+install a self-hosted ntfy service. Generate a separate topic for each new owner;
+do not reuse the original server's topic.
 
 ntfy is the normal phone channel for app building/ready messages and configured
 backup status. Prioritize it in onboarding, but allow an explicit skip and show

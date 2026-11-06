@@ -370,3 +370,7 @@ Validation commands: `uv run --locked pytest` and
 `uv run --locked python tools/check-source.py`. Results and scope are recorded in
 verification.md. Live Ubuntu 26.04 installation and both desktop connections still
 need testing on the owner's new VPS.
+
+Hosted ntfy onboarding clarification: the proposed wizard fixes the service to
+https://ntfy.sh, omits a custom-server field and generates a fresh owner topic.
+Documentation-only follow-up; `git diff --check` passed.
