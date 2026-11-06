@@ -96,3 +96,19 @@ keep them for administrator-led full-cluster recovery, not ordinary single-app
 restore. Retained backups and client-side PWA caches outlive app removal.
 An independent restic password is essential even though backup.env is included
 inside encrypted snapshots.
+
+## Interrupted fresh install on Ubuntu 26.04
+
+The older installer wrote `Defaults:lab !requiretty`, which sudo-rs rejects.
+The corrected installer omits that obsolete setting and validates its sudoers
+candidate before apt or user creation. Do not switch the system's sudo alternative
+just to hide the incompatibility.
+
+If an older bootstrap stopped at its sudoers validation, the machine is partially
+installed. Do not rerun bootstrap or bypass its existing-path guard. Record the
+failed line and current packages, users, files and services. Validate a root-owned
+temporary copy of the lab sudoers rule without that setting, then install it as
+root:root 0440 only after successful `visudo -cf` validation. Inspect the exact
+remaining bootstrap steps against the partial state before executing a reviewed
+recovery script. A repaired run is not evidence of a clean installation; repeat
+from a provider reinstall or truly clean snapshot for fresh-install acceptance.

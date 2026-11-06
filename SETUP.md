@@ -4,16 +4,16 @@
 file and carry out the steps, following linked references when needed. This is an
 interactive installation guide, not a script to execute with bash.
 
-Target: a **fresh Ubuntu 26.04 LTS server with systemd**, SSH/root administration access,
-and a domain you control. The installer is not for macOS, Windows, a shared hosting
+Target: a **fresh Ubuntu 24.04 LTS server with systemd**, SSH/root administration access,
+and a public IPv4 address or a domain you control. The installer is not for macOS, Windows, a shared hosting
 account, or an already configured lab host. Existing services require a reviewed
 migration plan; never wipe them or rerun bootstrap to resolve a partial install.
 
-Ubuntu 26.04 is the new installation target, not yet a live-verified platform in
-this repository. The recorded Ubuntu 24.04 results remain historical evidence.
-Before installing, check package availability (including the matching PostgreSQL
-pgvector package), locked Python dependencies and browser support on the actual
-26.04 image. Stop and resolve incompatibilities rather than bypassing lockfiles.
+Use Ubuntu 24.04 LTS for the supported setup path. Ubuntu 26.04 remains
+experimental: a trial exposed a sudo-rs incompatibility in the previous installer.
+The corrected sudoers rule is portable, but that alone does not validate the whole
+platform on a newer OS. Check packages, locked Python dependencies and browser
+support on the actual image before installing.
 See [desktop SSH connection instructions](README.md#start-here-connect-your-desktop-agent-over-ssh).
 
 ## 1. Agent: bring the settings to the owner
@@ -34,7 +34,7 @@ Confirm the target machine, Ubuntu version, SSH port, domain/DNS, optional servi
 and installation authorization. Existing authorization in the conversation counts;
 old permissions and addresses in `docs/installation.md` do not.
 
-Only the core server needs a domain and SSH access. AI keys, GitHub, ntfy, email,
+The core needs SSH access and a public IPv4 address or custom domain. AI keys, GitHub, ntfy, email,
 Stripe and backups are optional selections, not prerequisites for a static app.
 Raise backups explicitly and record the owner's decision instead of forgetting them.
 Ask for selected services when needed; do not demand accounts they do not want.
@@ -47,8 +47,14 @@ someone else's server. `.local/` is for non-secret choices, not secret storage.
 ## 2. Inspect and test before changing the machine
 
 Check OS, existing `/srv/lab`, Caddy/Postgres services, SSH listening port, storage,
-and DNS. Set apex and wildcard A records to this server; configure AAAA only for
-working IPv6. Verify SSH access before firewall changes.
+and DNS. If DOMAIN is blank, use SERVER_IPV4: the installer derives
+`IP-WITH-DASHES.sslip.io`, with apps at `https://APP.IP-WITH-DASHES.sslip.io`.
+No purchased domain or DNS account is needed. Explain that this mode relies on
+the free third-party sslip.io DNS service and its certificate issuance limits;
+check base and sample app DNS resolve to this VPS before installation. This is
+an IP-derived hostname, not bare-IP HTTPS. Do not request a wildcard certificate.
+For a custom domain, set apex and wildcard A records to this server; configure
+AAAA only for working IPv6. Verify SSH access before firewall changes.
 
 From the reviewed checkout, run the isolated source checks described in
 [development.md](docs/development.md):
@@ -71,13 +77,15 @@ preserves that port before installation. Do not run the unmodified installer.
 
 ## 3. Install the core on the confirmed fresh target
 
-Use the owner's actual domain in place of the example:
+Use the owner's domain, or their public IPv4 address when they have no domain:
 
 ```sh
 sudo bash bootstrap.sh --install-fresh lab.example.com
+# Or, without a domain (replace with the real public VPS IPv4):
+sudo bash bootstrap.sh --install-fresh PUBLIC_IPV4
 ```
 
-Do not run this against an existing installation. On failure, inspect the partial
+Choose one command, not both. Do not run this against an existing installation. On failure, inspect the partial
 state and follow [recovery](docs/recovery.md) or [migration](docs/migration.md).
 The installer is deliberately not idempotent.
 

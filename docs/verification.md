@@ -393,3 +393,18 @@ No real API request, phone notification, fresh VPS installation, SSH tunnel or
 Ubuntu 26.04 live verification was performed. The form and isolated activation
 logic are implemented; provider key verification, backup initialization/restore,
 Resend delivery and app-specific payment behavior remain explicit setup steps.
+
+## Fresh image trial and supported target — 2026-11-06
+
+A new Ubuntu 26.04.1 VPS passed 112 tests on Python 3.14.4, 52 source parse checks,
+four Caddy parser cases and simulated package installation. Actual bootstrap
+failed at sudoers validation: sudo-rs 0.2.13 rejects requiretty. A private candidate
+without that line parsed successfully; reviewed partial-state recovery completed
+core services with SSH preserved, UFW allowing 22/80/443, and zero doctor problems.
+No live integration harness ran on 26.04. The owner then reinstalled the machine
+with Ubuntu 24.04.5 for a genuinely clean recommended-version run.
+
+The corrected source passes 119 local tests and 52 parse checks. Desktop/mobile
+wizard QA passes with only a public IP and no domain entered (dummy inputs, no
+external service calls). This establishes source behavior, not yet a clean VPS
+installation. The next live run uses the corrected branch from the beginning.

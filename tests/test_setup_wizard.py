@@ -262,3 +262,25 @@ def test_root_launcher_drops_privileges_before_binding(monkeypatch):
                 os._exit(1)
         _, status = os.waitpid(pid, 0)
         assert os.waitstatus_to_exitcode(status) == 0
+
+
+def test_ip_only_setup_derives_hostname(wizard):
+    save(wizard, {'SERVER_IPV4': '8.8.8.8', 'NOTIFICATIONS': 'skip', 'BACKUPS': 'skip'})
+    wizard.action('finish', {})
+    assert 'DOMAIN=8-8-8-8.sslip.io\n' in w.settings_text(wizard.data)
+    assert w.install_domain('lab.example.com') == 'lab.example.com'
+
+
+@pytest.mark.parametrize('address', ['127.0.0.1', '192.168.1.1', '10.0.0.1', '999.1.1.1', '224.0.0.1'])
+def test_non_public_or_invalid_ip_rejected(wizard, address):
+    with pytest.raises(w.LabError):
+        save(wizard, {'SERVER_IPV4': address})
+    with pytest.raises(w.LabError):
+        w.install_domain(address)
+
+
+def test_old_saved_form_without_ip_field_is_upgraded(wizard):
+    wizard.data['choices'].pop('SERVER_IPV4')
+    wizard.save()
+    loaded = w.read_bundle(wizard.directory)
+    assert loaded['choices']['SERVER_IPV4'] == ''

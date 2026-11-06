@@ -1,7 +1,8 @@
 # Building and finishing an experiment
 
 Lessons from Neon Blocks, 2026-09-07. Use the existing lab/VPS workflow for this
-owner's experiments. Domain and hosted ntfy are already configured; ask only for
+owner's experiments. Check the installed domain (custom or IP-derived) and ntfy
+configuration; a fresh server may not have notifications configured. Ask only for
 missing resources required by the actual app. No provider keys are needed for a
 local game. Do not redirect an experiment to another hosting service by default.
 

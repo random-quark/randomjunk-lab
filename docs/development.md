@@ -393,3 +393,26 @@ redacted errors and a single-process session lock protect the local setup path.
 See setup-wizard.md for reproducible commands and check-setup-ui.py for optional
 Playwright 1.64.1 QA. No project dependencies or lockfiles changed. Browser tests
 use a local fixture with a mocked sender, never real keys or notifications.
+
+## Fresh VPS compatibility and optional-domain setup — 2026-11-06
+
+The first fresh Ubuntu 26.04.1 trial passed 112 source tests on Python 3.14.4,
+52 parse checks and four Caddy parser cases. Core bootstrap then failed because
+visudo-rs rejected `Defaults:lab !requiretty`. A validated rule without it and a
+reviewed tail-only recovery completed the core, but no live integration harness
+ran before the owner reinstalled Ubuntu 24.04.5. The fresh installer now validates
+the portable rule before apt/user changes. Ubuntu 24.04 LTS is recommended again.
+
+The owner requested no purchased-domain requirement. `install_domain` accepts a
+public IPv4 and derives its dash-separated sslip.io DNS suffix, or validates an
+owned domain. The form accepts either input and exports the resolved DOMAIN;
+old saved forms remain readable. Private/invalid/multicast IPs are rejected.
+The service is an explicit third-party DNS/CA dependency, not bare-IP HTTPS.
+Official service behavior: https://nip.io/ (TLS and hostname examples).
+
+Review also found the old live harness opened app SQLite snapshots as root and
+hardcoded an original-machine log location. It now transports opaque snapshot
+bytes to a runtime-uid verifier and stores logs under the checkout's .local/.
+Local source checks: 119 tests and 52 parse checks passed; the IP-only desktop/
+mobile wizard flow passed using dummy inputs. Fresh 24.04 live results follow in
+verification.md once completed; source checks alone are not install evidence.
