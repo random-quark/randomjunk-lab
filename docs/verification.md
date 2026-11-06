@@ -453,8 +453,8 @@ Two authorized reboots changed the boot ID and restored SSH, Caddy and PostgreSQ
 without manual starts. The welcome site remained available with verified public
 HTTPS. The second reboot included a temporary enabled SQLite backend: its read-only
 probe returned the same pre-created sentinel and runtime UID afterward; startup
-did not re-seed data. The temporary probe was then scheduled for exact removal,
-leaving only the welcome app. SSH uses the enabled ssh.socket activation path;
+did not re-seed data. The temporary probe was then removed through labctl, leaving only the welcome
+app; final doctor inspection reported zero problems. SSH uses the enabled ssh.socket activation path;
 ssh.service being disabled is not, by itself, a boot failure on this image.
 
 The image's cloud-init Network Stage service was already failed in the preinstall
