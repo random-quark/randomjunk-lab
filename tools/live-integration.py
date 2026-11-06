@@ -7,7 +7,6 @@ never production ACME. Restores config/hosts and removes its app resources.
 import base64
 import concurrent.futures
 import tempfile
-import sqlite3
 import json
 import os
 from pathlib import Path
@@ -25,7 +24,7 @@ from labcore import atomic_write, read_env, write_json
 
 APPS=['check-static','check-private','check-none','check-sqlite','check-pg','check-parallel-a','check-parallel-b','check-restore']
 DOMAIN='lab-integration.test'
-LOG=Path('/root/workspaces/labserver-review/installation-logs/live-integration.log')
+LOG=Path(__file__).resolve().parents[1]/'.local/live-integration.log'
 
 def note(message):
     print(message,flush=True)
@@ -59,6 +58,20 @@ def get(app,path='/',private=False):
 def can(user,flag,path):
     return command(['test',flag,path],user=user,check=False).returncode==0
 
+def verify_sqlite_snapshot(path, query, expected):
+    """Root transports opaque bytes; only the runtime identity opens SQLite."""
+    script = """
+import base64, json, sqlite3, sys, tempfile
+from pathlib import Path
+with tempfile.TemporaryDirectory(prefix='lab-sqlite-verify-') as directory:
+    snapshot = Path(directory) / 'snapshot.sqlite'
+    snapshot.write_bytes(base64.b64decode(sys.stdin.buffer.read(), validate=True))
+    with sqlite3.connect(snapshot.as_uri() + '?mode=ro', uri=True) as db:
+        assert list(db.execute(sys.argv[1]).fetchone()) == json.loads(sys.argv[2])
+"""
+    command(['/usr/bin/python3', '-I', '-c', script, query, json.dumps(expected)],
+            user='labapp-check-sqlite', data=base64.b64encode(Path(path).read_bytes()).decode('ascii'))
+
 def inject_db_probe(app):
     # This probe deliberately uses SQLAlchemy; ordinary scaffolds do not need it.
     project='/srv/lab/'+app+'/app'
@@ -90,7 +103,7 @@ def check_db():
 def main():
     if os.geteuid()!=0:raise SystemExit('root required for authorized integration')
     if list(Path('/var/lib/lab/records').glob('*.json')):raise SystemExit('requires an empty installed platform')
-    LOG.parent.mkdir(parents=True,exist_ok=True)
+    LOG.parent.mkdir(mode=0o700,parents=True,exist_ok=True)
     if LOG.exists():
         LOG.with_name('live-integration-'+str(time.time_ns())+'.log').write_bytes(LOG.read_bytes())
     LOG.write_text('Live integration started with dummy resources only.\n')
@@ -202,7 +215,7 @@ def main():
         with tempfile.TemporaryDirectory(prefix='lab-restic-restore-') as tmp:
             base=Path(tmp);tree=base/'tree';generation=tree/'var/backups/lab/generation';generation.mkdir(parents=True)
             (generation/'sqlite-dummy.db').write_bytes(snap)
-            with sqlite3.connect(generation/'sqlite-dummy.db') as db:assert db.execute('pragma integrity_check').fetchone()==('ok',)
+            verify_sqlite_snapshot(generation/'sqlite-dummy.db', 'pragma integrity_check', ['ok'])
             write_json(generation/'manifest.json',{'version':3,'apps':[{'name':'check-sqlite','db':'sqlite','sqlite':[{'path':filename,'snapshot':'sqlite-dummy.db'}]}]})
             appdir=tree/'srv/lab/check-sqlite';(appdir/'app').mkdir(parents=True);(appdir/'data').mkdir()
             source=command(['/usr/bin/python3','-I','-c',"from pathlib import Path; print(Path('/srv/lab/check-sqlite/app/main.py').read_text())"],user='lab').stdout
@@ -217,7 +230,7 @@ def main():
                 subprocess.run(args,env=env,capture_output=True,check=True,timeout=120)
             restored_tree=base/'restored'/str(tree).lstrip('/')
             subprocess.run(['/usr/bin/python3','-I',str(Path(__file__).parent/'restore-stage.py'),str(restored_tree),str(restored_tree/'var/backups/lab/generation'),'check-sqlite',str(base/'staged')],capture_output=True,check=True)
-            with sqlite3.connect(base/'staged/data'/filename) as db:assert db.execute('SELECT value FROM restored').fetchone()==('dummy-restored',)
+            verify_sqlite_snapshot(base/'staged/data'/filename, 'SELECT value FROM restored', ['dummy-restored'])
             assert not (base/'staged/data'/(filename+'-wal')).exists()
         note('PASS runtime-uid unusual SQLite snapshot, real encrypted local restic restore, staging and stale-WAL removal')
         result=command(['systemctl','start','lab-app@check-unprovisioned.service'],check=False)

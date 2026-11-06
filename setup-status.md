@@ -8,10 +8,10 @@ and reason. Record dates, evidence and next action; never record secret values.
 | Item | State | Evidence / next action |
 | --- | --- | --- |
 | Owner settings and target review | needed | Proactively review .local/settings.txt with owner. |
-| Fresh Ubuntu 24.04 / SSH / domain / DNS | needed | Confirm target and SSH port before firewall changes. |
+| Fresh Ubuntu 24.04 LTS / SSH / IP or domain / DNS | needed | Confirm target and SSH port before firewall changes. |
 | Source tests and installation | needed | Follow SETUP.md; do not rerun bootstrap on an installed host. |
 | HTTPS / identities / service isolation | needed | Verify a disposable experiment and labdoctor. |
-| Deployment agent executable and login | needed | Choose agent; install and authenticate as lab. |
+| Deployment agent executable and login | needed | Choose desktop agent; follow its SSH setup as lab (Claude installs its engine automatically). |
 | Chromium / WebKit development tooling | needed | Run browser preflight as lab. |
 | Optional AI providers / spending | needed | Select or defer; key presence is not API access validation. |
 | Optional GitHub / student access | needed | Own account and repos, never copy the original owner's credentials. |

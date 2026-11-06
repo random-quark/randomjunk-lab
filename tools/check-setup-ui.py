@@ -41,7 +41,7 @@ def main():
                     page.screenshot(path=str(args.screenshots / 'setup-preview.png'))
                     page.screenshot(path=str(args.screenshots / 'setup-desktop.png'), full_page=True)
                 page.locator('#replicate-key').fill('fixture-replicate-key')
-                page.locator('[data-choice="DOMAIN"]').fill('lab.example.com')
+                page.locator('[data-choice="SERVER_IPV4"]').fill('8.8.8.8')
                 page.locator('#notifications').select_option('ntfy')
                 page.locator('#backups').select_option('skip')
                 page.locator('#save-button').click()

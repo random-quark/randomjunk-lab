@@ -393,3 +393,72 @@ No real API request, phone notification, fresh VPS installation, SSH tunnel or
 Ubuntu 26.04 live verification was performed. The form and isolated activation
 logic are implemented; provider key verification, backup initialization/restore,
 Resend delivery and app-specific payment behavior remain explicit setup steps.
+
+## Fresh image trial and supported target — 2026-11-06
+
+A new Ubuntu 26.04.1 VPS passed 112 tests on Python 3.14.4, 52 source parse checks,
+four Caddy parser cases and simulated package installation. Actual bootstrap
+failed at sudoers validation: sudo-rs 0.2.13 rejects requiretty. A private candidate
+without that line parsed successfully; reviewed partial-state recovery completed
+core services with SSH preserved, UFW allowing 22/80/443, and zero doctor problems.
+No live integration harness ran on 26.04. The owner then reinstalled the machine
+with Ubuntu 24.04.5 for a genuinely clean recommended-version run.
+
+The corrected source passes 119 local tests and 52 parse checks. Desktop/mobile
+wizard QA passes with only a public IP and no domain entered (dummy inputs, no
+external service calls). This establishes source behavior; the separately completed clean VPS run below
+used the corrected branch from the beginning.
+
+## Clean Ubuntu 24.04 installation — 2026-11-06
+
+A separate setup agent followed the corrected source at febde2f after a provider
+OS reinstall, on Ubuntu 24.04.5 / Python 3.12.3, 4 vCPU and 8 GB RAM. Bootstrap was
+invoked with the public IPv4 rather than an owned domain. It derived the sslip.io
+suffix and completed with no recovery script or hidden workaround. Source checks
+passed 119 tests and 52 parse checks. Installed core: Caddy 2.11.9, PostgreSQL 16,
+pgvector 0.6.0 and uv 0.8.22; UFW permits SSH/80/443.
+
+The real empty-platform integration harness passed all app modes, concurrent
+creates, runtime/deployment/Caddy access boundaries, SQLite/Postgres/pgvector
+writes, successive secret grants, stop/reload failure handling, static symlink
+rejection, Postgres vector restore, runtime-uid SQLite snapshot verification,
+encrypted local Restic backup/check/restore, unprovisioned-unit fail-safe behavior,
+reconciliation, repeated removal and restoration of production configuration.
+The harness left no disposable app records. This is local recovery evidence, not
+proof of a configured remote B2 backup or a running backup schedule.
+
+The private setup form was exercised on the actual VPS over an SSH tunnel. The
+web process ran as labsetup, bound only to loopback, and used a 0700 directory/
+0600 state file. Browser checks passed dummy-key save/reload/removal and IP-only
+completion without returning keys, making provider requests or modifying installed
+credentials. The process and exact throwaway state were removed afterward. The
+production form remains available through the documented start command.
+
+Browser dependencies were reviewed using the locked Playwright dry-run and
+installed through root apt; downloads/tests ran as lab. Static runtime checks:
+8 passed, 2 intentional database skips. Backend runtime checks: 10 passed.
+Chromium and WebKit phone/desktop preflight passed. A single intentional public
+welcome app remains. External curl returned HTTP 200 with normal TLS verification;
+an external Chromium browser passed secure-context, mobile layout, service-worker,
+offline reload/reconnect and no-JavaScript-error checks. WebKit offline simulation
+remains unresolved as documented in browser-testing.md; no physical iPhone claim.
+
+Root and restricted lab SSH access were verified. The source/testing logs are in
+the target checkout's private .local/ directory; welcome app evidence is in its
+own install.md. No credentials from the original server were copied. AI provider
+access, real ntfy phone receipt, email/payment integration, remote backups and
+owner desktop-agent sign-in remain pending until the owner supplies/selects them.
+
+Two authorized reboots changed the boot ID and restored SSH, Caddy and PostgreSQL
+without manual starts. The welcome site remained available with verified public
+HTTPS. The second reboot included a temporary enabled SQLite backend: its read-only
+probe returned the same pre-created sentinel and runtime UID afterward; startup
+did not re-seed data. The temporary probe was then removed through labctl, leaving only the welcome
+app; final doctor inspection reported zero problems. SSH uses the enabled ssh.socket activation path;
+ssh.service being disabled is not, by itself, a boot failure on this image.
+
+The image's cloud-init Network Stage service was already failed in the preinstall
+baseline and remains failed after reboot (exit status 1). No user-data or credentials
+were printed, and the provider unit was not disabled to conceal it. Core lab and
+public-network checks passed; diagnosis of that pre-existing image issue remains
+separate from this installer acceptance.

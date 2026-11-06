@@ -2,17 +2,18 @@
 # Fresh installation only. Never run this for review/testing or an upgrade.
 set -euo pipefail
 [[ ${1:-} == --install-fresh && $# -eq 2 ]] || {
-  echo 'usage: sudo ./bootstrap.sh --install-fresh DOMAIN' >&2; exit 2;
+  echo 'usage: sudo ./bootstrap.sh --install-fresh DOMAIN_OR_PUBLIC_IPV4' >&2; exit 2;
 }
 [[ $EUID -eq 0 ]] || { echo 'root required' >&2; exit 1; }
-DOMAIN=$2
+TARGET_ADDRESS=$2
 REPO_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
-python3 - "$DOMAIN" "$REPO_DIR/bin/lib" <<'PY'
+DOMAIN=$(python3 - "$TARGET_ADDRESS" "$REPO_DIR/bin/lib" <<'PY'
 import sys
 sys.path.insert(0, sys.argv[2])
-from labcore import domain
-domain(sys.argv[1])
+from labcore import install_domain
+print(install_domain(sys.argv[1]))
 PY
+)
 # Guard BEFORE packages/configuration are touched. No implicit draft migration.
 for path in /srv/lab /var/lib/lab /var/lib/lab-public /etc/lab /etc/sudoers.d/lab /etc/systemd/system/lab-app@.service; do
   [[ ! -e $path && ! -L $path ]] || { echo "Existing platform path: $path; see docs/migration.md" >&2; exit 1; }
@@ -26,6 +27,13 @@ if [[ -e /etc/caddy/Caddyfile ]]; then
 fi
 INSTALL_TMP=$(mktemp -d)
 trap 'rm -rf -- "$INSTALL_TMP"' EXIT
+# Validate with the host's actual sudo implementation before package/user changes.
+# Ubuntu 26.04 defaults to sudo-rs, which does not support requiretty.
+cat > "$INSTALL_TMP/lab.sudoers" <<'EOF'
+lab ALL=(root) NOPASSWD: /usr/local/sbin/labctl
+EOF
+chmod 440 "$INSTALL_TMP/lab.sudoers"
+visudo -cf "$INSTALL_TMP/lab.sudoers"
 export DEBIAN_FRONTEND=noninteractive
 apt-get update
 apt-get install -y ripgrep ca-certificates curl gnupg debian-keyring debian-archive-keyring apt-transport-https \
@@ -88,11 +96,7 @@ done
 install -m 755 "$REPO_DIR/backup/lab-backup.sh" /usr/local/bin/lab-backup
 install -m 755 "$REPO_DIR/backup/lab-notify-root" /usr/local/bin/lab-notify-root
 install -m 644 "$REPO_DIR/etc/lab-app@.service" /etc/systemd/system/lab-app@.service
-cat > /etc/sudoers.d/lab <<'EOF'
-Defaults:lab !requiretty
-lab ALL=(root) NOPASSWD: /usr/local/sbin/labctl
-EOF
-chmod 440 /etc/sudoers.d/lab
+install -o root -g root -m 440 "$INSTALL_TMP/lab.sudoers" /etc/sudoers.d/lab
 visudo -cf /etc/sudoers.d/lab
 cat > /etc/caddy/Caddyfile <<'EOF'
 {

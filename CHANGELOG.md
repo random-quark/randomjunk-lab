@@ -1,5 +1,22 @@
 # Changelog
 
+## Fresh VPS compatibility and optional domains — 2026-11-06
+
+- Validate a clean 24.04 installation, live database/isolation/recovery matrix,
+  SSH-tunnel form, browser runtimes and public HTTPS; record the remaining
+  Linux WebKit offline simulation limitation without claiming phone validation.
+
+- Recommend Ubuntu 24.04 LTS; keep Ubuntu 26.04 experimental after its live
+  sudo-rs incompatibility exposed the obsolete requiretty setting.
+- Validate the portable lab sudoers rule before apt or user changes, and document
+  recovery from an interrupted older installation without rerunning bootstrap.
+- Accept a public IPv4 in bootstrap and the setup form when no owned domain is
+  provided; derive an sslip.io hostname for per-app HTTPS and preserve custom DNS.
+- Fix the checklist's stale OS/desktop-agent guidance and remove assumptions that
+  every fresh host already has notifications configured.
+- Keep live-test logs checkout-local and run SQLite restore verification under
+  the app runtime identity, not root.
+
 ## Private setup form — 2026-11-06
 
 - Implement a responsive local onboarding form with popular ntfy, Replicate and

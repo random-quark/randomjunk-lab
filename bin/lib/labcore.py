@@ -2,6 +2,7 @@
 import contextlib
 import fcntl
 import json
+import ipaddress
 import os
 from pathlib import Path
 import re
@@ -26,6 +27,18 @@ def domain(value):
     ):
         raise LabError('invalid domain')
     return value
+
+def install_domain(value):
+    """Resolve an owned domain or public IPv4 into the platform's DNS suffix."""
+    try:
+        address = ipaddress.IPv4Address(value)
+    except ipaddress.AddressValueError:
+        if re.fullmatch(r'\d+(?:\.\d+){3}', value):
+            raise LabError('invalid public IPv4 address')
+        return domain(value)
+    if not address.is_global or address.is_multicast:
+        raise LabError('automatic hosting needs a public IPv4 address')
+    return str(address).replace('.', '-') + '.sslip.io'
 
 def keys(value):
     result = value.split(',') if value else []

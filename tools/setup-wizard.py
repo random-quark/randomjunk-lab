@@ -18,7 +18,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'bin/lib'))
-from labcore import LabError, atomic_write, domain, read_env, protected_dir, locked
+from labcore import LabError, atomic_write, domain, install_domain, read_env, protected_dir, locked
 
 PROVIDERS = {
     'replicate': 'REPLICATE_API_TOKEN', 'openai': 'OPENAI_API_KEY',
@@ -30,7 +30,7 @@ SECRET_NAMES = set(PROVIDERS.values()) | {
     'RESTIC_PASSWORD', 'HEALTHCHECKS_PING_URL',
 }
 CHOICES = {
-    'PROJECT_NAME': 'My Lab', 'DOMAIN': '', 'SSH_PORT': '22',
+    'PROJECT_NAME': 'My Lab', 'DOMAIN': '', 'SERVER_IPV4': '', 'SSH_PORT': '22',
     'BACKUP_TIMEZONE': 'UTC', 'DEPLOYMENT_AGENT': 'claude-desktop',
     'NOTIFICATIONS': '', 'BACKUPS': '', 'B2_BUCKET': '', 'B2_ENDPOINT': '',
     'BACKUP_SERVER_NAME': '', 'EMAIL_PROVIDER': '', 'EMAIL_SENDING_DOMAIN': '',
@@ -63,6 +63,10 @@ def validate_choices(value):
     for key in ('DOMAIN', 'EMAIL_SENDING_DOMAIN'):
         if result.get(key):
             domain(result[key])
+    if result.get('SERVER_IPV4'):
+        resolved = install_domain(result['SERVER_IPV4'])
+        if not resolved.endswith('.sslip.io') or result['SERVER_IPV4'].count('.') != 3 or not all(p.isdigit() for p in result['SERVER_IPV4'].split('.')):
+            raise LabError('Enter a public IPv4 address for automatic hosting.')
     if result.get('SSH_PORT') and (not result['SSH_PORT'].isdigit() or not 1 <= int(result['SSH_PORT']) <= 65535):
         raise LabError('SSH port must be between 1 and 65535.')
     if result.get('AI_TEST_BUDGET_USD') and not re.fullmatch(r'\d{1,6}(?:\.\d{1,2})?', result['AI_TEST_BUDGET_USD']):
@@ -88,6 +92,7 @@ def validate_bundle(data):
     if not isinstance(data, dict) or set(data) != {'version', 'choices', 'secrets', 'topic', 'notification', 'finished'} or data['version'] != 1:
         raise LabError('Invalid setup bundle.')
     choices = validate_choices(data['choices'])
+    choices.setdefault('SERVER_IPV4', '')  # Older saved forms had no IP-only option.
     if set(choices) != set(CHOICES):
         raise LabError('Incomplete setup bundle.')
     data['choices'] = choices
@@ -216,8 +221,9 @@ class Wizard:
 
 def finish_checks(data):
     c = data['choices']
-    if not c['DOMAIN'] or not c['SSH_PORT']:
-        raise LabError('Enter your domain and SSH port before finishing.')
+    if not (c['DOMAIN'] or c['SERVER_IPV4']) or not c['SSH_PORT']:
+        raise LabError('Enter a public server IP or your own domain, and the SSH port.')
+    install_domain(c['DOMAIN'] or c['SERVER_IPV4'])
     if not c['NOTIFICATIONS'] or not c['BACKUPS']:
         raise LabError('Choose notifications and backups, or explicitly defer them.')
     if c['NOTIFICATIONS'] == 'ntfy' and data['notification'] != 'confirmed':
@@ -314,6 +320,7 @@ def make_server(wizard, assets, port):
 
 def settings_text(data):
     c = dict(data['choices'])
+    c['DOMAIN'] = install_domain(c['DOMAIN'] or c['SERVER_IPV4'])
     c['AI_PROVIDERS'] = ','.join(k for k, v in PROVIDERS.items() if v in data['secrets']) or 'skip'
     c.update(NTFY_URL='https://ntfy.sh', BACKUP_METHOD='whole-server', PAYMENTS_MODE='test' if c['PAYMENTS_PROVIDER'] else '')
     return '# Non-secret owner choices. Never source this file.\n' + ''.join(k + '=' + v + '\n' for k, v in c.items())

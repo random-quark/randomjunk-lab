@@ -8,9 +8,11 @@
 # Agent: do not invent owner answers or replace blanks with assumed approval.
 
 PROJECT_NAME=My Lab
+# Optional: leave blank to use SERVER_IPV4 via sslip.io.
 DOMAIN=
 # Required before firewall changes; confirm the actual connection uses this port.
 SSH_PORT=
+# Public IPv4 required when DOMAIN is blank; generated hostname depends on sslip.io.
 SERVER_IPV4=
 SERVER_IPV6=
 

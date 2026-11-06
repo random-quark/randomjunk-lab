@@ -6,16 +6,13 @@ proves browser launch and synthetic screenshots; configure the app tests to run
 both engines too. Linux WebKit does not replace physical iPhone installation,
 push, microphone, media or gesture testing.
 
-## Fresh Ubuntu 26.04 installations
+## Ubuntu 24.04 LTS (recommended)
 
-Re-evaluate browser support and OS dependencies on the actual 26.04 image with
-the experiment's locked Playwright version. The package command below records a
-24.04 installation: do not copy it unchanged onto 26.04. Have an administrator
-review available package names, then run browser launch and app checks as lab.
-If the locked version does not support this host, review a dependency/lockfile
-update separately; do not claim that the historical browser checks validate 26.04.
-
-## Historical Ubuntu 24.04 reproduction
+The package list below records a previous 24.04 installation. Re-evaluate the
+requirements with the experiment's locked Playwright version and the actual host
+before installing; point releases and browser versions can change dependencies.
+Ubuntu 26.04 is experimental. Do not reuse the 24.04 package list unchanged there;
+review browser support and any dependency/lockfile update separately.
 
 As lab, in the experiment app directory with locked dev dependencies installed:
 
@@ -46,3 +43,19 @@ are cached under lab's home and shared when versions match. No browser daemon or
 new public port is needed. Keep the base bootstrap minimal; this is an explicit
 browser-testing profile. Detailed installed package versions are recorded in
 docs/webkit-packages.txt.
+
+## Fresh 24.04 browser evidence — 2026-11-06
+
+A clean Ubuntu 24.04.5 installation with the templates' locked Playwright 1.62.0
+passed Chromium and WebKit launch plus phone/desktop screenshot preflight after
+reviewed OS dependency installation. The unprivileged runtime checks passed for
+static and backend scaffolds. A publicly served welcome app passed normal HTTPS,
+install-dialog and JavaScript checks in both engines; Chromium also passed offline
+reload and reconnect, including from an external browser.
+
+Linux WebKit 26.5 repeatedly reported `Page.reload: WebKit encountered an internal
+error` during simulated offline reload, even after service-worker control and all
+10 cached assets were confirmed. This is unresolved: do not label WebKit offline
+behavior passed or assume the failure proves an iPhone bug. Real Safari/iPhone
+installation and offline checks remain necessary. Retain the failing result in
+app evidence rather than swallowing it or weakening offline assertions.

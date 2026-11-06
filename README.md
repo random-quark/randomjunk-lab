@@ -1,14 +1,14 @@
 # Randomjunk Lab
 
-A small experiments platform for Ubuntu 26.04 LTS: Caddy, static sites, optional
+A small experiments platform for Ubuntu 24.04 LTS: Caddy, static sites, optional
 FastAPI, SQLite or PostgreSQL/pgvector, and restic backups. Python dependencies
 use uv and committed lockfiles.
 
 ## Start here: connect your desktop agent over SSH
 
-Use a fresh **Ubuntu 26.04 LTS** server and your own desktop agent account.
-The new target still needs live installation validation; historical test evidence
-in this repository is from Ubuntu 24.04. Do not upgrade an existing lab by running
+Use a fresh **Ubuntu 24.04 LTS** server and your own desktop agent account.
+Ubuntu 24.04 LTS is the recommended installation target. Ubuntu 26.04 is
+experimental; a trial exposed sudo compatibility differences. Do not upgrade an existing lab by running
 bootstrap again.
 
 1. Confirm SSH works from your laptop using the server address, administrator
@@ -55,8 +55,8 @@ The Claude third-party-provider guide is only needed for that deployment mode.
 
 **Give your agent [SETUP.md](SETUP.md). That is the single installation entry point.**
 It guides the agent through the questionnaire, installation, selected integrations,
-backups, monitoring and verification. Use a fresh Ubuntu 26.04 LTS server and your own
-domain/accounts. No AI subscription or provider key is needed for static apps.
+backups, monitoring and verification. Use a fresh Ubuntu 24.04 LTS server and your own
+accounts and either a public IPv4 address or your own domain. No AI subscription or provider key is needed for static apps.
 
 Copy this instruction to your agent after downloading/cloning the repository:
 
@@ -72,7 +72,7 @@ protected server files. Source tests are not proof that a new installation works
 **Prefer a form for settings and keys?** Use the
 [private setup form](docs/setup-wizard.md). It runs on the VPS through an SSH
 tunnel, puts ntfy/Replicate/OpenAI first, and securely hands your choices to the
-setup agent. No paid API is required; installation and verification follow SETUP.md.
+setup agent. No purchased domain or paid API is required; installation and verification follow SETUP.md.
 
 Other entry points:
 

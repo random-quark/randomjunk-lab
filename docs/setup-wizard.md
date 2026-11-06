@@ -9,7 +9,7 @@ The form uses Python's standard library, with no Node build or Python dependenci
 
 - **Popular services:** hosted ntfy.sh, Replicate and OpenAI, in that order.
   Replicate covers models available on Replicate, not every model everywhere.
-- **Your lab:** name, domain, SSH port, backup timezone, desktop agent and an
+- **Your lab:** name, server public IPv4, optional custom domain, SSH port, backup timezone, desktop agent and an
   optional budget preference for later API tests (not an enforced cap).
 - **More connections:** Backblaze B2 / Restic, Healthchecks.io, Gemini, Anthropic,
   OpenRouter, Resend, GitHub username and Stripe test credentials.
@@ -98,7 +98,10 @@ This validates the finished private bundle and creates root-owned 0600 files in
 | `setup-bundle.json` | Credentials and full selected configuration. Never print, paste, commit or include it in an agent prompt. |
 
 The agent should surface the non-secret choices for review, reuse these answers,
-and follow SETUP.md. Confirm the actual machine, DNS and SSH/firewall settings.
+and follow SETUP.md. Confirm the actual machine, DNS and SSH/firewall settings. With no custom domain,
+owner-settings.txt derives DOMAIN from SERVER_IPV4 as IP-WITH-DASHES.sslip.io.
+This free third-party DNS dependency gives each app a hostname for normal HTTPS;
+it is not bare-IP hosting and remains subject to DNS availability and CA limits.
 The form's saved values are not proof of those conditions. Install the core only
 on a confirmed fresh target. Do not rerun bootstrap on an existing installation.
 
@@ -175,4 +178,5 @@ The browser check starts an isolated loopback fixture, uses dummy credentials an
 a mocked notification sender, checks desktop/mobile layouts, and stops its server.
 Pass `--screenshots /absolute/output/directory` to save previews. No real account
 keys are needed. Source/browser checks do not establish live VPS installation,
-real phone delivery, API billing/access or Ubuntu 26.04 compatibility.
+real phone delivery, API billing/access or full installation readiness. See
+verification.md for the separately completed live 24.04 and SSH-tunnel checks.
