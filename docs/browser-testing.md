@@ -20,6 +20,10 @@ As lab, in the experiment app directory with locked dev dependencies installed:
 .venv/bin/playwright install-deps --dry-run webkit
 ```
 
+The dry run can exit with status 1 when dependencies are missing, while still
+printing the required package plan. Inspect that output; it is not proof that
+browser setup failed, and it does not install packages.
+
 An administrator reviews its package requirements. Never execute an app-owned
 Playwright executable as root or pipe its output into a privileged shell. These
 reviewed packages were installed on 2026-09-16 through the system package manager:

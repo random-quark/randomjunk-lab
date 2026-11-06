@@ -433,3 +433,8 @@ installation and check that lab cannot write either uv executable.
 
 The unfinished-form review regression checks that selected options remain readable
 without finishing setup, secrets/topics stay absent, and stored state is unchanged.
+
+Repeat-trial source validation at d4e2154: 121 tests, 52 source parse checks and
+all four optional Caddy parser cases passed. Two existing upstream test-client
+deprecation warnings remain. The CLI review test now also covers absent saved
+form state with a specific continuation message.

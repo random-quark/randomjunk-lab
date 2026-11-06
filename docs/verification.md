@@ -477,4 +477,39 @@ original users, firewall and provider configuration are preserved; certificate
 storage is archived privately for reuse. This is a platform/package reset, not a
 second provider OS reinstall. Source checks pass 121 tests and 52 parse checks. Missing saved-form state now
 produces a clear continuation message; the optional broad harness is explicitly
-placed before browser fixtures. Live results will be recorded after the repeat run.
+placed before browser fixtures. Live results follow below.
+
+
+### Independent repeat run completed
+
+A fresh agent followed d4e2154 on the reset Ubuntu 24.04.5 host. Bootstrap
+completed without recovery scripts. The installed verifier matched 47 source and
+template files; uv and uvx were root:root 0755, and write attempts as lab were
+denied. All 121 source tests, 52 parse checks and four Caddy parser cases passed.
+
+The full empty-platform live harness passed again: app modes, concurrent creates,
+isolation, real SQLite/Postgres/pgvector writes and grants, failed stop/reload
+preservation, symlink rejection, Postgres restore, runtime-uid SQLite verification,
+encrypted local Restic backup/restore and cleanup. The unfinished-form CLI review
+also passed with dummy credentials: selected B2 remained pending, no key/topic was
+returned, state was unchanged, and the temporary test state was removed.
+
+The documented prepare-only browser fixture worked. Chromium and WebKit passed
+phone/desktop preflight and the public welcome HTTPS/install-dialog checks with
+no JavaScript errors. Chromium offline reload/reconnect passed. Runtime results:
+static 8 passed / 2 intentional no-database skips; backend 10 passed. The fixture's
+app test passed. WebKit offline was not repeated and remains unresolved above.
+The dependency dry run's exit status 1 for missing packages is now explained.
+
+One final reboot changed the boot ID; root and lab SSH, Caddy, PostgreSQL and public
+HTTPS recovered. A temporary SQLite probe returned the same pre-created sentinel
+and runtime UID 994 after boot, without startup re-seeding. That probe and browser
+fixture were removed through the controller. Only the public welcome app remained;
+labdoctor reported zero problems. An external normal TLS request returned HTTP 200.
+
+A transient sslip.io lookup timeout on the VPS recovered; this remains an external
+DNS dependency, not a guarantee of permanent availability. The pre-existing image
+cloud-init failure remains separate. This trial preserved same-host certificates,
+SSH/network/provider configuration and original packages, so it does not replace
+the earlier genuinely clean OS-install evidence. Optional real API access, hosted
+ntfy phone receipt, remote backups/monitoring and desktop sign-in remain pending.
