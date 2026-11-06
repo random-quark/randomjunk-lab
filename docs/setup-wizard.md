@@ -178,4 +178,5 @@ The browser check starts an isolated loopback fixture, uses dummy credentials an
 a mocked notification sender, checks desktop/mobile layouts, and stops its server.
 Pass `--screenshots /absolute/output/directory` to save previews. No real account
 keys are needed. Source/browser checks do not establish live VPS installation,
-real phone delivery, API billing/access or Ubuntu 26.04 compatibility.
+real phone delivery, API billing/access or full installation readiness. See
+verification.md for the separately completed live 24.04 and SSH-tunnel checks.

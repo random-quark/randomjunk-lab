@@ -2,6 +2,10 @@
 
 ## Fresh VPS compatibility and optional domains — 2026-11-06
 
+- Validate a clean 24.04 installation, live database/isolation/recovery matrix,
+  SSH-tunnel form, browser runtimes and public HTTPS; record the remaining
+  Linux WebKit offline simulation limitation without claiming phone validation.
+
 - Recommend Ubuntu 24.04 LTS; keep Ubuntu 26.04 experimental after its live
   sudo-rs incompatibility exposed the obsolete requiretty setting.
 - Validate the portable lab sudoers rule before apt or user changes, and document

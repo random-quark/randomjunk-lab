@@ -414,5 +414,11 @@ Review also found the old live harness opened app SQLite snapshots as root and
 hardcoded an original-machine log location. It now transports opaque snapshot
 bytes to a runtime-uid verifier and stores logs under the checkout's .local/.
 Local source checks: 119 tests and 52 parse checks passed; the IP-only desktop/
-mobile wizard flow passed using dummy inputs. Fresh 24.04 live results follow in
-verification.md once completed; source checks alone are not install evidence.
+mobile wizard flow passed using dummy inputs. Completed fresh 24.04 live results are recorded in verification.md; source checks
+alone are not install evidence.
+
+The corrected branch subsequently completed a genuinely clean Ubuntu 24.04.5
+bootstrap using the raw public IPv4, followed by the full live integration harness,
+actual SSH-tunnel form QA and unprivileged browser runtime checks. No core recovery
+was needed. See verification.md for the tested scope and the unresolved Linux
+WebKit offline emulation result. Exact host logs remain private, not source defaults.

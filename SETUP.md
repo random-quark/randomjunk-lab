@@ -47,7 +47,9 @@ someone else's server. `.local/` is for non-secret choices, not secret storage.
 ## 2. Inspect and test before changing the machine
 
 Check OS, existing `/srv/lab`, Caddy/Postgres services, SSH listening port, storage,
-and DNS. If DOMAIN is blank, use SERVER_IPV4: the installer derives
+and DNS. Record pre-existing failed systemd units before installing, so later
+verification can distinguish image/provider failures from lab regressions; never
+disable a failed unit merely to hide it. If DOMAIN is blank, use SERVER_IPV4: the installer derives
 `IP-WITH-DASHES.sslip.io`, with apps at `https://APP.IP-WITH-DASHES.sslip.io`.
 No purchased domain or DNS account is needed. Explain that this mode relies on
 the free third-party sslip.io DNS service and its certificate issuance limits;

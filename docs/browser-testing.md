@@ -43,3 +43,19 @@ are cached under lab's home and shared when versions match. No browser daemon or
 new public port is needed. Keep the base bootstrap minimal; this is an explicit
 browser-testing profile. Detailed installed package versions are recorded in
 docs/webkit-packages.txt.
+
+## Fresh 24.04 browser evidence — 2026-11-06
+
+A clean Ubuntu 24.04.5 installation with the templates' locked Playwright 1.62.0
+passed Chromium and WebKit launch plus phone/desktop screenshot preflight after
+reviewed OS dependency installation. The unprivileged runtime checks passed for
+static and backend scaffolds. A publicly served welcome app passed normal HTTPS,
+install-dialog and JavaScript checks in both engines; Chromium also passed offline
+reload and reconnect, including from an external browser.
+
+Linux WebKit 26.5 repeatedly reported `Page.reload: WebKit encountered an internal
+error` during simulated offline reload, even after service-worker control and all
+10 cached assets were confirmed. This is unresolved: do not label WebKit offline
+behavior passed or assume the failure proves an iPhone bug. Real Safari/iPhone
+installation and offline checks remain necessary. Retain the failing result in
+app evidence rather than swallowing it or weakening offline assertions.
