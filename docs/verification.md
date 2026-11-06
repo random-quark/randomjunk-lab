@@ -368,3 +368,28 @@ proposal only, with no UI or service activation code implemented.
 Hosted ntfy onboarding clarification: the proposed wizard fixes the service to
 https://ntfy.sh, omits a custom-server field and generates a fresh owner topic.
 Documentation-only follow-up; `git diff --check` passed.
+
+## Working private setup form — 2026-11-06
+
+- Existing suite plus the onboarding suite: 112 tests total (the final additional
+  privilege-drop case was run with the onboarding suite). Two existing dependency
+  deprecation warnings remain.
+- Onboarding cases cover private/resumable storage, secret omission, input and
+  Unicode line-injection rejection, live Stripe rejection, required deferrals,
+  ntfy send/receipt distinction, cooldown/failure redaction, symlink/permission
+  rejection, Host/Origin/token/expiry checks, closed-session rejection, bounded
+  requests, preservation of existing keys, and separated email/payment activation.
+- A forked child exercises real setuid/group dropping before binding and private
+  state writes, with a test-only account lookup stand-in. No host user was created.
+- `uv run --locked python tools/check-source.py`: 52 parse checks passed.
+- `node --check tools/setup-ui/app.js`: passed.
+- `uv run --locked --with playwright==1.64.1 python tools/check-setup-ui.py`:
+  passed at desktop 1440px and mobile 390px, including save/reload, no key disclosure
+  or browser storage, mocked notification confirmation and finish/session closure.
+  Screenshots visually inspected; no horizontal overflow or JavaScript errors.
+- `git diff --check`: passed.
+
+No real API request, phone notification, fresh VPS installation, SSH tunnel or
+Ubuntu 26.04 live verification was performed. The form and isolated activation
+logic are implemented; provider key verification, backup initialization/restore,
+Resend delivery and app-specific payment behavior remain explicit setup steps.

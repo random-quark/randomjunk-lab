@@ -21,7 +21,11 @@ See [desktop SSH connection instructions](README.md#start-here-connect-your-desk
 Do this proactively, before installation. Do not expect the owner to find the file.
 Create `.local/` (private to the administrator), and copy `settings.txt` and
 `setup-status.md` into it **only if those local files do not already exist**.
-Show the owner `.local/settings.txt`; accept either file edits or chat answers.
+Show the owner `.local/settings.txt`; accept file edits, chat answers, or the
+[private setup form](docs/setup-wizard.md). If the owner finished that form, run
+its administrator `stage` command and merge the non-secret owner-settings.txt
+into the local questionnaire, preserving unrelated existing answers. Never print
+the protected setup-bundle.json or ask for credentials again in chat.
 Blanks mean ask when needed; `skip` means deliberately omit. Never source this file.
 Keep progress and verification evidence in `.local/setup-status.md`, not the
 tracked template. Read [the settings workflow](docs/settings-workflow.md).
@@ -113,7 +117,12 @@ runs as root; never run an app-owned browser installer with root privileges.
 | Resend email | [email.md](docs/email.md). Optional; owner supplies key and verified sending domain. Do not assume the website domain is the sending domain. Confirm authorized test delivery. |
 | Stripe | [payments.md](docs/payments.md). Optional; secure app-specific grants, test mode first. Saving a key does not authorize live charges. |
 
-After core installation, import whichever staged provider/ntfy files were selected:
+**Form path:** after core installation, follow the form
+[apply and verification handoff](docs/setup-wizard.md#agent-handoff-stage-install-apply-verify).
+It activates selected credentials; backups, monitoring and real service checks
+remain the steps below. Do not also run the manual importer on stale staging files.
+
+**Manual-entry path:** after core installation, import whichever staged provider/ntfy files were selected:
 
 ```sh
 sudo /usr/bin/python3 -I tools/import-credentials.py

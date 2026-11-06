@@ -374,3 +374,22 @@ need testing on the owner's new VPS.
 Hosted ntfy onboarding clarification: the proposed wizard fixes the service to
 https://ntfy.sh, omits a custom-server field and generates a fresh owner topic.
 Documentation-only follow-up; `git diff --check` passed.
+
+## Working private setup form — 2026-11-06
+
+Implemented tools/setup-wizard.py with a buildless UI in tools/setup-ui. Production
+launch uses the dedicated unprivileged labsetup account and private loopback SSH
+forwarding. The UI has no privileged command endpoint. Separate root stage/apply
+commands validate the private bundle, preserve unrelated credentials and configure
+only selected integrations. The lifecycle lock serializes live activation. Backup
+schedules, paid API validation and app grants remain explicit agent tasks.
+
+The storage schema rejects control/Unicode line separators, unknown fields and
+live Stripe keys; backup password spacing is preserved. Status responses never
+return API keys. The owner can deliberately reveal the ntfy subscription topic.
+Host/origin/token checks, bounded requests, private files, no-cache/CSP headers,
+redacted errors and a single-process session lock protect the local setup path.
+
+See setup-wizard.md for reproducible commands and check-setup-ui.py for optional
+Playwright 1.64.1 QA. No project dependencies or lockfiles changed. Browser tests
+use a local fixture with a mocked sender, never real keys or notifications.

@@ -69,8 +69,10 @@ The agent creates ignored `.local/settings.txt` and `.local/setup-status.md` fro
 blank templates. Your answers and progress stay local; secret values go in
 protected server files. Source tests are not proof that a new installation works.
 
-A proposed browser-based onboarding form is described in
-[the setup wizard design](docs/setup-wizard.md); it is not implemented yet.
+**Prefer a form for settings and keys?** Use the
+[private setup form](docs/setup-wizard.md). It runs on the VPS through an SSH
+tunnel, puts ntfy/Replicate/OpenAI first, and securely hands your choices to the
+setup agent. No paid API is required; installation and verification follow SETUP.md.
 
 Other entry points:
 
