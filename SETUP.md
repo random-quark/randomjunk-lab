@@ -103,6 +103,11 @@ uv is pinned to 0.8.22; OS/Caddy packages track apt repositories. Installed vers
 are saved in `/var/lib/lab/install-versions.txt`. This is a reproducible procedure,
 not a guarantee of byte-identical future package downloads.
 
+For an authorized disposable installation trial, run the broad live-integration
+harness described in [verification.md](docs/verification.md) now, while the platform
+is empty, before creating browser fixtures or owner apps. It is not a production
+health check. Ordinary installations can use the scoped checks in step 7.
+
 ## 4. Set up the deployment agent and browser testing
 
 Root administers the platform. Experiment work runs as `lab`, with individual apps

@@ -40,7 +40,7 @@ apt-get install -y ripgrep ca-certificates curl gnupg debian-keyring debian-arch
   git python3 python3-venv librsvg2-bin postgresql postgresql-contrib restic ufw fail2ban unattended-upgrades
 # Pin uv; do not execute a remote pipe. Archive checksums in the install log.
 curl -fLsS https://astral.sh/uv/0.8.22/install.sh -o "$INSTALL_TMP/uv-install.sh"
-# Extract under the root-only temporary parent: archive numeric ownership must
+# Stage under the root-only temporary parent: archive numeric ownership must
 # never expose a writable privileged executable to an existing local user.
 UV_UNMANAGED_INSTALL="$INSTALL_TMP/uv" sh "$INSTALL_TMP/uv-install.sh"
 install -o root -g root -m 755 "$INSTALL_TMP/uv/uv" /usr/local/bin/uv

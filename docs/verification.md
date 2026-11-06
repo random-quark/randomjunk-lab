@@ -475,4 +475,6 @@ The repeat trial removes platform files and 326 explicitly reviewed added packag
 All 670 original packages remain unchanged, with apt-transport-https retained. SSH,
 original users, firewall and provider configuration are preserved; certificate
 storage is archived privately for reuse. This is a platform/package reset, not a
-second provider OS reinstall. Live results will be recorded after the repeat run.
+second provider OS reinstall. Source checks pass 121 tests and 52 parse checks. Missing saved-form state now
+produces a clear continuation message; the optional broad harness is explicitly
+placed before browser fixtures. Live results will be recorded after the repeat run.

@@ -302,3 +302,10 @@ def test_agent_can_review_unfinished_form_without_secret_values(wizard, monkeypa
     assert 'fixture-private-token' not in output
     assert wizard.data['topic'] not in output
     assert (wizard.directory / 'setup.json').read_bytes() == before
+
+
+def test_review_missing_form_explains_handoff(tmp_path, monkeypatch):
+    monkeypatch.setattr(w.os, 'geteuid', lambda: 0)
+    monkeypatch.setattr(w.sys, 'argv', ['setup-wizard.py', 'review', '--state-dir', str(tmp_path / 'absent')])
+    with pytest.raises(w.LabError, match='No saved setup form'):
+        w.main()

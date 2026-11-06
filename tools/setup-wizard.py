@@ -386,8 +386,11 @@ def main():
     args = parser.parse_args()
     if args.command != 'serve':
         if os.geteuid() != 0:
-            raise LabError('Staging and activation require an administrator.')
-        data = read_bundle(args.state_dir)
+            raise LabError('Review, staging and activation require an administrator.')
+        try:
+            data = read_bundle(args.state_dir)
+        except FileNotFoundError as exc:
+            raise LabError('No saved setup form was found in the selected state directory. Start the form, or continue SETUP.md using known owner settings.') from exc
         if args.command == 'review':
             print(json.dumps(public_status(data), indent=2))
             return
