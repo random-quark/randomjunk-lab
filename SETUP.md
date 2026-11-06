@@ -24,8 +24,16 @@ Create `.local/` (private to the administrator), and copy `settings.txt` and
 Show the owner `.local/settings.txt`; accept file edits, chat answers, or the
 [private setup form](docs/setup-wizard.md). If the owner finished that form, run
 its administrator `stage` command and merge the non-secret owner-settings.txt
-into the local questionnaire, preserving unrelated existing answers. Never print
+into the local questionnaire, preserving unrelated existing answers. Existing
+explicit owner/session choices take precedence over untouched form defaults or
+blank fields. If explicit choices conflict, resolve them with the owner when
+available; do independent work and record the conflict as pending meanwhile. Never print
 the protected setup-bundle.json or ask for credentials again in chat.
+If the form is unfinished, the administrator can run
+`python3 -I tools/setup-wizard.py review` to read choices and key-presence names
+without revealing keys or the topic. Continue authorized core installation from
+known host settings; keep selected incomplete integrations pending. Do not force
+completion or invent a deferral by changing a selection to skip.
 Blanks mean ask when needed; `skip` means deliberately omit. Never source this file.
 Keep progress and verification evidence in `.local/setup-status.md`, not the
 tracked template. Read [the settings workflow](docs/settings-workflow.md).
@@ -112,6 +120,13 @@ Open `/srv/lab` in the desktop connection as `lab`. Confirm the remote hostname,
 user and folder; the agent reads `/srv/lab/AGENTS.md` or `CLAUDE.md`.
 The installer deploys these from `templates/operating-instructions.md`; additional
 references are in `/usr/local/share/lab/docs`.
+
+Browser setup needs an app environment. On a new empty platform, first create a
+uniquely named disposable static fixture **as lab**, for example
+`newlab browser-check --static --prepare-only` (choose another name if it exists).
+Its app directory is `/srv/lab/browser-check/app`, with locked dependencies in
+`.venv`. Run the browser guide there, then reuse this fixture during step 7 or
+remove that exact fixture through `labrm browser-check` when checks finish.
 
 Configure Chromium and WebKit using [browser-testing.md](docs/browser-testing.md).
 Browser downloads and tests run as lab. Only reviewed OS package installation

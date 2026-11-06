@@ -70,3 +70,10 @@ unrelated answers, and do not demand credentials already entered in the form.
 Never print or paste setup-bundle.json; the apply command consumes it indirectly
 from the finished protected state. Selected backup/monitoring secrets need the
 separate protected configuration in server-backups.md before scheduling.
+
+If the form is unfinished, use its read-only `review` command to obtain non-secret
+choices. Do not read the raw JSON bundle into an agent prompt. Missing optional
+credentials must not block independently authorized core installation or imply
+an owner-approved deferral. When merging any form export, earlier explicit session
+choices outrank untouched defaults and empty fields; leave unresolved conflicts
+pending if the owner is unavailable.

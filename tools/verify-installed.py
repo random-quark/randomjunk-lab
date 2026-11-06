@@ -2,6 +2,7 @@
 """Compare installed code with this checkout; print paths/results, never secrets."""
 from pathlib import Path
 import hashlib
+import stat
 import sys
 ROOT=Path(__file__).resolve().parents[1]
 pairs=[(ROOT/'sbin/labctl',Path('/usr/local/sbin/labctl')),
@@ -19,6 +20,16 @@ failed=[]
 for source,installed in pairs:
     if not installed.is_file() or hashlib.sha256(source.read_bytes()).digest()!=hashlib.sha256(installed.read_bytes()).digest():
         failed.append(str(installed))
+for name in ('uv', 'uvx'):
+    path = Path('/usr/local/bin') / name
+    try:
+        info = path.lstat()
+    except FileNotFoundError:
+        failed.append(str(path))
+        continue
+    if (not stat.S_ISREG(info.st_mode) or info.st_uid != 0 or info.st_gid != 0
+            or stat.S_IMODE(info.st_mode) != 0o755):
+        failed.append(str(path) + ' (expected root:root regular executable, mode 0755)')
 if failed:
     print('MISMATCHES:\n'+'\n'.join(failed));raise SystemExit(1)
-print(f'PASS: {len(pairs)} installed code/template files match source')
+print(f'PASS: {len(pairs)} installed code/template files match source; uv/uvx ownership and modes verified')

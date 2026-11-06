@@ -140,6 +140,13 @@ def send_notification(topic):
             raise LabError('Notification delivery failed. Try again later.')
 
 
+def public_status(data):
+    """Non-secret owner choices, safe for an agent to review before completion."""
+    return {'choices': data['choices'], 'saved_keys': sorted(data['secrets']),
+            'has_topic': bool(data['topic']), 'notification': data['notification'],
+            'finished': data['finished']}
+
+
 class Wizard:
     def __init__(self, directory, sender=send_notification):
         self.directory = Path(directory)
@@ -161,9 +168,7 @@ class Wizard:
         atomic_write(self.directory / 'setup.json', json.dumps(self.data, ensure_ascii=False))
 
     def status(self):
-        return {'choices': self.data['choices'], 'saved_keys': sorted(self.data['secrets']),
-                'has_topic': bool(self.data['topic']), 'notification': self.data['notification'],
-                'finished': self.data['finished']}
+        return public_status(self.data)
 
     def action(self, action, body):
         if self.data['finished']:
@@ -375,7 +380,7 @@ def apply_integrations(data, target, stage, lab_gid):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('command', choices=['serve', 'stage', 'apply'])
+    parser.add_argument('command', choices=['serve', 'review', 'stage', 'apply'])
     parser.add_argument('--state-dir', type=Path, default=Path('/var/lib/lab-onboarding'))
     parser.add_argument('--port', type=int, default=8765)
     args = parser.parse_args()
@@ -383,6 +388,9 @@ def main():
         if os.geteuid() != 0:
             raise LabError('Staging and activation require an administrator.')
         data = read_bundle(args.state_dir)
+        if args.command == 'review':
+            print(json.dumps(public_status(data), indent=2))
+            return
         if not data['finished']:
             raise LabError('Finish and close the form before staging or applying.')
         finish_checks(data)
@@ -393,7 +401,7 @@ def main():
                 apply_integrations(data, Path('/etc/lab'), destination, pwd.getpwnam('lab').pw_gid)
             print('Selected AI/notification/email/test-payment credentials applied; provider access remains untested.')
         else:
-            print('Choices and secrets staged. Continue SETUP.md; core installation is still required.')
+            print('Choices and secrets staged. Continue SETUP.md; install core only on a confirmed fresh target.')
         print('Non-secret choices: /root/lab-credentials/owner-settings.txt')
         print('Backup and monitoring secrets: protected setup-bundle.json. Configure and verify those separately.')
         print('Existing app grants were not changed. Stop the wizard and remove its private staging directory after handoff.')

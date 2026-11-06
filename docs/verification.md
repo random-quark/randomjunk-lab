@@ -462,3 +462,17 @@ baseline and remains failed after reboot (exit status 1). No user-data or creden
 were printed, and the provider unit was not disabled to conceal it. Core lab and
 public-network checks passed; diagnosis of that pre-existing image issue remains
 separate from this installer acceptance.
+
+## Repeat installation preparation — 2026-11-06
+
+An independent instruction audit found gaps around unfinished forms, untouched
+defaults and browser-fixture creation order. A reset audit also found uv binaries
+retaining archive numeric ownership (lab-owned on this host); the next installer
+uses private extraction followed by root-owned copies, and verification checks
+regular files, ownership and 0755 modes.
+
+The repeat trial removes platform files and 326 explicitly reviewed added packages.
+All 670 original packages remain unchanged, with apt-transport-https retained. SSH,
+original users, firewall and provider configuration are preserved; certificate
+storage is archived privately for reuse. This is a platform/package reset, not a
+second provider OS reinstall. Live results will be recorded after the repeat run.
