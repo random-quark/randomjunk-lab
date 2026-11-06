@@ -5,7 +5,13 @@ REPO_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
 DEV_TOOLS="$REPO_DIR/.dev-tools"
 mkdir -p "$DEV_TOOLS"
 curl -fLsS https://astral.sh/uv/0.8.22/install.sh -o "$DEV_TOOLS/uv-install.sh"
-UV_UNMANAGED_INSTALL="$DEV_TOOLS/uv" sh "$DEV_TOOLS/uv-install.sh"
+UV_STAGE=$(mktemp -d "$DEV_TOOLS/.uv-stage.XXXXXX")
+trap 'rm -rf -- "$UV_STAGE"' EXIT
+UV_UNMANAGED_INSTALL="$UV_STAGE" sh "$DEV_TOOLS/uv-install.sh"
+mkdir -p "$DEV_TOOLS/uv"
+# install creates files owned by the caller instead of retaining archive UIDs.
+install -m 755 "$UV_STAGE/uv" "$DEV_TOOLS/uv/uv"
+install -m 755 "$UV_STAGE/uvx" "$DEV_TOOLS/uv/uvx"
 case $(uname -m) in
   x86_64) CADDY_ARCH=amd64 ;;
   aarch64) CADDY_ARCH=arm64 ;;

@@ -40,7 +40,11 @@ apt-get install -y ripgrep ca-certificates curl gnupg debian-keyring debian-arch
   git python3 python3-venv librsvg2-bin postgresql postgresql-contrib restic ufw fail2ban unattended-upgrades
 # Pin uv; do not execute a remote pipe. Archive checksums in the install log.
 curl -fLsS https://astral.sh/uv/0.8.22/install.sh -o "$INSTALL_TMP/uv-install.sh"
-UV_UNMANAGED_INSTALL=/usr/local/bin sh "$INSTALL_TMP/uv-install.sh"
+# Stage under the root-only temporary parent: archive numeric ownership must
+# never expose a writable privileged executable to an existing local user.
+UV_UNMANAGED_INSTALL="$INSTALL_TMP/uv" sh "$INSTALL_TMP/uv-install.sh"
+install -o root -g root -m 755 "$INSTALL_TMP/uv/uv" /usr/local/bin/uv
+install -o root -g root -m 755 "$INSTALL_TMP/uv/uvx" /usr/local/bin/uvx
 curl -fLsS https://dl.cloudsmith.io/public/caddy/stable/gpg.key -o "$INSTALL_TMP/caddy-key"
 # Caddy packages and OS security updates follow their apt repositories. Capture
 # exact installed versions below; no claim that repository state is immutable.
@@ -157,7 +161,7 @@ systemctl enable --now unattended-upgrades
 {
   date -u --iso-8601=seconds
   uname -a
-  uv --version
+  /usr/local/bin/uv --version
   caddy version
   dpkg-query -W
   git -C "$REPO_DIR" rev-parse HEAD 2>/dev/null || true

@@ -1,5 +1,17 @@
 # Changelog
 
+## Fresh-agent handoff and installer ownership — 2026-11-06
+
+- Extract uv under a private staging directory and install root-owned executables;
+  check their ownership and modes during installed-source verification.
+- Let agents review unfinished forms without revealing credentials or topics,
+  continue core setup with optional integrations pending, and preserve explicit
+  owner answers over untouched defaults.
+- Create a disposable app before its browser environment is required; run the broad
+  test harness first while the platform is empty. Clarify missing saved-form state.
+- Validate the revised instructions with an independent repeat install, full live
+  harness, browser checks and reboot with persistent SQLite data.
+
 ## Fresh VPS compatibility and optional domains — 2026-11-06
 
 - Validate a clean 24.04 installation, live database/isolation/recovery matrix,

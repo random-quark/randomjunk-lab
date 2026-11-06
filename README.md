@@ -51,6 +51,20 @@ Official connection references (checked 2026-11-06):
 [Claude Desktop SSH](https://code.claude.com/docs/en/desktop#ssh-sessions).
 The Claude third-party-provider guide is only needed for that deployment mode.
 
+## What your setup agent needs
+
+A fresh Ubuntu 24.04 LTS VPS, working administrator SSH access, and its public IP
+are enough to begin. A purchased domain, AI API key, ntfy account or backup account
+is not required to install and test the core. Without your own domain, the installer
+uses an IP-derived sslip.io address for apps; it depends on that third-party DNS
+service. Keep optional integrations pending until their inputs are available.
+
+If a form has been saved on this host, even unfinished, the agent can safely run
+`tools/setup-wizard.py review` as administrator to see non-secret choices. It must
+not print the private state file or change a selected service to “skip” just to
+finish the form. Earlier explicit owner choices take precedence over untouched
+form defaults. Install the core independently, then return to selected integrations.
+
 ## Set up your own machine
 
 **Give your agent [SETUP.md](SETUP.md). That is the single installation entry point.**

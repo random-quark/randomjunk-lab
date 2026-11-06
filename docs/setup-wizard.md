@@ -79,6 +79,26 @@ keys are not sent back to the browser. Blank inputs preserve them; a new value
 replaces them. The authenticated owner can deliberately reveal the ntfy topic
 through **Show subscription details**, since it is needed to subscribe.
 
+## An unfinished form does not block the core
+
+An administrator can inspect non-secret choices even before Finish:
+
+```sh
+sudo /usr/bin/python3 -I tools/setup-wizard.py review
+```
+
+This is read-only. It reports choices, saved credential **names**, notification
+status and whether the form is finished. It never returns credential values or
+the subscription topic. Use the known machine/IP/domain settings to continue
+independent authorized installation, while selected integrations lacking inputs
+remain pending. Preserve the form so the owner can resume later. Do not change
+B2 or ntfy to skip merely to unlock Finish; stage/apply still require completion.
+
+When merging choices, preserve established explicit owner/session answers over
+untouched form defaults (for example Claude Desktop or UTC) and empty fields.
+Resolve conflicting explicit choices with the owner when available; do not invent
+answers during unattended work. Saving a form is not permission for paid tests.
+
 ## Agent handoff: stage, install, apply, verify
 
 After **Finish & close setup**, all API access for that running session closes.

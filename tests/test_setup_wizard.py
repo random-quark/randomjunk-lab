@@ -284,3 +284,28 @@ def test_old_saved_form_without_ip_field_is_upgraded(wizard):
     wizard.save()
     loaded = w.read_bundle(wizard.directory)
     assert loaded['choices']['SERVER_IPV4'] == ''
+
+
+def test_agent_can_review_unfinished_form_without_secret_values(wizard, monkeypatch, capsys):
+    save(wizard, {'SERVER_IPV4': '8.8.8.8', 'BACKUPS': 'b2'},
+         {'REPLICATE_API_TOKEN': 'fixture-private-token'})
+    wizard.action('topic', {})
+    before = (wizard.directory / 'setup.json').read_bytes()
+    monkeypatch.setattr(w.sys, 'argv', ['setup-wizard.py', 'review', '--state-dir', str(wizard.directory)])
+    monkeypatch.setattr(w.os, 'geteuid', lambda: 0)
+    w.main()
+    output = capsys.readouterr().out
+    report = json.loads(output)
+    assert report['choices']['BACKUPS'] == 'b2'
+    assert report['finished'] is False
+    assert report['saved_keys'] == ['REPLICATE_API_TOKEN']
+    assert 'fixture-private-token' not in output
+    assert wizard.data['topic'] not in output
+    assert (wizard.directory / 'setup.json').read_bytes() == before
+
+
+def test_review_missing_form_explains_handoff(tmp_path, monkeypatch):
+    monkeypatch.setattr(w.os, 'geteuid', lambda: 0)
+    monkeypatch.setattr(w.sys, 'argv', ['setup-wizard.py', 'review', '--state-dir', str(tmp_path / 'absent')])
+    with pytest.raises(w.LabError, match='No saved setup form'):
+        w.main()

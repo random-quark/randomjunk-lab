@@ -422,3 +422,19 @@ bootstrap using the raw public IPv4, followed by the full live integration harne
 actual SSH-tunnel form QA and unprivileged browser runtime checks. No core recovery
 was needed. See verification.md for the tested scope and the unresolved Linux
 WebKit offline emulation result. Exact host logs remain private, not source defaults.
+
+## Installer ownership regression — 2026-11-06
+
+The uv release archive can retain numeric ownership when extracted as root. Both
+bootstrap and workspace tooling now extract under a private temporary directory
+and copy with install, so final binaries belong to the installer identity.
+Bootstrap explicitly requires root:root 0755. Run tools/verify-installed.py after
+installation and check that lab cannot write either uv executable.
+
+The unfinished-form review regression checks that selected options remain readable
+without finishing setup, secrets/topics stay absent, and stored state is unchanged.
+
+Repeat-trial source validation at d4e2154: 121 tests, 52 source parse checks and
+all four optional Caddy parser cases passed. Two existing upstream test-client
+deprecation warnings remain. The CLI review test now also covers absent saved
+form state with a specific continuation message.
