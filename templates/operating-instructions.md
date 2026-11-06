@@ -191,3 +191,11 @@ SQLAlchemy is optional, independent of database choice; add it deliberately as l
 with `uv add 'sqlalchemy>=2.0,<3'` in app/ when Core or ORM helps the design. Commit
 the updated pyproject.toml and uv.lock. Postgres includes psycopg, not SQLAlchemy.
 Installing SQLAlchemy alone does not make an existing app portable between databases.
+
+## Setup form service inventory
+
+If present, `/etc/lab/setup-capabilities.json` lists services selected during the
+private setup form. It contains no keys and does not enumerate pre-existing
+integrations. Provider keys may still be untested: confirm model access, cost and
+required grants before using them. Static apps require no AI provider. Do not
+read the form's private state or root staging bundle into chat.

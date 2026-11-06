@@ -1,5 +1,27 @@
 # Changelog
 
+## Private setup form — 2026-11-06
+
+- Implement a responsive local onboarding form with popular ntfy, Replicate and
+  OpenAI cards; additional providers, backups, monitoring, email and test payments.
+- Add a loopback-only, authenticated, unprivileged Python server with private
+  resumable storage, explicit ntfy testing and session closure.
+- Add separate administrator stage/apply commands that preserve unrelated keys,
+  keep Stripe separate and expose a non-secret service inventory for agents.
+- Require explicit notification/backup choices without requiring a paid API.
+  Document SSH tunneling, activation, remaining verification and secret cleanup.
+- Add security/activation tests and reproducible desktop/mobile browser QA with
+  dummy credentials and a mocked notification sender.
+
+## Desktop SSH onboarding and Ubuntu target — 2026-11-06
+
+- Target new installations at Ubuntu 26.04 LTS; retain 24.04 historical evidence
+  and require live compatibility checks on the new image.
+- Replace tmux-first onboarding with Claude/Codex desktop SSH instructions;
+  distinguish Claude automatic provisioning from Codex remote CLI requirements.
+- Document the proposed optional-service form, prioritizing ntfy and backups.
+  The wizard is a design proposal, not a new installed service.
+
 ## First experiment workflow lessons — 2026-09-07
 
 - Document unpublished development, early local Git/browser checks, meaningful
@@ -347,3 +369,7 @@ reconnection and desktop SSH access, with setup/admin versus lab separation.
 
 Added explicit preview/worker cleanup and post-removal process/socket checks.
 Stopped a verified orphan Paint Week preview; no other process was signalled.
+
+Hosted ntfy onboarding clarification: the proposed wizard fixes the service to
+https://ntfy.sh, omits a custom-server field and generates a fresh owner topic.
+Documentation-only follow-up; `git diff --check` passed.

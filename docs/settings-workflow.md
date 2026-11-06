@@ -60,3 +60,13 @@ verified non-secret deployment choices in /etc/lab/email.json as described in
 docs/email.md. Reuse existing local choices; a blank questionnaire is not an
 instruction to remove a working integration. Email availability does not authorize
 adding sends to every app.
+
+## Private form input
+
+The owner may use [the setup form](setup-wizard.md) instead of editing settings
+by hand. Run its stage command after the owner finishes; merge the non-secret
+owner-settings.txt into .local/settings.txt and surface those choices. Preserve
+unrelated answers, and do not demand credentials already entered in the form.
+Never print or paste setup-bundle.json; the apply command consumes it indirectly
+from the finished protected state. Selected backup/monitoring secrets need the
+separate protected configuration in server-backups.md before scheduling.

@@ -4,17 +4,28 @@
 file and carry out the steps, following linked references when needed. This is an
 interactive installation guide, not a script to execute with bash.
 
-Target: a **fresh Ubuntu 24.04 server with systemd**, SSH/root administration access,
+Target: a **fresh Ubuntu 26.04 LTS server with systemd**, SSH/root administration access,
 and a domain you control. The installer is not for macOS, Windows, a shared hosting
 account, or an already configured lab host. Existing services require a reviewed
 migration plan; never wipe them or rerun bootstrap to resolve a partial install.
+
+Ubuntu 26.04 is the new installation target, not yet a live-verified platform in
+this repository. The recorded Ubuntu 24.04 results remain historical evidence.
+Before installing, check package availability (including the matching PostgreSQL
+pgvector package), locked Python dependencies and browser support on the actual
+26.04 image. Stop and resolve incompatibilities rather than bypassing lockfiles.
+See [desktop SSH connection instructions](README.md#start-here-connect-your-desktop-agent-over-ssh).
 
 ## 1. Agent: bring the settings to the owner
 
 Do this proactively, before installation. Do not expect the owner to find the file.
 Create `.local/` (private to the administrator), and copy `settings.txt` and
 `setup-status.md` into it **only if those local files do not already exist**.
-Show the owner `.local/settings.txt`; accept either file edits or chat answers.
+Show the owner `.local/settings.txt`; accept file edits, chat answers, or the
+[private setup form](docs/setup-wizard.md). If the owner finished that form, run
+its administrator `stage` command and merge the non-secret owner-settings.txt
+into the local questionnaire, preserving unrelated existing answers. Never print
+the protected setup-bundle.json or ask for credentials again in chat.
 Blanks mean ask when needed; `skip` means deliberately omit. Never source this file.
 Keep progress and verification evidence in `.local/setup-status.md`, not the
 tracked template. Read [the settings workflow](docs/settings-workflow.md).
@@ -79,13 +90,16 @@ not a guarantee of byte-identical future package downloads.
 Root administers the platform. Experiment work runs as `lab`, with individual apps
 running as `labapp-NAME`. Never run experiment scripts/dependency hooks as root.
 
-Choose the owner's coding agent. Check/install its current official CLI **as lab**
-and let the owner log in interactively with their own account. Confirm discovery
-and version in a fresh `sudo -iu lab` shell; root's login or PATH does not prove
-lab's access. Use current official installation documentation for the chosen CLI,
-not an old pinned model name from installation history.
+Choose the owner's desktop coding agent and configure SSH access as `lab` with
+their own public key. Follow the [desktop connection guide](README.md#start-here-connect-your-desktop-agent-over-ssh).
+Claude Desktop installs its helper/engine automatically for this user. Codex
+currently needs its CLI available on this user's login-shell PATH and its own
+authentication; verify those as `lab`, not root. A separate terminal CLI is only
+needed if the owner chooses a terminal workflow. Do not require tmux or manually
+starting Remote Control for a desktop SSH session.
 
-Then launch the agent from `/srv/lab`. It reads `/srv/lab/AGENTS.md` or `CLAUDE.md`.
+Open `/srv/lab` in the desktop connection as `lab`. Confirm the remote hostname,
+user and folder; the agent reads `/srv/lab/AGENTS.md` or `CLAUDE.md`.
 The installer deploys these from `templates/operating-instructions.md`; additional
 references are in `/usr/local/share/lab/docs`.
 
@@ -103,7 +117,12 @@ runs as root; never run an app-owned browser installer with root privileges.
 | Resend email | [email.md](docs/email.md). Optional; owner supplies key and verified sending domain. Do not assume the website domain is the sending domain. Confirm authorized test delivery. |
 | Stripe | [payments.md](docs/payments.md). Optional; secure app-specific grants, test mode first. Saving a key does not authorize live charges. |
 
-After core installation, import whichever staged provider/ntfy files were selected:
+**Form path:** after core installation, follow the form
+[apply and verification handoff](docs/setup-wizard.md#agent-handoff-stage-install-apply-verify).
+It activates selected credentials; backups, monitoring and real service checks
+remain the steps below. Do not also run the manual importer on stale staging files.
+
+**Manual-entry path:** after core installation, import whichever staged provider/ntfy files were selected:
 
 ```sh
 sudo /usr/bin/python3 -I tools/import-credentials.py

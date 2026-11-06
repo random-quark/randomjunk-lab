@@ -6,7 +6,16 @@ proves browser launch and synthetic screenshots; configure the app tests to run
 both engines too. Linux WebKit does not replace physical iPhone installation,
 push, microphone, media or gesture testing.
 
-## Reproduce on Ubuntu 24.04
+## Fresh Ubuntu 26.04 installations
+
+Re-evaluate browser support and OS dependencies on the actual 26.04 image with
+the experiment's locked Playwright version. The package command below records a
+24.04 installation: do not copy it unchanged onto 26.04. Have an administrator
+review available package names, then run browser launch and app checks as lab.
+If the locked version does not support this host, review a dependency/lockfile
+update separately; do not claim that the historical browser checks validate 26.04.
+
+## Historical Ubuntu 24.04 reproduction
 
 As lab, in the experiment app directory with locked dev dependencies installed:
 

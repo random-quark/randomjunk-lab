@@ -1,73 +1,61 @@
 # Randomjunk Lab
 
-A small experiments platform for Ubuntu 24.04: Caddy, static sites, optional
+A small experiments platform for Ubuntu 26.04 LTS: Caddy, static sites, optional
 FastAPI, SQLite or PostgreSQL/pgvector, and restic backups. Python dependencies
 use uv and committed lockfiles.
 
-## Start here: connect your agent remotely
+## Start here: connect your desktop agent over SSH
 
-For a fresh Ubuntu 24.04 server. Use your own server address and administrator
-login below; `root` is only for platform setup. You need your own Codex account.
+Use a fresh **Ubuntu 26.04 LTS** server and your own desktop agent account.
+The new target still needs live installation validation; historical test evidence
+in this repository is from Ubuntu 24.04. Do not upgrade an existing lab by running
+bootstrap again.
 
-1. **Connect from your laptop terminal:** `ssh root@SERVER_IP` (or your provider's
-   administrator account). Download/unpack this repository on the server, or clone
-   it with your own GitHub access if private.
-2. **Install the terminal tools on the server** (use `sudo` for apt if not root):
-
-   ```sh
-   apt update
-   apt install -y tmux curl git
-   curl -fsSL https://chatgpt.com/codex/install.sh | sh
-   ```
-
-   Follow the installer's PATH instructions, reconnect SSH, and check `codex --version`.
-3. **Sign in and start a persistent terminal session:**
+1. Confirm SSH works from your laptop using the server address, administrator
+   account and your SSH key. Root (or a sudo administrator) is for platform setup;
+   everyday experiment work will use `lab`. If using Tailscale, connect your laptop
+   to it and use the server's Tailscale address. Claude also needs working SFTP.
+2. In that initial SSH session, install `curl` and `git` with the administrator's
+   package manager, then clone the source:
 
    ```sh
-   codex login --device-auth
-   cd /path/to/randomjunk-lab
-   tmux new -s lab-setup
-   codex
+   git clone https://github.com/random-quark/randomjunk-lab.git
    ```
 
-   Open the login link on your laptop and enter the one-time code. Enable device
-   code login in ChatGPT security settings if prompted. Inside Codex, use the
-   setup instruction below. Detach with **Ctrl+B, then D**; return after reconnecting
-   with `tmux attach -t lab-setup`. tmux survives an SSH disconnect, not a reboot.
-4. **Connect the desktop app:** install/update the Codex/ChatGPT desktop app and
-   sign in. On your laptop, add this entry to `~/.ssh/config` using your working
-   SSH account and key (keep existing entries):
+   Note the checkout's absolute path. Choose one desktop connection below.
+3. **Claude Desktop:** in the Code tab, open the environment selector → New
+   environment → SSH → Add SSH connection. Enter `user@hostname` (or your SSH
+   config alias), port and key; select the checkout folder. Desktop installs its
+   helper and Claude Code automatically for that SSH user. No separate Claude CLI
+   installation, tmux session or Remote Control command is required.
+4. **Codex / ChatGPT desktop:** current official instructions require `codex` on
+   the remote SSH user's login-shell PATH. Install it once on the server using
+   the [official CLI instructions](https://learn.chatgpt.com/docs/cli), then follow
+   the [authentication instructions](https://learn.chatgpt.com/docs/auth) for that
+   same user. In the desktop app, open Settings → Connections, add/enable the SSH
+   host, and choose the checkout folder. The app starts the remote app server;
+   do not manually launch an interactive CLI or tmux session first.
+5. Ask the connected agent to confirm `hostname`, `whoami` and the checkout path,
+   then give it the setup instruction below. After installation, authorize your
+   SSH public key for `lab`, add a separate desktop connection as `lab`, and select
+   `/srv/lab` for experiment work. Claude provisions its engine for this user;
+   for Codex, verify this user's PATH and authentication separately.
 
-   ```sshconfig
-   Host my-lab
-     HostName SERVER_IP
-     User root
-     IdentityFile ~/.ssh/id_ed25519
-   ```
+A server reboot ends running agent processes. Reconnect from the desktop app and
+resume from the saved setup checklist; this is not a promise that an interrupted
+command continues. A dropped connection and a reboot are different events. No
+extra public agent port is needed. Keep a normal SSH client available for recovery.
 
-   Confirm `ssh my-lab` works. In the app, open **Settings → Connections**, add or
-   enable **my-lab**, then select the repository's folder **on the server**.
-   The SSH user must be the same one that installed and signed in to Codex.
-5. **Continue in the app.** Open the existing conversation if it appears. Otherwise,
-   start a chat in that remote folder with the setup instruction below; the agent
-   can pick up saved setup progress. Leave the terminal agent idle while the app
-   works. Ask the agent to confirm the hostname and working folder before setup.
-
-The app connects to the server's Codex service, **not the tmux screen**; attaching
-an existing CLI conversation depends on the installed version. tmux remains your
-terminal fallback. No extra public Codex port is needed. After installation,
-use a separate connection as **lab**, signed in as that user, with **/srv/lab** as
-its project folder for building experiments.
-
-Official help: [CLI installation](https://learn.chatgpt.com/docs/codex/cli),
-[server login](https://learn.chatgpt.com/docs/auth),
-[desktop SSH connections](https://learn.chatgpt.com/docs/remote-connections#connect-to-an-ssh-host).
+Official connection references (checked 2026-11-06):
+[Codex SSH](https://learn.chatgpt.com/docs/remote-connections#connect-to-an-ssh-host),
+[Claude Desktop SSH](https://code.claude.com/docs/en/desktop#ssh-sessions).
+The Claude third-party-provider guide is only needed for that deployment mode.
 
 ## Set up your own machine
 
 **Give your agent [SETUP.md](SETUP.md). That is the single installation entry point.**
 It guides the agent through the questionnaire, installation, selected integrations,
-backups, monitoring and verification. Use a fresh Ubuntu 24.04 server and your own
+backups, monitoring and verification. Use a fresh Ubuntu 26.04 LTS server and your own
 domain/accounts. No AI subscription or provider key is needed for static apps.
 
 Copy this instruction to your agent after downloading/cloning the repository:
@@ -80,6 +68,11 @@ Copy this instruction to your agent after downloading/cloning the repository:
 The agent creates ignored `.local/settings.txt` and `.local/setup-status.md` from
 blank templates. Your answers and progress stay local; secret values go in
 protected server files. Source tests are not proof that a new installation works.
+
+**Prefer a form for settings and keys?** Use the
+[private setup form](docs/setup-wizard.md). It runs on the VPS through an SSH
+tunnel, puts ntfy/Replicate/OpenAI first, and securely hands your choices to the
+setup agent. No paid API is required; installation and verification follow SETUP.md.
 
 Other entry points:
 
