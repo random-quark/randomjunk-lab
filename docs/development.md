@@ -498,3 +498,5 @@ pasted command cannot be mistaken for the result. Mac uses bold ANSI formatting;
 PowerShell uses colored Write-Host. Check that generated commands omit the marker
 and simulated shell outcomes contain it exactly once. Invitation UI visibility
 checks can mock only the status response without enrolling keys or minting tokens.
+
+Terminal result spacing: three leading blank lines and two trailing blank lines; the result marker remains assembled at runtime.

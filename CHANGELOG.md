@@ -438,3 +438,5 @@ Stopped a verified orphan Paint Week preview; no other process was signalled.
 Hosted ntfy onboarding clarification: the proposed wizard fixes the service to
 https://ntfy.sh, omits a custom-server field and generates a fresh owner topic.
 Documentation-only follow-up; `git diff --check` passed.
+
+Welcome terminal results now have three blank lines above and two below on Mac and Windows.

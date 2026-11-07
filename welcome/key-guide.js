@@ -18,8 +18,8 @@ function rawKeyCommands(os, filename = 'id_ed25519') {
 export function keyCommands(os, filename = 'id_ed25519') {
   const commands = rawKeyCommands(os, filename);
   const emphasize = command => os === 'windows'
-    ? command.replaceAll('Write-Output ', '$labCopyResult = ') + `\nWrite-Host ''\nWrite-Host ('RES' + 'ULT---> ' + $labCopyResult) -ForegroundColor Cyan\nWrite-Host ''`
-    : command.replaceAll('echo ', 'lab_copy_result=') + `\nprintf '\\n\\033[1m%s%s\\033[0m\\n\\n' 'RES' "ULT---> $lab_copy_result"`;
+    ? command.replaceAll('Write-Output ', '$labCopyResult = ') + `\nWrite-Host ''; Write-Host ''; Write-Host ''\nWrite-Host ('RES' + 'ULT---> ' + $labCopyResult) -ForegroundColor Cyan\nWrite-Host ''; Write-Host ''`
+    : command.replaceAll('echo ', 'lab_copy_result=') + `\nprintf '\\n\\n\\n\\033[1m%s%s\\033[0m\\n\\n\\n' 'RES' "ULT---> $lab_copy_result"`;
   return {...commands, copy: emphasize(commands.copy), create: emphasize(commands.create)};
 }
 

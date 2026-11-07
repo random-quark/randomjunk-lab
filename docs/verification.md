@@ -592,3 +592,5 @@ recovery, command marker generation and paste guidance. These UI checks mocked o
 invitation status and blocked service workers so WebKit request interception was
 deterministic; no real invitations or authorized keys changed. Cache migration and
 live invitation enrollment retain the separately recorded real-service evidence.
+
+Result spacing follow-up: generated Mac commands retain a valid shell format and three leading/two trailing blank lines; Windows uses corresponding explicit blank Write-Host calls.
