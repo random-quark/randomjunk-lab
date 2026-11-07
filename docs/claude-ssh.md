@@ -7,11 +7,20 @@ the owner's laptop key.
 
 ## One-time laptop access
 
-On the owner's Mac, copy the public key with `pbcopy < ~/.ssh/id_ed25519.pub`.
-If it is missing, create a dedicated key with
-`ssh-keygen -t ed25519 -f ~/.ssh/lab_ed25519 -C "my-lab"`, without overwriting an
-existing file. Then copy `~/.ssh/lab_ed25519.pub`. Use a passphrase when prompted.
-The private file stays on the Mac; only the .pub contents go to the administrator.
+The welcome guide starts with a Mac / Windows selector. On Mac, use Terminal;
+on Windows, use PowerShell. Its copy command prints SUCCESS only after copying a
+nonempty public-key file, MISSING when the file is absent, and ERROR for other
+read/clipboard failures. Choose SUCCESS / No errors to see paste instructions:
+Command+V on Mac, Ctrl+V on Windows. The browser cannot observe terminal results.
+
+Choose MISSING / No such file to reveal guarded creation of a dedicated
+lab_ed25519 key, followed by its copy command. Existing private/public files are
+not overwritten. After confirming the new key was copied, the guide switches the
+private-key path and connection test to lab_ed25519 automatically. Other errors
+have separate guidance; a clipboard failure does not imply a new key is needed.
+The private file stays on the computer; only .pub contents are submitted.
+
+Windows clipboard handling follows [Microsoft's Set-Clipboard documentation](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/set-clipboard?view=powershell-5.1), with terminating error handling for reads and copies.
 
 The private setup form has a public-key field. After saving, the administrator
 runs `python3 -I tools/setup-wizard.py authorize-ssh` from the trusted checkout.
@@ -85,7 +94,7 @@ fields were checked against [Claude's official guide](https://code.claude.com/do
 ## Publish the welcome guide
 
 The reusable public guide assets are under welcome/. After creating a static
-welcome app, copy index.html, welcome.css and welcome.js into its public directory
+welcome app, copy index.html, welcome.css, welcome.js and key-guide.js into its public directory
 as lab, retaining its generated icons, manifest and pwa.js. Add connection.json
 with the actual reachable SSH hostname and integer port, for example:
 

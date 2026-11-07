@@ -1,5 +1,12 @@
 # Changelog
 
+## Clear key-copy results — 2026-11-07
+
+- Add Mac/Windows guidance with explicit SUCCESS, MISSING and ERROR command output.
+- Reveal paste instructions or guarded key creation based on the user's result;
+  keep the private-key filename and OS-specific connection command in sync.
+- Give inline copy-button feedback and explain invisible passphrase entry.
+
 ## Unified invitation access — 2026-11-07
 
 - Replace the welcome page's root SSH command with invitation-authorized Enable

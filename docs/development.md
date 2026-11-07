@@ -466,3 +466,15 @@ unknown/expired/revoked tokens, origin and body restrictions, invalid keys,
 retry binding after partial writes, and preserving one-key scope. Live validation
 must use temporary keys and remove exactly those keys after SSH/SFTP checks.
 Do not run SQLite on the lab-owned invitation database as root.
+
+
+## Key-copy guide checks — 2026-11-07
+
+welcome/key-guide.js separates command generation from the DOM. Parse it and
+welcome.js as ES modules with `node --input-type=module --check < FILE`.
+The Mac copy commands were run in a temporary home with a simulated pbcopy,
+covering missing files, successful copying, failed copying and empty files; a
+pre-existing dedicated private key was preserved by the creation guard. This is
+shell-logic evidence, not native macOS clipboard validation. No PowerShell runtime
+is available here; Windows commands were checked against Microsoft documentation
+and their UI paths exercised, not executed on a Windows desktop.

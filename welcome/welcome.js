@@ -1,5 +1,5 @@
+import {initKeyGuide, privateKeyArgument} from './key-guide.js';
 const $ = id => document.getElementById(id);
-const quote = value => "'" + value.replaceAll("'", "'\\''") + "'";
 let connection;
 function readInvitation() {
   const value = new URLSearchParams(location.hash.slice(1)).get('invite') || '';
@@ -61,12 +61,13 @@ function testCommand() {
     $('test-command').textContent = 'Enter the private-key file path, without .pub.';
     return;
   }
-  const shellPath = path.startsWith('~/') ? '"$HOME"/' + quote(path.slice(2)) : quote(path);
+  const shellPath = privateKeyArgument(path, $('computer-os').value);
   $('ssh-key-path').textContent = path;
   $('test-command').textContent = `ssh -i ${shellPath} -o IdentitiesOnly=yes -o PreferredAuthentications=publickey -p ${connection.port} lab@${connection.host} 'whoami; cd /srv/lab && pwd'`;
 }
 $('test-command-button').addEventListener('click', testCommand);
 $('key-path').addEventListener('input', () => { if (connection) testCommand(); });
+initKeyGuide(() => { if (connection) testCommand(); });
 if (connection) testCommand();
 $('public-key').addEventListener('input', () => { $('grant').hidden = true; });
 $('prepare').addEventListener('click', async () => {
@@ -102,6 +103,12 @@ $('prepare').addEventListener('click', async () => {
 });
 for (const button of document.querySelectorAll('[data-copy]')) button.addEventListener('click', async () => {
   const text = $(button.dataset.copy).textContent;
-  try { await navigator.clipboard.writeText(text); $('copy-status').textContent = 'Copied. Paste it where the instructions indicate.'; }
+  try {
+    await navigator.clipboard.writeText(text);
+    const label = button.textContent;
+    button.textContent = ['find-key', 'create-key', 'new-key'].includes(button.dataset.copy) ? 'Copied — paste in your terminal' : 'Copied';
+    setTimeout(() => { button.textContent = label; }, 3000);
+    $('copy-status').textContent = 'Copied. Paste it where the instructions indicate.';
+  }
   catch { $('copy-status').textContent = 'Select the text and copy it manually.'; }
 });

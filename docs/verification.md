@@ -554,3 +554,14 @@ strict, ProtectHome read-only, and writes restricted to .ssh and invitation stat
 its socket listens only on 127.0.0.1:9876 behind the selected welcome HTTPS site.
 Installed verification matched 52 files and labdoctor reported zero problems.
 Owner-laptop/Claude acceptance remains for the owner to perform with a new link.
+
+
+## Key-copy result guidance — 2026-11-07
+
+137 source tests and 59 parse checks passed, along with both JavaScript module
+syntax checks. Chromium/WebKit at 390px and 1280px passed both Mac and Windows
+selections: SUCCESS paste shortcuts, MISSING creation branch, existing-key guard
+instructions, dedicated filename synchronization, OS-specific SSH command and no
+horizontal overflow or JavaScript errors. No live SSH keys or invitations were
+changed during these UI checks. Mac shell logic passed simulated clipboard cases;
+actual macOS/Windows clipboard integration remains user-device acceptance.
