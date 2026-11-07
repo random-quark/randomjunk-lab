@@ -1,5 +1,10 @@
 # Changelog
 
+## Refresh retired welcome instructions — 2026-11-07
+
+- Give the welcome guide a network-first worker and a cache-recovery page that
+  preserves private invitations. Keep experiment caching behavior unchanged.
+
 ## Clear key-copy results — 2026-11-07
 
 - Add Mac/Windows guidance with explicit SUCCESS, MISSING and ERROR command output.

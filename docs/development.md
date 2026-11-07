@@ -478,3 +478,13 @@ pre-existing dedicated private key was preserved by the creation guard. This is
 shell-logic evidence, not native macOS clipboard validation. No PowerShell runtime
 is available here; Windows commands were checked against Microsoft documentation
 and their UI paths exercised, not executed on a Windows desktop.
+
+
+## Welcome cache migration — 2026-11-07
+
+Publish welcome/sw.template.js and refresh.html alongside the guide assets. The
+worker immediately activates for this guide, prefers network for public assets,
+and never intercepts enrollment POSTs or stores network responses. The recovery
+page waits for a version acknowledgement before redirecting with the original
+invitation fragment. Test with an older cache-first worker already controlling
+the page; testing only a fresh browser cannot expose this regression.

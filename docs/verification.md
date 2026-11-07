@@ -565,3 +565,16 @@ instructions, dedicated filename synchronization, OS-specific SSH command and no
 horizontal overflow or JavaScript errors. No live SSH keys or invitations were
 changed during these UI checks. Mac shell logic passed simulated clipboard cases;
 actual macOS/Windows clipboard integration remains user-device acceptance.
+
+
+## Retired welcome cache recovery — 2026-11-07
+
+Reproduced the stale-root-command experience with an older cache-first worker
+controlling the welcome origin. Chromium and WebKit both passed migration via
+refresh.html: new worker activation/acknowledgement, removal of retired caches,
+invitation fragment preserved into the new authenticated status request and then
+removed from the URL, current Enable access UI and current content after reload.
+Only synthetic invalid tokens were used; no SSH access changed. The guide now
+prefers current public assets from the network without changing experiment workers
+or automatically navigating away from active forms. Source checks:137 tests and
+59 parse checks passed. Existing WebKit offline limitations remain unchanged.

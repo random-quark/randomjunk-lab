@@ -94,7 +94,8 @@ fields were checked against [Claude's official guide](https://code.claude.com/do
 ## Publish the welcome guide
 
 The reusable public guide assets are under welcome/. After creating a static
-welcome app, copy index.html, welcome.css, welcome.js and key-guide.js into its public directory
+welcome app, copy index.html, welcome.css, welcome.js, key-guide.js, refresh.html and
+sw.template.js into its public directory
 as lab, retaining its generated icons, manifest and pwa.js. Add connection.json
 with the actual reachable SSH hostname and integer port, for example:
 
@@ -108,3 +109,9 @@ this regenerates the offline worker. The page is a guide, not an SSH web gateway
 For a previously installed platform, install the new root-owned sshkeys.py library
 and lab-authorize-key helper from reviewed source before publishing the guide.
 Do not rerun bootstrap on an existing machine.
+
+The welcome guide uses its own network-first service worker so updated access
+instructions replace retired ones. It does not change experiment service workers.
+If an older guide is cached, open /refresh.html with the same invitation fragment;
+it upgrades the worker and returns to the current guide without exposing the token
+in a query string. It never automatically reloads an active enrollment form.
