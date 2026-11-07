@@ -7,19 +7,26 @@ the owner's laptop key.
 
 ## One-time laptop access
 
-The welcome guide starts with a Mac / Windows selector. On Mac, use Terminal;
-on Windows, use PowerShell. Its copy command prints SUCCESS only after copying a
-nonempty public-key file, MISSING when the file is absent, and ERROR for other
-read/clipboard failures. The final emphasized RESULT arrow line is the actual outcome; the pasted command
-above it includes all possible branches. Choose SUCCESS / No errors to see paste instructions:
-Command+V on Mac, Ctrl+V on Windows. The browser cannot observe terminal results.
+The welcome guide has one create-or-copy command for Mac Terminal and Windows
+PowerShell. It consistently uses `~/.ssh/infinity_machine_ed25519` (private) and
+`~/.ssh/infinity_machine_ed25519.pub` (public). If neither exists, it creates a
+key pair with an interactive passphrase prompt, then copies the public key.
+If both already exist, it reuses them. Incomplete pairs are preserved and report
+an error; the command never deliberately overwrites an existing key.
 
-Choose MISSING / No such file to reveal guarded creation of a dedicated
-lab_ed25519 key, followed by its copy command. Existing private/public files are
-not overwritten. After confirming the new key was copied, the guide switches the
-private-key path and connection test to lab_ed25519 automatically. Other errors
-have separate guidance; a clipboard failure does not imply a new key is needed.
-The private file stays on the computer; only .pub contents are submitted.
+The full command is copied even while its preview is collapsed to three faded
+lines. Click the preview to inspect it. The final emphasized RESULT arrow has
+blank lines above/below and reports SUCCESS only after clipboard copying succeeds.
+Paste directly into the public-key field (Command+V on Mac, Ctrl+V on Windows).
+No SUCCESS/MISSING buttons or second copy command are required. Claude's SSH-key
+field and the diagnostic command default to the same dedicated private-key path.
+The browser cannot inspect a local key or prove it matches a manually pasted key.
+
+Previously authorized keys remain valid: use their original private-key filename
+in Claude, or request a new invitation to enroll the dedicated Infinity Machine
+key. An already used invitation cannot enroll a different key. Nothing renames
+or removes existing laptop/server keys. Step 6 exposes `/srv/lab` with its own
+copy button. A private-key passphrase prompt is not a lab account password prompt.
 
 Windows clipboard handling follows [Microsoft's Set-Clipboard documentation](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/set-clipboard?view=powershell-5.1), with terminating error handling for reads and copies.
 
@@ -71,7 +78,7 @@ the Claude card. If needed, test from the laptop with the matching private-key p
 and actual host/port:
 
 ```sh
-ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes -o PreferredAuthentications=publickey lab@YOUR_SERVER 'whoami; cd /srv/lab && pwd'
+ssh -i ~/.ssh/infinity_machine_ed25519 -o IdentitiesOnly=yes -o PreferredAuthentications=publickey lab@YOUR_SERVER 'whoami; cd /srv/lab && pwd'
 ```
 
 Expected output: lab and /srv/lab. A private-key passphrase prompt is normal. Lab

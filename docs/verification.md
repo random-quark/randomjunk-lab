@@ -692,3 +692,16 @@ Both matched the trusted root-owned 0.8.22 workspace binaries byte-for-byte;
 replaced them atomically with root:root 0755 copies. All installed code/templates
 then matched source, with executable ownership verified. Review found no remaining
 merge blocker. Real phone delivery/install checks remain user/device confirmations.
+
+
+One-command SSH onboarding — 2026-11-07: generated Mac command tested as lab with
+a temporary HOME, actual ssh-keygen (test wrapper supplies an empty passphrase)
+and simulated pbcopy. Creation copies the new public key; reuse preserves private
+bytes; incomplete pairs remain unchanged; clipboard failure does not report success.
+Verified blank lines and runtime-only RESULT marker. Native macOS clipboard and
+Windows PowerShell execution are not available on this Linux host.
+142 source tests and 60 source parse checks passed. Browser checks cover Chromium
+and WebKit at 390/1280px on both welcome hosts: one command, full-text copying
+while collapsed, expansion, OS switching, consistent private-key paths, folder
+copy button and three visible steps without overflow or JavaScript errors.
+Clipboard writes were mocked; real key enrollment was not repeated or changed.

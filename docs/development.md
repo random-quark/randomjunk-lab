@@ -575,3 +575,14 @@ not main), run installed-file verification as well as source tests, and preserve
 the invitation page's recipient-aware first prompt in human instructions. The
 original-host uv ownership drift was corrected from matching trusted binaries;
 bootstrap already installs explicit root:root ownership.
+
+
+## One-command SSH key setup — 2026-11-07
+
+welcome/key-guide.js now exposes one create-or-copy command per OS and one fixed
+KEY_PATH. Key selection no longer depends on clicking an outcome button. Existing
+complete pairs are reused; partial pairs fail without replacement. Copy uses full
+textContent even when the command preview is collapsed. The preview uses native
+details/summary for keyboard access; the SSH-key and folder copy controls remain
+visible. Custom existing-key paths remain available under Connection trouble.
+Changing the default does not migrate existing keys or consume a new invitation.
