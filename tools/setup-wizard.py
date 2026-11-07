@@ -32,7 +32,7 @@ SECRET_NAMES = set(PROVIDERS.values()) | {
     'RESTIC_PASSWORD', 'HEALTHCHECKS_PING_URL',
 }
 CHOICES = {
-    'SSH_PUBLIC_KEY': '', 'PROJECT_NAME': 'My Lab', 'DOMAIN': '', 'SERVER_IPV4': '', 'SSH_PORT': '22',
+    'SSH_PUBLIC_KEY': '', 'PROJECT_NAME': 'The Infinity Machine', 'DOMAIN': '', 'SERVER_IPV4': '', 'SSH_PORT': '22',
     'BACKUP_TIMEZONE': 'UTC', 'DEPLOYMENT_AGENT': 'claude-desktop',
     'NOTIFICATIONS': '', 'BACKUPS': '', 'B2_BUCKET': '', 'B2_ENDPOINT': '',
     'BACKUP_SERVER_NAME': '', 'EMAIL_PROVIDER': '', 'EMAIL_SENDING_DOMAIN': '',
@@ -137,8 +137,8 @@ def send_notification(topic):
     # Only this fixed service and a generated path; never a user-supplied URL.
     request = urllib.request.Request(
         'https://ntfy.sh/' + topic,
-        data=b'Your lab setup can reach this phone. Confirm receipt in the setup page.',
-        headers={'Title': 'Lab setup test', 'Content-Type': 'text/plain'}, method='POST')
+        data=b'The Infinity Machine can reach this phone. Confirm receipt in the setup page.',
+        headers={'Title': 'Infinity Machine setup test', 'Content-Type': 'text/plain'}, method='POST')
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirect())
     with opener.open(request, timeout=10) as response:
         if response.status != 200:

@@ -507,3 +507,14 @@ Connection diagnostics now use a standalone collapsed details element after the 
 Claude permission guidance: the Auto instruction belongs to the message-box
 permissions selector, not the environment picker. Optional desktop plugin notices
 are not lab dependencies; installed experiment instructions do not request Codex.
+
+
+## The Infinity Machine branding and onboarding — 2026-11-07
+
+README.md is the human entry point: root Claude connection, installation prompt,
+private invitation, then lab Claude connection. SETUP.md remains authoritative for
+installation; technical README material moved to platform-reference.md. Human UI
+and agent-facing naming guidance use The Infinity Machine. Keep technical lab
+identifiers and historical installation evidence unchanged. The GitHub repository
+has not yet been renamed: clone URLs retain random-quark/randomjunk-lab until then.
+After renaming, update repository links and Git remotes; do not reuse the old name.

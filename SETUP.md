@@ -1,4 +1,4 @@
-# Start here: set up a new lab server
+# Set up The Infinity Machine
 
 **This is the single entry point to give your setup agent.** Ask it to read this
 file and carry out the steps, following linked references when needed. This is an
@@ -14,7 +14,9 @@ experimental: a trial exposed a sudo-rs incompatibility in the previous installe
 The corrected sudoers rule is portable, but that alone does not validate the whole
 platform on a newer OS. Check packages, locked Python dependencies and browser
 support on the actual image before installing.
-See [desktop SSH connection instructions](README.md#start-here-connect-your-desktop-agent-over-ssh).
+See [desktop SSH connection instructions](README.md#1-connect-claude-to-your-new-server).
+
+Technical layout and commands: [platform reference](docs/platform-reference.md).
 
 ## 1. Agent: bring the settings to the owner
 
@@ -120,7 +122,7 @@ form, run `python3 -I tools/setup-wizard.py authorize-ssh` after core installati
 this can run while optional services remain pending. For direct entry, pipe the
 public key to `/usr/local/sbin/lab-authorize-key` as root. Never copy every root
 key or a test agent's key as a substitute. Follow [the Claude handoff](docs/claude-ssh.md)
-and have the owner test lab login from their own laptop. Follow the [desktop connection guide](README.md#start-here-connect-your-desktop-agent-over-ssh).
+and have the owner test lab login from their own laptop. Follow the [desktop connection guide](README.md#1-connect-claude-to-your-new-server).
 Claude Desktop installs its helper/engine automatically for this user. Codex
 currently needs its CLI available on this user's login-shell PATH and its own
 authentication; verify those as `lab`, not root. A separate terminal CLI is only

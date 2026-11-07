@@ -1,178 +1,67 @@
-# Randomjunk Lab
+# The Infinity Machine
 
-A small experiments platform for Ubuntu 24.04 LTS: Caddy, static sites, optional
-FastAPI, SQLite or PostgreSQL/pgvector, and restic backups. Python dependencies
-use uv and committed lockfiles.
+Describe an app. Get a link. Open it on your phone.
 
-## Start here: connect your desktop agent over SSH
+The Infinity Machine turns your own server into a place to build small apps with
+an AI agent. Tell Claude what you want to make; it builds, tests and publishes it.
+The server supplies hosting, databases and instructions so each idea can start
+without another round of infrastructure setup.
 
-Use a fresh **Ubuntu 24.04 LTS** server and your own desktop agent account.
-Ubuntu 24.04 LTS is the recommended installation target. Ubuntu 26.04 is
-experimental; a trial exposed sudo compatibility differences. Do not upgrade an existing lab by running
-bootstrap again.
+[The story behind the project →](https://www.randomquark.com/labs/infinity_machine/)
 
-1. Confirm SSH works from your laptop using the server address, administrator
-   account and your SSH key. Root (or a sudo administrator) is for platform setup;
-   everyday experiment work will use `lab`. If using Tailscale, connect your laptop
-   to it and use the server's Tailscale address. Claude also needs working SFTP.
-2. In that initial SSH session, install `curl` and `git` with the administrator's
-   package manager, then clone the source:
+## 1. Connect Claude to your new server
 
-   ```sh
-   git clone https://github.com/random-quark/randomjunk-lab.git
-   ```
+You need a **fresh Ubuntu 24.04 LTS VPS**, its IP address and root SSH password or
+key, plus Claude Desktop with access to the **Code** tab. No domain or API keys
+are required to get started.
 
-   Note the checkout's absolute path. Choose one desktop connection below.
-3. **Claude Desktop:** in the Code tab, open the environment selector → New
-   environment → SSH → Add SSH connection. Enter `user@hostname` (or your SSH
-   config alias), port and key; select the checkout folder. Desktop installs its
-   helper and Claude Code automatically for that SSH user. No separate Claude CLI
-   installation, tmux session or Remote Control command is required.
-4. **Codex / ChatGPT desktop:** current official instructions require `codex` on
-   the remote SSH user's login-shell PATH. Install it once on the server using
-   the [official CLI instructions](https://learn.chatgpt.com/docs/cli), then follow
-   the [authentication instructions](https://learn.chatgpt.com/docs/auth) for that
-   same user. In the desktop app, open Settings → Connections, add/enable the SSH
-   host, and choose the checkout folder. The app starts the remote app server;
-   do not manually launch an interactive CLI or tmux session first.
-For a step-by-step Claude-only handoff, see [Connect Claude Desktop](docs/claude-ssh.md).
+1. In Claude Desktop, open **Code → New → Choose environment → + New environment**.
+2. Select **SSH**, name it **Infinity Machine — Setup**, then choose
+   **Host → + Add SSH connection**.
+3. Enter `root@YOUR_SERVER_IP` and port **22** (unless your provider specifies
+   another). Use your SSH key if you have one; otherwise enter the server’s root
+   password when Claude asks. Verify a new host’s fingerprint with your provider.
+4. Save the connection, select it under **Host**, and set **Folders** to `/root`.
+   Leave **Worktree** unchecked. Click **Create environment** and select it.
+5. Below the message box, choose **Auto** for fewer approval prompts, if available.
 
-5. Ask the connected agent to confirm `hostname`, `whoami` and the checkout path,
-   then give it the setup instruction below. After installation, the setup agent
-   gives you a private welcome invitation. Paste your public key and click Enable
-   access—this is the same flow for the owner or an invited friend. Add a separate
-   desktop connection as `lab`, and select
-   `/srv/lab` for experiment work. Claude provisions its engine for this user;
-   for Codex, verify this user's PATH and authentication separately.
+Claude installs its remote helper automatically. You don’t need tmux or a separate
+Claude installation on the server.
 
-A server reboot ends running agent processes. Reconnect from the desktop app and
-resume from the saved setup checklist; this is not a promise that an interrupted
-command continues. A dropped connection and a reboot are different events. No
-extra public agent port is needed. Keep a normal SSH client available for recovery.
+## 2. Ask Claude to install The Infinity Machine
 
-Official connection references (checked 2026-11-06):
-[Codex SSH](https://learn.chatgpt.com/docs/remote-connections#connect-to-an-ssh-host),
-[Claude Desktop SSH](https://code.claude.com/docs/en/desktop#ssh-sessions).
-The Claude third-party-provider guide is only needed for that deployment mode.
+Paste this into your new Claude conversation:
 
-## What your setup agent needs
+> Set up The Infinity Machine on this fresh server. Confirm the hostname, Ubuntu
+> version and that you are running as root. Install git if needed, then clone
+> https://github.com/random-quark/randomjunk-lab.git into /root/infinity-machine.
+> Read its SETUP.md and follow it. Help me complete the private setup form; keep
+> API keys and passwords out of chat and Git. Use this server’s actual IP if I
+> have no domain. Install and test the system, tell me anything still pending,
+> then give me a private invitation link to connect as lab through Claude Desktop.
 
-A fresh Ubuntu 24.04 LTS VPS, working administrator SSH access, and its public IP
-are enough to begin. A purchased domain, AI API key, ntfy account or backup account
-is not required to install and test the core. Without your own domain, the installer
-uses an IP-derived sslip.io address for apps; it depends on that third-party DNS
-service. Keep optional integrations pending until their inputs are available.
+Claude will ask about the services you want. **ntfy** is useful for sending app
+links to your phone; **Replicate** and **OpenAI** are optional AI services. You can
+start without them and add them later.
 
-If a form has been saved on this host, even unfinished, the agent can safely run
-`tools/setup-wizard.py review` as administrator to see non-secret choices. It must
-not print the private state file or change a selected service to “skip” just to
-finish the form. Earlier explicit owner choices take precedence over untouched
-form defaults. Install the core independently, then return to selected integrations.
+## 3. Open your invitation and start building
 
-## Set up your own machine
+1. Open the private invitation Claude gives you. Follow the page to find or create
+   your computer’s SSH key, paste its **public** key, and click **Enable access**.
+2. In Claude Desktop, add another **SSH** environment named **The Infinity Machine**.
+   Use `lab@YOUR_SERVER_IP`, the SSH port and key path shown on the invitation page.
+   Set **Folders** to `/srv/lab`, leave **Worktree** unchecked, and create it.
+3. Select that environment, choose **Auto** if available, and send:
 
-**Give your agent [SETUP.md](SETUP.md). That is the single installation entry point.**
-It guides the agent through the questionnaire, installation, selected integrations,
-backups, monitoring and verification. Use a fresh Ubuntu 24.04 LTS server and your own
-accounts and either a public IPv4 address or your own domain. No AI subscription or provider key is needed for static apps.
+> Confirm you are running as lab in /srv/lab. Read CLAUDE.md and the installed
+> instructions. Help me build my first experiment. Ask me what I want to make.
 
-Copy this instruction to your agent after downloading/cloning the repository:
+Use this environment from now on. Keep the root connection for administration.
+To invite a trusted friend, ask your setup agent for a new private invitation;
+they follow the same page without needing root access. Everyone using `lab`
+shares the machine’s apps and files.
 
-> Read SETUP.md and help me set up this server. Bring the settings questionnaire
-> to my attention first, ask for missing information as needed, and follow the
-> linked instructions. Keep secrets outside the repo and chat. Verify the setup
-> and tell me what is still pending before declaring it finished.
+**Codex:** Instructions coming.
 
-The agent creates ignored `.local/settings.txt` and `.local/setup-status.md` from
-blank templates. Your answers and progress stay local; secret values go in
-protected server files. Source tests are not proof that a new installation works.
-
-**Prefer a form for settings and keys?** Use the
-[private setup form](docs/setup-wizard.md). It runs on the VPS through an SSH
-tunnel, puts ntfy/Replicate/OpenAI first, and securely hands your choices to the
-setup agent. No purchased domain or paid API is required; installation and verification follow SETUP.md.
-
-Other entry points:
-
-- **Develop the platform:** [AGENTS.md](AGENTS.md), mirrored in [CLAUDE.md](CLAUDE.md).
-- **Build apps after installation:** launch your agent **as lab in `/srv/lab`**;
-  it reads the installed `AGENTS.md` / `CLAUDE.md`.
-- **Tests and tooling:** [docs/development.md](docs/development.md).
-- **Sharing/audit scope:** [docs/sharing.md](docs/sharing.md).
-
-Repository: [random-quark/randomjunk-lab](https://github.com/random-quark/randomjunk-lab).
-If private, the owner must grant students access or provide a source-only archive.
-This contains the platform and starter templates, not the running experiments or
-server credentials. Use separate machines/keys for independent student ownership;
-`lab` is a trusted deployer, not a sandbox for mutually untrusted users.
-
-## Work on this repository
-
-Read [development instructions](docs/development.md) for exact tooling setup and
-commands. `uv run --locked pytest` runs isolated tests; it does not install the
-platform. `bootstrap.sh` is an explicitly gated **fresh installer**, never a test
-command or upgrade mechanism.
-
-## Installed layout
-
-| Path | Ownership and purpose |
-| --- | --- |
-| `/srv/lab/NAME/` | root-owned container |
-| `/srv/lab/NAME/app/` | lab-owned source and uv environment; edit here |
-| `/srv/lab/NAME/data/` | runtime-owned 0700 persistent data |
-| `/var/lib/lab/` | root-only records, credentials and lifecycle lock |
-| `/var/lib/lab-public/NAME-REVISION/` | immutable root-owned static publication |
-| `/etc/lab/apps/NAME.env` | root-only environment injected by systemd |
-
-`newlab` and `labrm` call one privileged controller. The controller serializes
-operations, runs code/dependency work as `lab`, and generates Caddy configuration
-from structured records. Failed creation preserves resources for diagnosis;
-failed service stop blocks destructive teardown.
-
-After installation, typical commands **as lab** are:
-
-```sh
-newlab hello --static
-newlab notes --app --db postgres --private
-sudo /usr/local/sbin/labctl publish hello
-sudo /usr/local/sbin/labctl verify notes
-labs
-labdev hello  # local preview; Ctrl-C cleans up
-labshot hello --out /tmp/hello-preview
-labdoctor
-labrm hello
-```
-
-Shell edits in either app kind need `labctl publish NAME` to regenerate the worker.
-Backend Python edits also need `labctl service restart NAME`. HTTP verification
-is not application testing.
-
-Read [SETUP.md](SETUP.md), [security](docs/security.md),
-[recovery](docs/recovery.md), [hosted notifications](docs/notifications.md), [migration](docs/migration.md), and
-[agent operating instructions](templates/operating-instructions.md) before installing or administering.
-
-## Experiment development workflow
-
-New static and backend scaffolds include an in-app PWA offer, content-hashed shell
-worker generation, uv-locked test tooling, and tools/tests shared fixtures. Start a
-local preview with labdev, publish an early safe preview, and share screenshots
-with labshot. See [the workflow](docs/experiment-workflow.md). Existing apps are
-not rewritten: custom workers opt in only through an explicit migration.
-
-## Server backups and monitoring
-
-The original server has daily encrypted **Restic backups to Backblaze B2**, running at
-**03:30 Europe/Berlin**. The whole-machine backup covers data and configuration,
-with exclusions for replaceable OS files, caches, logs and selected secrets.
-It includes PostgreSQL dumps and discovered SQLite snapshots; new database
-engines or unusual storage locations still need a backup review.
-
-Retention is **7 daily, 4 weekly and 6 monthly snapshots**. Each run checks 1% of
-repository data. **Healthchecks.io** receives start, success and failure signals
-and monitors for missed or stalled runs, using a one-day period and one-hour
-grace. Email notifications are selected; inbox delivery still needs confirmation.
-
-Logs: `/var/log/restic-backup.log`. See [backup setup and recovery instructions](docs/server-backups.md)
-for exclusions, protected configuration and restore commands. These services are
-not activated by cloning the repository; a new installation must configure and verify its own
-backup repository and monitoring check.
+*For agents: [installation](SETUP.md), [platform development](AGENTS.md),
+[technical reference](docs/platform-reference.md).*

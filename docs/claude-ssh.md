@@ -1,4 +1,4 @@
-# Connect Claude Desktop to your installed lab
+# Connect Claude Desktop to The Infinity Machine
 
 Initial setup uses root (or a sudo administrator) and the repository checkout.
 Everyday experiment work uses lab and /srv/lab. Access is authorized per Linux
@@ -81,7 +81,7 @@ do not disable host-key checks to get past a reinstall warning.
 ## Claude Desktop clicks
 
 1. Open Code → New → Choose environment → + New environment.
-2. Select SSH and give the environment a name such as My Lab.
+2. Select SSH and give the environment a name such as The Infinity Machine.
 3. Under Host, choose + Add SSH connection.
 4. Enter the connection name, `lab@YOUR_SERVER`, and SSH port (normally 22).
    In SSH key, choose the matching private-key file on the Mac, without .pub.

@@ -1,4 +1,7 @@
-# Operating the installed lab platform
+# Operating The Infinity Machine
+
+Use “The Infinity Machine” for the platform’s human-facing name. Technical user,
+command and directory names remain lab.
 
 These instructions apply after installation. To develop the platform itself,
 use AGENTS.md in the platform source repository. Everyday experiments run under the deployment identity `lab`; root

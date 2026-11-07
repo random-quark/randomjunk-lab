@@ -1,5 +1,13 @@
 # Changelog
 
+## The Infinity Machine — 2026-11-07
+
+- Shorten the README to the Claude root-to-install-to-invitation-to-lab journey.
+- Move the technical overview into docs/platform-reference.md.
+- Brand the welcome page, private setup form and current guidance as The Infinity Machine.
+- Keep technical lab names and the existing repository URL; Codex instructions are coming.
+
+
 ## Claude permission guidance — 2026-11-07
 
 - Explain choosing Auto below the message box for fewer routine approval prompts.
