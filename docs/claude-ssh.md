@@ -10,7 +10,8 @@ the owner's laptop key.
 The welcome guide starts with a Mac / Windows selector. On Mac, use Terminal;
 on Windows, use PowerShell. Its copy command prints SUCCESS only after copying a
 nonempty public-key file, MISSING when the file is absent, and ERROR for other
-read/clipboard failures. Choose SUCCESS / No errors to see paste instructions:
+read/clipboard failures. The final emphasized RESULT arrow line is the actual outcome; the pasted command
+above it includes all possible branches. Choose SUCCESS / No errors to see paste instructions:
 Command+V on Mac, Ctrl+V on Windows. The browser cannot observe terminal results.
 
 Choose MISSING / No such file to reveal guarded creation of a dedicated
@@ -31,7 +32,9 @@ invitation form below provides the normal recipient flow.
 The welcome guide now uses a private invitation for both the owner and invited
 friends. Paste the public key and click Enable access; no root command or password
 is requested from the person connecting. The server authorizes the key for lab.
-Opening the public guide alone grants nothing. Invitations expire after 24 hours,
+An accepted link hides manual code entry and tells the user no second invitation
+is needed. Missing or invalid invitations show recovery options. Opening the public
+guide alone grants nothing. Invitations expire after 24 hours,
 authorize one key, and allow retrying that same key if a response was lost.
 
 After installing the core and publishing the welcome guide, the setup agent runs:

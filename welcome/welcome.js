@@ -24,12 +24,16 @@ async function access(action, data = {}) {
 async function checkInvitation() {
   invitationReady = false;
   $('prepare').disabled = true;
+  $('invite-entry').hidden = false;
+  $('no-invitation-help').hidden = false;
   if (!invitation) return;
   try {
     const status = await access('status');
     invitationReady = true;
-    $('invite-status').textContent = status.used ? 'This invitation has already enabled one key. You can retry that same key or continue to step 2.' : 'Your invitation is ready. Paste your public key below.';
+    $('invite-status').textContent = status.used ? 'This invitation has already enabled one key. You can retry that same key or continue to step 2.' : 'Invitation accepted — you do not need another link or code. Next, copy and paste your public key below.';
     $('invite-entry').open = false;
+    $('invite-entry').hidden = true;
+    $('no-invitation-help').hidden = true;
     $('prepare').disabled = !connection;
   } catch (error) { $('invite-status').textContent = error.message; }
 }

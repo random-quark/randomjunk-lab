@@ -1,5 +1,12 @@
 # Changelog
 
+## Unambiguous onboarding results — 2026-11-07
+
+- Assemble a bold/colored RESULT arrow only at command execution, separating the
+  actual outcome from the pasted command’s possible branches.
+- Hide code entry and missing-invitation help after a link is accepted; explicitly
+  tell the user that no second invitation is needed.
+
 ## Refresh retired welcome instructions — 2026-11-07
 
 - Give the welcome guide a network-first worker and a cache-recovery page that

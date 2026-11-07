@@ -578,3 +578,17 @@ Only synthetic invalid tokens were used; no SSH access changed. The guide now
 prefers current public assets from the network without changing experiment workers
 or automatically navigating away from active forms. Source checks:137 tests and
 59 parse checks passed. Existing WebKit offline limitations remain unchanged.
+
+
+## Distinct results and accepted-invitation guidance — 2026-11-07
+
+137 source tests, 59 source parse checks and both JavaScript syntax checks passed.
+Generated Mac/Windows commands do not contain the contiguous RESULT arrow marker;
+simulated Mac missing/success/copy-error/existing-key paths each print exactly one
+emphasized result. Native PowerShell execution remains untested on this Linux host.
+
+Chromium/WebKit at 390px and 1280px passed accepted-invitation hiding, expired-link
+recovery, command marker generation and paste guidance. These UI checks mocked only
+invitation status and blocked service workers so WebKit request interception was
+deterministic; no real invitations or authorized keys changed. Cache migration and
+live invitation enrollment retain the separately recorded real-service evidence.

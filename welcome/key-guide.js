@@ -1,4 +1,4 @@
-export function keyCommands(os, filename = 'id_ed25519') {
+function rawKeyCommands(os, filename = 'id_ed25519') {
   // Filenames are application constants, never user input.
   if (!['id_ed25519', 'lab_ed25519'].includes(filename)) throw new Error('Unknown key filename');
   if (os === 'windows') return {
@@ -11,6 +11,16 @@ export function keyCommands(os, filename = 'id_ed25519') {
     copy: `if [ ! -e "$HOME/.ssh/${filename}.pub" ]; then\n  echo 'MISSING: Public-key file not found. Click MISSING / No such file on the page.'\nelif [ -s "$HOME/.ssh/${filename}.pub" ] && pbcopy < "$HOME/.ssh/${filename}.pub"; then\n  echo 'SUCCESS: Public key copied. Return to the page and paste with Command+V.'\nelse\n  echo 'ERROR: Could not read or copy the key. Open the other-error help on the page.'\nfi`,
     create: `if [ -e "$HOME/.ssh/lab_ed25519" ] || [ -L "$HOME/.ssh/lab_ed25519" ] || [ -e "$HOME/.ssh/lab_ed25519.pub" ] || [ -L "$HOME/.ssh/lab_ed25519.pub" ]; then\n  echo 'EXISTS: A lab key already exists. Nothing was overwritten. Try the copy command below.'\nelif mkdir -p "$HOME/.ssh" && ssh-keygen -t ed25519 -f "$HOME/.ssh/lab_ed25519" -C 'my-lab'; then\n  echo 'CREATED: Now run the copy command below.'\nelse\n  echo 'ERROR: Key creation failed. Open the other-error help on the page.'\nfi`
   };
+}
+
+// Assemble the marker at runtime so it occurs only in terminal output, never
+// verbatim in the pasted command. Print exactly one final result.
+export function keyCommands(os, filename = 'id_ed25519') {
+  const commands = rawKeyCommands(os, filename);
+  const emphasize = command => os === 'windows'
+    ? command.replaceAll('Write-Output ', '$labCopyResult = ') + `\nWrite-Host ''\nWrite-Host ('RES' + 'ULT---> ' + $labCopyResult) -ForegroundColor Cyan\nWrite-Host ''`
+    : command.replaceAll('echo ', 'lab_copy_result=') + `\nprintf '\\n\\033[1m%s%s\\033[0m\\n\\n' 'RES' "ULT---> $lab_copy_result"`;
+  return {...commands, copy: emphasize(commands.copy), create: emphasize(commands.create)};
 }
 
 export function privateKeyArgument(path, os) {

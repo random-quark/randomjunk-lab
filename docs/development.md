@@ -488,3 +488,13 @@ and never intercepts enrollment POSTs or stores network responses. The recovery
 page waits for a version acknowledgement before redirecting with the original
 invitation fragment. Test with an older cache-first worker already controlling
 the page; testing only a fresh browser cannot expose this regression.
+
+
+## Terminal result distinction — 2026-11-07
+
+keyCommands formats all copy/create outcomes through one final printer. The
+contiguous RESULT arrow is assembled from separate strings at runtime so the
+pasted command cannot be mistaken for the result. Mac uses bold ANSI formatting;
+PowerShell uses colored Write-Host. Check that generated commands omit the marker
+and simulated shell outcomes contain it exactly once. Invitation UI visibility
+checks can mock only the status response without enrolling keys or minting tokens.
