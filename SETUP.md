@@ -142,6 +142,9 @@ Its app directory is `/srv/lab/browser-check/app`, with locked dependencies in
 remove that exact fixture through `labrm browser-check` when checks finish.
 
 Configure Chromium and WebKit using [browser-testing.md](docs/browser-testing.md).
+Use the templates’ locked Playwright 1.64.1 and matching browser builds. Preserve
+other apps’ cached builds during installation; the guide covers isolated trials
+and existing-app upgrades. Do not import the old WebKit offline expected failure.
 Browser downloads and tests run as lab. Only reviewed OS package installation
 runs as root; never run an app-owned browser installer with root privileges.
 

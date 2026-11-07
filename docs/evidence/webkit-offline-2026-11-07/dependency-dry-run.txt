@@ -1,0 +1,21 @@
+Missing system dependencies (20):
+  fonts-freefont-ttf
+  fonts-ipafont-gothic
+  fonts-tlwg-loma-otf
+  fonts-unifont
+  fonts-wqy-zenhei
+  libfontenc1
+  libice6
+  libsm6
+  libxaw7
+  libxfont2
+  libxkbfile1
+  libxmu6
+  libxt6t64
+  x11-xkb-utils
+  xfonts-cyrillic
+  xfonts-encodings
+  xfonts-scalable
+  xfonts-utils
+  xserver-common
+  xvfb

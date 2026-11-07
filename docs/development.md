@@ -518,3 +518,16 @@ and agent-facing naming guidance use The Infinity Machine. Keep technical lab
 identifiers and historical installation evidence unchanged. The GitHub repository
 has not yet been renamed: clone URLs retain random-quark/randomjunk-lab until then.
 After renaming, update repository links and Git remotes; do not reuse the old name.
+
+
+## Playwright 1.64.1 upgrade — 2026-11-07
+
+Both scaffold dependency declarations and locks pin 1.64.1. Only Playwright
+changed in the resolved package versions. The minimal offline reproduction and
+original investigation are preserved under docs/evidence/webkit-offline-2026-11-07
+and on the test host under /home/lab/platform-evidence/webkit-offline-2026-11-07.
+Run browser code as lab; platform source checks remain in the trusted checkout.
+Use separate PLAYWRIGHT_BROWSERS_PATH directories for version trials and protect
+shared caches with PLAYWRIGHT_SKIP_BROWSER_GC=1 during deliberate upgrades.
+Installed templates require explicit deployment; existing app locks do not
+change automatically. Do not rerun bootstrap for this upgrade.

@@ -621,3 +621,27 @@ form assets without horizontal overflow. The form test did not submit settings
 or activate integrations. Repository rename was assessed, not performed; no
 .github workflow/action directory exists in this checkout. Historical domains
 and technical lab identities remain unchanged.
+
+
+## Verified Playwright upgrade — 2026-11-07
+
+Platform source: 137 tests passed (two existing warnings), 60 parse checks.
+Template locks changed only Playwright 1.62.0 → 1.64.1. Updated installed
+static/backend templates and operating instructions on the authorized test VPS.
+
+As lab, upgraded glyphfall and welcome locks/environments and installed matching
+browsers with cache GC disabled. Both preflights passed: Chromium 156.0.8078.4,
+WebKit 27.2, phone/desktop screenshots. Glyphfall: 50 passed in 53.96 seconds,
+with the old offline xfail removed. Welcome scaffold: 1 passed. Separate live
+HTTPS checks on both apps passed controlled offline reload, interaction and
+reconnect in both engines. No game-code or public-asset changes were required.
+
+Independently reran the preserved minimal reproduction: all five variants passed
+3/3 in both engines (30 cases). The old-version comparison is the lab agent's
+preserved evidence; it was not redundantly rerun. No extra OS packages were
+installed. Dry-run still listed fonts/Xvfb packages, recorded in evidence;
+passing headless checks do not establish headed or multilingual coverage.
+Actual iPhone install/offline behaviour remains a physical-device check.
+
+The original scratch environments and older browser cache builds were retained;
+no unrelated cached builds or user work were deleted.

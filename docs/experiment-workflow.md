@@ -201,3 +201,10 @@ or executable paths. Confirm no remaining app listener, managed service, Caddy
 route or platform record, then run `labdoctor`. Report inaccessible checks as
 pending. A clean `labdoctor` result does not prove orphan processes are absent.
 Retained backups and client-side PWA copies are separate from live removal.
+
+
+Browser baseline: new templates pin Playwright 1.64.1, verified with WebKit 27.2
+for simulated offline navigation. Do not apply the historical 1.62.0 offline
+xfail to this baseline. Investigate failures normally and preserve evidence;
+see docs/browser-testing.md (installed: /usr/local/share/lab/docs/browser-testing.md)
+for upgrades and isolated browser caches. App dependency work and tests run as lab.

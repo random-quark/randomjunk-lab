@@ -202,3 +202,10 @@ private setup form. It contains no keys and does not enumerate pre-existing
 integrations. Provider keys may still be untested: confirm model access, cost and
 required grants before using them. Static apps require no AI provider. Do not
 read the form's private state or root staging bundle into chat.
+
+
+Browser baseline: new templates pin Playwright 1.64.1, verified with WebKit 27.2
+for simulated offline navigation. Do not apply the historical 1.62.0 offline
+xfail to this baseline. Investigate failures normally and preserve evidence;
+see docs/browser-testing.md (installed: /usr/local/share/lab/docs/browser-testing.md)
+for upgrades and isolated browser caches. App dependency work and tests run as lab.

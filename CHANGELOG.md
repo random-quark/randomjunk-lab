@@ -1,5 +1,12 @@
 # Changelog
 
+## WebKit offline testing fix — 2026-11-07
+
+- Pin both experiment templates to Playwright 1.64.1 and regenerate locks.
+- Preserve the minimal offline reproduction and document safe cache handling.
+- Replace the obsolete WebKit limitation with verified upgrade instructions.
+
+
 ## The Infinity Machine — 2026-11-07
 
 - Shorten the README to the Claude root-to-install-to-invitation-to-lab journey.

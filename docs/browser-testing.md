@@ -38,7 +38,7 @@ unrelated service restarts out of this installation; schedule maintenance separa
 Then, as lab (not root):
 
 ```sh
-.venv/bin/playwright install chromium webkit
+PLAYWRIGHT_SKIP_BROWSER_GC=1 .venv/bin/playwright install chromium webkit
 labpreflight NAME --engines chromium webkit
 ```
 
@@ -59,7 +59,50 @@ reload and reconnect, including from an external browser.
 
 Linux WebKit 26.5 repeatedly reported `Page.reload: WebKit encountered an internal
 error` during simulated offline reload, even after service-worker control and all
-10 cached assets were confirmed. This is unresolved: do not label WebKit offline
-behavior passed or assume the failure proves an iPhone bug. Real Safari/iPhone
-installation and offline checks remain necessary. Retain the failing result in
-app evidence rather than swallowing it or weakening offline assertions.
+10 cached assets were confirmed. This historical failure is resolved in the tested Playwright 1.64.1 / WebKit 27.2
+combination; see the upgrade below. It did not establish an iPhone bug.
+
+
+## Verified offline fix — 2026-11-07
+
+The Infinity Machine templates pin **Playwright 1.64.1** in pyproject.toml and
+uv.lock. The minimal reproduction in [evidence](evidence/webkit-offline-2026-11-07/README.md)
+compares Chromium and WebKit, simulated offline reload/fresh navigation, and
+navigation with the origin server stopped. The old WebKit 26.5 failed simulated
+offline navigation; WebKit 27.2 passed. Stopping the origin is not a complete
+network disconnect or a physical iPhone test.
+
+Do not carry the old unconditional WebKit offline xfail into apps on this pin.
+Investigate new failures normally: they may be app, environment or tooling bugs.
+Do not weaken assertions or assume every future version is fixed. Physical
+Safari/iPhone installation and offline play remain separate checks.
+
+### Existing apps and version experiments
+
+Updating platform templates affects new scaffolds only. For each existing app,
+review its working tree, then as lab in its app directory:
+
+1. Set the dev dependency to `playwright==1.64.1`.
+2. Run `uv lock --upgrade-package playwright`, review the dependency diff, and
+   `uv sync --locked --python /usr/bin/python3`.
+3. Install matching browsers with
+   `PLAYWRIGHT_SKIP_BROWSER_GC=1 .venv/bin/playwright install chromium webkit`.
+4. Run preflight and the app's tests, including actual offline assertions. Remove
+   only the obsolete version-specific xfail; commit the dependency and test changes.
+
+For temporary version comparisons, use a dedicated cache path, for example
+`PLAYWRIGHT_BROWSERS_PATH="$HOME/.cache/infinity-machine-pw-trial-1.64.1"`.
+Set it for both browser installation and test execution. Playwright may garbage
+collect older builds from a shared cache; never delete another app's required
+builds. The skip-GC setting above protects older builds during a deliberate shared
+cache upgrade. If a build is missing, reinstall from the affected app's locked
+environment as lab. Review OS dependencies via the dry-run procedure above;
+never execute an app-owned dependency installer as root.
+
+On the verified Ubuntu 24.04 test host, headless launch and offline tests needed
+no additional packages. The 1.64.1 dry-run still listed optional font families
+and Xvfb/X11 packages; exit status 0 did not mean its missing-package list was
+empty. Review those for headed tests and multilingual font coverage. See
+[evidence package plan](evidence/webkit-offline-2026-11-07/dependency-dry-run.txt).
+
+Cache options follow [Playwright’s browser management documentation](https://playwright.dev/python/docs/browsers#stale-browser-removal).
