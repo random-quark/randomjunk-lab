@@ -535,5 +535,22 @@ The existing WebKit offline limitation is unchanged; these are online UI checks.
 
 The earlier welcome command flow is superseded. The new owner/friend form sends
 only a public key with a private invitation token to an unprivileged lab service.
-137 source tests and 59 source parse checks passed. Live acceptance results will
-be added after deployment. Previous no-POST checks apply only to the retired flow.
+137 source tests, 59 source parse checks and five Caddy parser cases passed.
+Previous no-POST checks apply only to the retired flow.
+
+Real browser acceptance passed in Chromium and WebKit at 390px and 1280px:
+private-link and manual-code entry, private-key rejection, actual key authorization,
+same-key retries, second-key rejection, missing-token rejection, no horizontal
+overflow or JavaScript errors. Opening an invitation while the guide was already
+open exposed a fragment-navigation issue; a hash-change handler fixed it and the
+full browser matrix then passed. The setup utility's minimal PATH also exposed a
+runuser lookup failure; it now uses an absolute path and completed successfully.
+
+The browser-authorized temporary key successfully logged in as lab, printed
+/srv/lab and connected by SFTP. Test invitations were revoked, the exact temporary
+key was removed, and authorized_keys matched its pre-test SHA-256 hash. Existing
+keys were preserved. The service runs as lab with NoNewPrivileges, ProtectSystem
+strict, ProtectHome read-only, and writes restricted to .ssh and invitation state;
+its socket listens only on 127.0.0.1:9876 behind the selected welcome HTTPS site.
+Installed verification matched 52 files and labdoctor reported zero problems.
+Owner-laptop/Claude acceptance remains for the owner to perform with a new link.

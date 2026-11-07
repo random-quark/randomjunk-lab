@@ -1,8 +1,12 @@
 const $ = id => document.getElementById(id);
 const quote = value => "'" + value.replaceAll("'", "'\\''") + "'";
 let connection;
-let invitation = new URLSearchParams(location.hash.slice(1)).get('invite') || '';
-if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+function readInvitation() {
+  const value = new URLSearchParams(location.hash.slice(1)).get('invite') || '';
+  if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+  return value;
+}
+let invitation = readInvitation();
 let invitationReady = false;
 let sending = false;
 async function access(action, data = {}) {
@@ -29,6 +33,10 @@ async function checkInvitation() {
     $('prepare').disabled = !connection;
   } catch (error) { $('invite-status').textContent = error.message; }
 }
+window.addEventListener('hashchange', async () => {
+  const value = readInvitation();
+  if (value) { invitation = value; await checkInvitation(); }
+});
 $('use-invite').addEventListener('click', async () => {
   invitation = $('invite-code').value.trim();
   $('invite-code').value = '';

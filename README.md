@@ -38,8 +38,10 @@ bootstrap again.
 For a step-by-step Claude-only handoff, see [Connect Claude Desktop](docs/claude-ssh.md).
 
 5. Ask the connected agent to confirm `hostname`, `whoami` and the checkout path,
-   then give it the setup instruction below. After installation, authorize your
-   SSH public key for `lab`, add a separate desktop connection as `lab`, and select
+   then give it the setup instruction below. After installation, the setup agent
+   gives you a private welcome invitation. Paste your public key and click Enable
+   access—this is the same flow for the owner or an invited friend. Add a separate
+   desktop connection as `lab`, and select
    `/srv/lab` for experiment work. Claude provisions its engine for this user;
    for Codex, verify this user's PATH and authentication separately.
 
