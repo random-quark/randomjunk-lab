@@ -19,3 +19,9 @@ with tempfile.TemporaryDirectory(prefix='lab-caddy-parse-') as temporary:
             parsed=json.loads(result.stdout)
             assert parsed['apps']['http']['servers']
             print(f'PASS: Caddy parses {kind}, private={private}')
+
+    record={'name':'welcome','kind':'static','private':False,'public_revision':'a'*32}
+    config.write_text('{\n\tadmin off\n}\n'+caddy_site(record,'example.test','/srv/lab',access=True))
+    result=subprocess.run([binary,'adapt','--config',str(config),'--adapter','caddyfile'],capture_output=True,text=True,check=True)
+    assert '127.0.0.1:9876' in result.stdout
+    print('PASS: Caddy parses invitation route before static fallback')

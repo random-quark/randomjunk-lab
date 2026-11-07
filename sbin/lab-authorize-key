@@ -1,0 +1,14 @@
+#!/usr/bin/python3 -I
+"""Administrator-only: add one public key from stdin to lab, preserving other keys."""
+import sys
+from pathlib import Path
+source = Path(__file__).resolve().parents[1] / 'bin/lib'
+sys.path.insert(0, str(source if source.is_dir() else Path('/usr/local/lib/lab')))
+from labcore import LabError
+from sshkeys import authorize_lab_key
+try:
+    authorize_lab_key(sys.stdin.read(16385))
+    print('Public key authorized for lab. Test the connection from your laptop.')
+except LabError as exc:
+    print(str(exc), file=sys.stderr)
+    sys.exit(1)

@@ -1,0 +1,10 @@
+#!/usr/bin/python3 -I
+import sys
+sys.path.insert(0, '/usr/local/lib/lab')
+from access import main
+from labcore import LabError
+try:
+    main()
+except (LabError, OSError, KeyError, ValueError) as exc:
+    print(str(exc) if isinstance(exc, LabError) else 'Check access-service installation and configuration.', file=sys.stderr)
+    sys.exit(1)

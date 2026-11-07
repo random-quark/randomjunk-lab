@@ -20,6 +20,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'bin/lib'))
 from labcore import LabError, atomic_write, domain, install_domain, read_env, protected_dir, locked
 
+from sshkeys import public_key, authorize_lab_key
+
 PROVIDERS = {
     'replicate': 'REPLICATE_API_TOKEN', 'openai': 'OPENAI_API_KEY',
     'gemini': 'GEMINI_API_KEY', 'anthropic': 'ANTHROPIC_API_KEY',
@@ -30,7 +32,7 @@ SECRET_NAMES = set(PROVIDERS.values()) | {
     'RESTIC_PASSWORD', 'HEALTHCHECKS_PING_URL',
 }
 CHOICES = {
-    'PROJECT_NAME': 'My Lab', 'DOMAIN': '', 'SERVER_IPV4': '', 'SSH_PORT': '22',
+    'SSH_PUBLIC_KEY': '', 'PROJECT_NAME': 'The Infinity Machine', 'DOMAIN': '', 'SERVER_IPV4': '', 'SSH_PORT': '22',
     'BACKUP_TIMEZONE': 'UTC', 'DEPLOYMENT_AGENT': 'claude-desktop',
     'NOTIFICATIONS': '', 'BACKUPS': '', 'B2_BUCKET': '', 'B2_ENDPOINT': '',
     'BACKUP_SERVER_NAME': '', 'EMAIL_PROVIDER': '', 'EMAIL_SENDING_DOMAIN': '',
@@ -49,7 +51,9 @@ def clean_text(value, limit=4096):
 def validate_choices(value):
     if not isinstance(value, dict) or set(value) - set(CHOICES):
         raise LabError('Unknown setup field.')
-    result = {k: clean_text(v, 253) for k, v in value.items()}
+    result = {k: clean_text(v, 16384 if k == 'SSH_PUBLIC_KEY' else 253) for k, v in value.items()}
+    if result.get('SSH_PUBLIC_KEY'):
+        result['SSH_PUBLIC_KEY'] = public_key(result['SSH_PUBLIC_KEY'])
     enums = {
         'NOTIFICATIONS': {'', 'ntfy', 'skip'}, 'BACKUPS': {'', 'b2', 'skip'},
         'DEPLOYMENT_AGENT': {'claude-desktop', 'codex-desktop'},
@@ -92,6 +96,7 @@ def validate_bundle(data):
     if not isinstance(data, dict) or set(data) != {'version', 'choices', 'secrets', 'topic', 'notification', 'finished'} or data['version'] != 1:
         raise LabError('Invalid setup bundle.')
     choices = validate_choices(data['choices'])
+    choices.setdefault('SSH_PUBLIC_KEY', '')
     choices.setdefault('SERVER_IPV4', '')  # Older saved forms had no IP-only option.
     if set(choices) != set(CHOICES):
         raise LabError('Incomplete setup bundle.')
@@ -132,8 +137,8 @@ def send_notification(topic):
     # Only this fixed service and a generated path; never a user-supplied URL.
     request = urllib.request.Request(
         'https://ntfy.sh/' + topic,
-        data=b'Your lab setup can reach this phone. Confirm receipt in the setup page.',
-        headers={'Title': 'Lab setup test', 'Content-Type': 'text/plain'}, method='POST')
+        data=b'The Infinity Machine can reach this phone. Confirm receipt in the setup page.',
+        headers={'Title': 'Infinity Machine setup test', 'Content-Type': 'text/plain'}, method='POST')
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirect())
     with opener.open(request, timeout=10) as response:
         if response.status != 200:
@@ -380,7 +385,7 @@ def apply_integrations(data, target, stage, lab_gid):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('command', choices=['serve', 'review', 'stage', 'apply'])
+    parser.add_argument('command', choices=['serve', 'review', 'stage', 'apply', 'authorize-ssh'])
     parser.add_argument('--state-dir', type=Path, default=Path('/var/lib/lab-onboarding'))
     parser.add_argument('--port', type=int, default=8765)
     args = parser.parse_args()
@@ -394,6 +399,10 @@ def main():
         if args.command == 'review':
             print(json.dumps(public_status(data), indent=2))
             return
+        if args.command == 'authorize-ssh':
+            authorize_lab_key(data['choices']['SSH_PUBLIC_KEY'])
+            print('Public key authorized for lab. Test from the owner laptop; other setup choices remain pending.')
+            return
         if not data['finished']:
             raise LabError('Finish and close the form before staging or applying.')
         finish_checks(data)
@@ -402,7 +411,9 @@ def main():
         if args.command == 'apply':
             with locked(Path('/var/lib/lab/lock')):
                 apply_integrations(data, Path('/etc/lab'), destination, pwd.getpwnam('lab').pw_gid)
-            print('Selected AI/notification/email/test-payment credentials applied; provider access remains untested.')
+            if data['choices']['SSH_PUBLIC_KEY']:
+                authorize_lab_key(data['choices']['SSH_PUBLIC_KEY'])
+            print('Selected credentials applied; any supplied SSH public key authorized for lab. Verify access from your laptop.')
         else:
             print('Choices and secrets staged. Continue SETUP.md; install core only on a confirmed fresh target.')
         print('Non-secret choices: /root/lab-credentials/owner-settings.txt')

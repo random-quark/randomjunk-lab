@@ -1,5 +1,7 @@
-# Working on the platform source
+# Working on The Infinity Machine platform source
 
+- Human-facing branding is The Infinity Machine; retain lab for technical names.
+- See docs/platform-reference.md for the layout and command overview.
 - For a fresh installation, start with SETUP.md. Confirm the actual target and
   the current owner's choices and authorization. Historical installation records
   are evidence about another host, never permission or defaults for this one.

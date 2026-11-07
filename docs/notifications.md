@@ -14,7 +14,7 @@ an experiment's browser APIs or PWA behavior work on iPhone.
 1. Install the ntfy app on the phone(s) and allow notifications.
 2. Choose a long, randomly generated topic name and subscribe on the default
    ntfy.sh server. Keep the topic out of chat, source control, URLs in reports,
-   and public documentation. This server already has a configured topic; never print it.
+   and public documentation. Do not assume a new server has a configured topic; never print existing topics.
 3. Root sets `NTFY_URL=https://ntfy.sh` and `NTFY_TOPIC=<chosen-topic>` in
    `/etc/lab/notify.env` (root:lab 0640). Use the same destination in
    `/etc/lab/backup.env` (root:root 0600) if backup alerts should reach that phone.
@@ -30,7 +30,8 @@ control can be addressed separately.
 
 ## Readiness policy
 
-For each requested new experiment, send two messages, not a stream:
+Always post preview and final URLs directly in chat. Only when a destination is
+configured and intended for the current user, send two additional messages, not a stream:
 
 1. After the first successful publication, reachability check, and screenshot
    capture/inspection (fix obvious visual errors first), send a building
@@ -72,3 +73,32 @@ Legacy `notify "Title" "Description" "https://app.example.com"` calls remain val
 but the explicit URL replaces the body to preserve the same format. Put meaningful
 context in the title. Plain-text messages without a URL retain their body and have
 no actions. Copy support varies by client/version; real iPhone behavior is untested.
+
+## Optional invitation onboarding (owner or invited friend)
+
+After SSH authorization, the welcome page offers Set up notifications or Skip for
+now. It creates a separate random ntfy.sh topic per authorized public-key identity,
+never overwrites /etc/lab/notify.env, and never exposes the owner's destination.
+The simple anonymous-topic flow needs no ntfy account or API key. Install the
+[phone app](https://ntfy.sh/), allow notifications, tap + to add a subscription,
+keep server https://ntfy.sh and paste the private topic shown on the page.
+Click Send test notification, then It arrived on my phone only after receipt.
+HTTP acceptance alone does not mark notifications ready. Authenticated/reserved
+ntfy account topics are not configured by this simple flow.
+
+The topic stays in the lab-owned access-service database, outside Git/public files.
+The first Claude prompt carries a recipient ID (not the topic or invitation token).
+As lab, for that explicitly selected recipient:
+
+```sh
+lab-access notify --recipient RECIPIENT_ID --title 'My game · building' --url https://APP.EXAMPLE
+```
+
+This helper sends only to a confirmed, non-skipped subscription. It does not fall
+back to the owner's channel. Everyone using lab is trusted and shares its files;
+per-key routing is not tenant isolation. A new invitation enrolled with the same
+key reopens its settings; skip disables future helper sends to that recipient.
+An expired/revoked invitation cannot modify settings; existing confirmed delivery
+persists independently of invitation expiry. SSH key revocation and notification
+revocation are separate. Report a failed send once and keep delivering links in
+chat; never block a preview or repeatedly attempt an unconfigured destination.

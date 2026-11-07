@@ -1,4 +1,4 @@
-# Start here: set up a new lab server
+# Set up The Infinity Machine
 
 **This is the single entry point to give your setup agent.** Ask it to read this
 file and carry out the steps, following linked references when needed. This is an
@@ -14,7 +14,9 @@ experimental: a trial exposed a sudo-rs incompatibility in the previous installe
 The corrected sudoers rule is portable, but that alone does not validate the whole
 platform on a newer OS. Check packages, locked Python dependencies and browser
 support on the actual image before installing.
-See [desktop SSH connection instructions](README.md#start-here-connect-your-desktop-agent-over-ssh).
+See [desktop SSH connection instructions](README.md#1-connect-claude-to-your-new-server).
+
+Technical layout and commands: [platform reference](docs/platform-reference.md).
 
 ## 1. Agent: bring the settings to the owner
 
@@ -114,7 +116,13 @@ Root administers the platform. Experiment work runs as `lab`, with individual ap
 running as `labapp-NAME`. Never run experiment scripts/dependency hooks as root.
 
 Choose the owner's desktop coding agent and configure SSH access as `lab` with
-their own public key. Follow the [desktop connection guide](README.md#start-here-connect-your-desktop-agent-over-ssh).
+their own public key. Root's authorized keys are not inherited. Collect only the
+owner laptop's public key through the private form or a protected file. For a saved
+form, run `python3 -I tools/setup-wizard.py authorize-ssh` after core installation;
+this can run while optional services remain pending. For direct entry, pipe the
+public key to `/usr/local/sbin/lab-authorize-key` as root. Never copy every root
+key or a test agent's key as a substitute. Follow [the Claude handoff](docs/claude-ssh.md)
+and have the owner test lab login from their own laptop. Follow the [desktop connection guide](README.md#1-connect-claude-to-your-new-server).
 Claude Desktop installs its helper/engine automatically for this user. Codex
 currently needs its CLI available on this user's login-shell PATH and its own
 authentication; verify those as `lab`, not root. A separate terminal CLI is only
@@ -134,6 +142,9 @@ Its app directory is `/srv/lab/browser-check/app`, with locked dependencies in
 remove that exact fixture through `labrm browser-check` when checks finish.
 
 Configure Chromium and WebKit using [browser-testing.md](docs/browser-testing.md).
+Use the templates’ locked Playwright 1.64.1 and matching browser builds. Preserve
+other apps’ cached builds during installation; the guide covers isolated trials
+and existing-app upgrades. Do not import the old WebKit offline expected failure.
 Browser downloads and tests run as lab. Only reviewed OS package installation
 runs as root; never run an app-owned browser installer with root privileges.
 
@@ -204,6 +215,17 @@ PWA install offer and offline shell, then remove only the disposable resources.
 Use `labdoctor` to check for leftovers. The broad live-integration harness in
 [verification.md](docs/verification.md) is for a disposable empty platform only;
 do not run it on an occupied production machine.
+
+For the Claude welcome handoff, publish the guide assets from `welcome/` and follow
+[claude-ssh.md](docs/claude-ssh.md). Enable invitation enrollment once with
+`python3 -I tools/enable-access.py --app welcome`, then generate the owner's private
+link with `runuser -u lab -- lab-access invite`. The owner uses the same form as an
+invited friend: paste their public key, Enable access, optionally set up their own
+ntfy subscription (or skip), then connect as lab. The page requires a test and
+explicit phone receipt before marking that subscription ready. Use the page’s
+first Claude prompt to carry the chosen recipient ID; never replace the owner’s
+notification destination for an invited friend. Never
+require a collaborator to log in as root or put invitation URLs in public logs.
 
 Keep `.local/setup-status.md` current. Finish with the domain, installed components,
 secret **locations only**, how to enter `lab` and create an experiment, backup/

@@ -513,3 +513,182 @@ cloud-init failure remains separate. This trial preserved same-host certificates
 SSH/network/provider configuration and original packages, so it does not replace
 the earlier genuinely clean OS-install evidence. Optional real API access, hosted
 ntfy phone receipt, remote backups/monitoring and desktop sign-in remain pending.
+
+
+## Claude welcome and SSH handoff — 2026-11-07
+
+Source checks pass 128 tests and 55 parse checks. JavaScript syntax checks pass
+for the welcome ES module and setup form. The VPS welcome page passed Chromium
+and WebKit at 390px and 1280px: no horizontal overflow or JavaScript errors,
+private/multiline key rejection, public-key command generation, private-path
+updates and no POST/key storage. The public field does not contact a grant service.
+
+The root-owned helper was tested on the experimental VPS with a fresh disposable
+key. Two activations produced one entry; SSH returned lab and /srv/lab, and SFTP
+connected successfully. The exact test key was removed and authorized_keys matched
+its prior SHA-256 hash. No owner key was guessed or copied from root. Actual Mac
+key selection and a new Claude Desktop session remain owner acceptance steps.
+The existing WebKit offline limitation is unchanged; these are online UI checks.
+
+
+## Invitation enrollment — 2026-11-07
+
+The earlier welcome command flow is superseded. The new owner/friend form sends
+only a public key with a private invitation token to an unprivileged lab service.
+137 source tests, 59 source parse checks and five Caddy parser cases passed.
+Previous no-POST checks apply only to the retired flow.
+
+Real browser acceptance passed in Chromium and WebKit at 390px and 1280px:
+private-link and manual-code entry, private-key rejection, actual key authorization,
+same-key retries, second-key rejection, missing-token rejection, no horizontal
+overflow or JavaScript errors. Opening an invitation while the guide was already
+open exposed a fragment-navigation issue; a hash-change handler fixed it and the
+full browser matrix then passed. The setup utility's minimal PATH also exposed a
+runuser lookup failure; it now uses an absolute path and completed successfully.
+
+The browser-authorized temporary key successfully logged in as lab, printed
+/srv/lab and connected by SFTP. Test invitations were revoked, the exact temporary
+key was removed, and authorized_keys matched its pre-test SHA-256 hash. Existing
+keys were preserved. The service runs as lab with NoNewPrivileges, ProtectSystem
+strict, ProtectHome read-only, and writes restricted to .ssh and invitation state;
+its socket listens only on 127.0.0.1:9876 behind the selected welcome HTTPS site.
+Installed verification matched 52 files and labdoctor reported zero problems.
+Owner-laptop/Claude acceptance remains for the owner to perform with a new link.
+
+
+## Key-copy result guidance — 2026-11-07
+
+137 source tests and 59 parse checks passed, along with both JavaScript module
+syntax checks. Chromium/WebKit at 390px and 1280px passed both Mac and Windows
+selections: SUCCESS paste shortcuts, MISSING creation branch, existing-key guard
+instructions, dedicated filename synchronization, OS-specific SSH command and no
+horizontal overflow or JavaScript errors. No live SSH keys or invitations were
+changed during these UI checks. Mac shell logic passed simulated clipboard cases;
+actual macOS/Windows clipboard integration remains user-device acceptance.
+
+
+## Retired welcome cache recovery — 2026-11-07
+
+Reproduced the stale-root-command experience with an older cache-first worker
+controlling the welcome origin. Chromium and WebKit both passed migration via
+refresh.html: new worker activation/acknowledgement, removal of retired caches,
+invitation fragment preserved into the new authenticated status request and then
+removed from the URL, current Enable access UI and current content after reload.
+Only synthetic invalid tokens were used; no SSH access changed. The guide now
+prefers current public assets from the network without changing experiment workers
+or automatically navigating away from active forms. Source checks:137 tests and
+59 parse checks passed. Existing WebKit offline limitations remain unchanged.
+
+
+## Distinct results and accepted-invitation guidance — 2026-11-07
+
+137 source tests, 59 source parse checks and both JavaScript syntax checks passed.
+Generated Mac/Windows commands do not contain the contiguous RESULT arrow marker;
+simulated Mac missing/success/copy-error/existing-key paths each print exactly one
+emphasized result. Native PowerShell execution remains untested on this Linux host.
+
+Chromium/WebKit at 390px and 1280px passed accepted-invitation hiding, expired-link
+recovery, command marker generation and paste guidance. These UI checks mocked only
+invitation status and blocked service workers so WebKit request interception was
+deterministic; no real invitations or authorized keys changed. Cache migration and
+live invitation enrollment retain the separately recorded real-service evidence.
+
+Result spacing follow-up: generated Mac commands retain a valid shell format and three leading/two trailing blank lines; Windows uses corresponding explicit blank Write-Host calls.
+
+
+Three-step guide follow-up: Chromium and WebKit at 390px/1280px confirmed exactly
+three numbered cards, a separate collapsed Connection trouble? disclosure directly
+below the Claude card, hidden diagnostic fields until expanded, and automatic
+command/Claude-path updates after editing the private-key path. No overflow or
+JavaScript errors. 137 source tests and 59 parse checks passed.
+
+Claude Auto guidance — 2026-11-07: 137 tests and 59 source parse checks passed.
+Published welcome page contains the message-box Auto instruction. Live Chromium
+and WebKit checks at 390px/1280px retain three numbered cards, collapsed standalone
+diagnostics, working path updates, and no overflow or JavaScript errors. Installed
+lab agent instructions were checked: no Codex reference or installation request.
+The screenshot's plugin notice appears to originate in Claude's desktop/account
+plugin configuration; the user's Mac configuration was not inspected or changed.
+
+
+The Infinity Machine onboarding — 2026-11-07: README reduced from 178 to 67
+lines, with root connection, installation prompt, invitation and lab connection.
+Technical overview preserved in platform-reference.md and linked from agent entry
+points. Local documentation links and mirrored agent instructions checked.
+137 tests and 59 source parse checks passed (two existing warnings). Chromium and
+WebKit at 390px/1280px verified branded live welcome and intercepted local setup
+form assets without horizontal overflow. The form test did not submit settings
+or activate integrations. Repository rename was assessed, not performed; no
+.github workflow/action directory exists in this checkout. Historical domains
+and technical lab identities remain unchanged.
+
+
+## Verified Playwright upgrade — 2026-11-07
+
+Platform source: 137 tests passed (two existing warnings), 60 parse checks.
+Template locks changed only Playwright 1.62.0 → 1.64.1. Updated installed
+static/backend templates and operating instructions on the authorized test VPS.
+
+As lab, upgraded glyphfall and welcome locks/environments and installed matching
+browsers with cache GC disabled. Both preflights passed: Chromium 156.0.8078.4,
+WebKit 27.2, phone/desktop screenshots. Glyphfall: 50 passed in 53.96 seconds,
+with the old offline xfail removed. Welcome scaffold: 1 passed. Separate live
+HTTPS checks on both apps passed controlled offline reload, interaction and
+reconnect in both engines. No game-code or public-asset changes were required.
+
+Independently reran the preserved minimal reproduction: all five variants passed
+3/3 in both engines (30 cases). The old-version comparison is the lab agent's
+preserved evidence; it was not redundantly rerun. No extra OS packages were
+installed. Dry-run still listed fonts/Xvfb packages, recorded in evidence;
+passing headless checks do not establish headed or multilingual coverage.
+Actual iPhone install/offline behaviour remains a physical-device check.
+
+The original scratch environments and older browser cache builds were retained;
+no unrelated cached builds or user work were deleted.
+
+
+## Preview pipeline and ntfy enrollment — 2026-11-07
+
+Access tests cover pre-enrollment denial, Origin and bearer requirements, separate
+recipients, test-before-confirm, cooldown, failed-send handling, revocation, skip,
+and same-key invitation renewal. Browser checks in Chromium/WebKit at 390/1280px
+cover optional setup, explicit receipt, skip, recipient-only first prompt, three
+numbered steps and no overflow/JavaScript errors. Browser API responses were mocked
+and service workers blocked for deterministic routing; no real invitation or
+user SSH key was consumed. A protected database backup was made as lab before
+service deployment. Real phone receipt remains a user-confirmed setup step.
+
+Source suite: 141 tests passed before the final URL-action addition; the final
+access-focused suite additionally checks fixed HTTPS destination and Copy/Open
+actions. All 60 source parse checks and the ES-module syntax check passed.
+ntfy.sh accepted one isolated random-topic test message; no user subscription
+was changed and no phone delivery was claimed.
+
+
+Original-host rollout — 2026-11-07: 142 source tests and 60 parse checks passed.
+labdoctor changed from one pre-existing order-only Caddy warning to zero problems.
+Caddy and lab-access are active; live invitation endpoint rejects a missing token.
+Welcome's scaffold test and Chromium/WebKit preflight passed. Browser checks at
+390/1280px passed optional ntfy flows with mocked API responses; real HTTPS
+refresh, offline shell and reconnect checks passed in both engines. No actual
+user invitation was consumed or notification destination changed. Existing
+non-welcome app records and selected protected config hashes matched checkpoint.
+Physical-device checks and earlier setup checklist items were not reclassified.
+
+
+## Pre-merge review — 2026-11-07
+
+Reviewed the full auto-debug diff against the actual default branch, master:
+SSH enrollment boundaries, invitation expiry/revocation and same-key retries,
+notification recipient isolation/confirmation, cache exclusions, setup handoff
+and pinned template locks. Corrected README/Claude handoff to copy the invitation
+page's recipient-aware first message rather than dropping notification routing.
+142 tests, 60 source parse checks, five Caddy parser cases and both template
+lock checks passed. Historical evidence is not a substitute for a fresh full
+reinstall; no production bootstrap or destructive replay was performed.
+
+Installed-file audit on the original host found only uv/uvx ownership drift.
+Both matched the trusted root-owned 0.8.22 workspace binaries byte-for-byte;
+replaced them atomically with root:root 0755 copies. All installed code/templates
+then matched source, with executable ownership verified. Review found no remaining
+merge blocker. Real phone delivery/install checks remain user/device confirmations.

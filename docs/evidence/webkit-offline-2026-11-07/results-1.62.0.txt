@@ -1,0 +1,12 @@
+playwright 1.62.0 chromium 151.0.7922.34
+  emulated-offline/reload            ['PASS', 'PASS', 'PASS']
+  emulated-offline/goto-same-page    ['PASS', 'PASS', 'PASS']
+  emulated-offline/goto-new-page     ['PASS', 'PASS', 'PASS']
+  server-stopped/reload              ['PASS', 'PASS', 'PASS']
+  server-stopped/goto-new-page       ['PASS', 'PASS', 'PASS']
+playwright 1.62.0 webkit 26.5
+  emulated-offline/reload            ['ERROR: Page.reload: WebKit encountered an internal error', 'ERROR: Page.reload: WebKit encountered an internal error', 'ERROR: Page.reload: WebKit encountered an internal error']
+  emulated-offline/goto-same-page    ['ERROR: Page.goto: WebKit encountered an internal error', 'ERROR: Page.goto: WebKit encountered an internal error', 'ERROR: Page.goto: WebKit encountered an internal error']
+  emulated-offline/goto-new-page     ['ERROR: Page.goto: WebKit encountered an internal error', 'ERROR: Page.goto: WebKit encountered an internal error', 'ERROR: Page.goto: WebKit encountered an internal error']
+  server-stopped/reload              ['PASS', 'PASS', 'PASS']
+  server-stopped/goto-new-page       ['PASS', 'PASS', 'PASS']

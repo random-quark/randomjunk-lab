@@ -200,3 +200,25 @@ Pass `--screenshots /absolute/output/directory` to save previews. No real accoun
 keys are needed. Source/browser checks do not establish live VPS installation,
 real phone delivery, API billing/access or full installation readiness. See
 verification.md for the separately completed live 24.04 and SSH-tunnel checks.
+
+
+## Laptop SSH public key
+
+The basics section accepts one OpenSSH public key from the owner's laptop. Never
+paste a private key. Saving records the selection; the unprivileged web process
+cannot authorize SSH access. After core installation, an administrator can run:
+
+```sh
+python3 -I tools/setup-wizard.py authorize-ssh
+```
+
+This adds the saved key to lab without requiring optional integrations to be
+finished or changing their choices. `apply` also adds a supplied public key. Keys
+are validated, comments stripped, existing authorized keys preserved, and duplicate
+plain keys avoided. Clearing the form field does not revoke a previously installed
+key. The writer runs as lab and refuses symlink/hardlink destinations. Root SSH
+keys are never copied automatically. Older saved forms load with a blank key.
+
+Verify login from the owner's actual laptop, using the corresponding private-key
+file. Administrator success is not proof that Claude on the laptop can connect.
+See [Claude Desktop SSH](claude-ssh.md).

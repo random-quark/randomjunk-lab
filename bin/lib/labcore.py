@@ -110,7 +110,7 @@ def locked(path):
     finally:
         os.close(fd)
 
-def caddy_site(rec, dom, root, public='/var/lib/lab-public', tls_mode='production'):
+def caddy_site(rec, dom, root, public='/var/lib/lab-public', tls_mode='production', access=False):
     """Only structured platform data can influence Caddy directives."""
     app = name(rec['name'])
     domain(dom)
@@ -130,6 +130,8 @@ def caddy_site(rec, dom, root, public='/var/lib/lab-public', tls_mode='productio
         if not re.fullmatch(r'\$2[aby]\$[0-9]{2}\$[./A-Za-z0-9]{53}', hashed):
             raise LabError('invalid basic-auth hash')
         lines += ['\tbasic_auth {', '\t\tlab ' + hashed, '\t}']
+    if access:
+        lines += ['\treverse_proxy /_lab/access/* 127.0.0.1:9876']
     if rec['kind'] == 'static':
         revision = rec.get('public_revision', '')
         if not re.fullmatch(r'[a-f0-9]{32}', revision):

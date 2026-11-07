@@ -1,4 +1,4 @@
-# Randomjunk Lab — owner settings (NO SECRETS)
+# The Infinity Machine — owner settings (NO SECRETS)
 # The setup agent MUST bring this file to the owner's attention before setup.
 # Edit values after =. Blank means ask when needed; skip means deliberately omit.
 # These are preferences for the agent, NOT shell commands or automatic config.

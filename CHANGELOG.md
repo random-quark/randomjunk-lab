@@ -1,5 +1,81 @@
 # Changelog
 
+## Final review corrections — 2026-11-07
+
+- Preserve confirmed notification routing in the README’s Claude handoff.
+- Verify original-host installed tooling and correct uv/uvx ownership drift.
+
+
+## Original-host rollout — 2026-11-07
+
+- Apply current onboarding, build guidance and future-app browser baseline in place.
+- Fix doctor site-order comparison to match publication sorting.
+
+
+## Preview-first builds and optional phone notifications — 2026-11-07
+
+- Share a usable preview directly in chat before full validation and polish.
+- Focus tests on requested behavior; bound retries of shared infrastructure faults.
+- Add optional post-enrollment ntfy subscriptions with test/receipt confirmation,
+  per-key recipient routing, and no changes to the owner’s destination.
+
+
+## WebKit offline testing fix — 2026-11-07
+
+- Pin both experiment templates to Playwright 1.64.1 and regenerate locks.
+- Preserve the minimal offline reproduction and document safe cache handling.
+- Replace the obsolete WebKit limitation with verified upgrade instructions.
+
+
+## The Infinity Machine — 2026-11-07
+
+- Shorten the README to the Claude root-to-install-to-invitation-to-lab journey.
+- Move the technical overview into docs/platform-reference.md.
+- Brand the welcome page, private setup form and current guidance as The Infinity Machine.
+- Keep technical lab names and the existing repository URL; Codex instructions are coming.
+
+
+## Claude permission guidance — 2026-11-07
+
+- Explain choosing Auto below the message box for fewer routine approval prompts.
+- Keep onboarding Claude-only and retain the three visible steps.
+
+## Unambiguous onboarding results — 2026-11-07
+
+- Assemble a bold/colored RESULT arrow only at command execution, separating the
+  actual outcome from the pasted command’s possible branches.
+- Hide code entry and missing-invitation help after a link is accepted; explicitly
+  tell the user that no second invitation is needed.
+
+## Refresh retired welcome instructions — 2026-11-07
+
+- Give the welcome guide a network-first worker and a cache-recovery page that
+  preserves private invitations. Keep experiment caching behavior unchanged.
+
+## Clear key-copy results — 2026-11-07
+
+- Add Mac/Windows guidance with explicit SUCCESS, MISSING and ERROR command output.
+- Reveal paste instructions or guarded key creation based on the user's result;
+  keep the private-key filename and OS-specific connection command in sync.
+- Give inline copy-button feedback and explain invisible passphrase entry.
+
+## Unified invitation access — 2026-11-07
+
+- Replace the welcome page's root SSH command with invitation-authorized Enable
+  access, using the same flow for a fresh server owner or an invited friend.
+- Add an unprivileged enrollment service, expiring one-key invitations, safe
+  same-key retries, revocation and invitation creation by existing lab users.
+- Explain that pbcopy silently copies to the clipboard and prompt users to paste.
+
+## Claude laptop handoff — 2026-11-07
+
+- Add a reusable Claude-only welcome guide with exact desktop steps, public-key
+  entry, authenticated administrator command and laptop connection test.
+- Add public-key input to the private setup form and an administrator-only SSH
+  activation command that preserves existing keys and pending service choices.
+- Validate keys and perform authorized_keys writes as lab, rejecting redirected
+  files. Keep private keys on the laptop and root keys separate.
+
 ## Fresh-agent handoff and installer ownership — 2026-11-06
 
 - Extract uv under a private staging directory and install root-owned executables;
@@ -402,3 +478,7 @@ Stopped a verified orphan Paint Week preview; no other process was signalled.
 Hosted ntfy onboarding clarification: the proposed wizard fixes the service to
 https://ntfy.sh, omits a custom-server field and generates a fresh owner topic.
 Documentation-only follow-up; `git diff --check` passed.
+
+Welcome terminal results now have three blank lines above and two below on Mac and Windows.
+
+Welcome guide now has three numbered steps; connection diagnostics are collapsed beneath the Claude card, outside it. Removed the redundant prepare-test button.

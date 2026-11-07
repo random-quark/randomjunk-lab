@@ -1,0 +1,26 @@
+[Unit]
+Description=Invitation-only lab SSH key enrollment
+After=network.target
+[Service]
+User=lab
+Group=lab
+ExecStart=/usr/local/bin/lab-access serve
+Environment=HOME=/home/lab
+UMask=0077
+StateDirectory=lab-access
+StateDirectoryMode=0700
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/lab/.ssh /var/lib/lab-access
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+RestrictAddressFamilies=AF_INET AF_UNIX
+CapabilityBoundingSet=
+Restart=on-failure
+[Install]
+WantedBy=multi-user.target

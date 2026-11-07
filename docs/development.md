@@ -438,3 +438,140 @@ Repeat-trial source validation at d4e2154: 121 tests, 52 source parse checks and
 all four optional Caddy parser cases passed. Two existing upstream test-client
 deprecation warnings remain. The CLI review test now also covers absent saved
 form state with a specific continuation message.
+
+
+## Claude laptop handoff — 2026-11-07
+
+The reusable welcome/ assets provide a Claude-only connection guide. The public
+key field generates a quoted administrator SSH command locally; no grant endpoint
+exists. Test its module syntax with `node --input-type=module --check < welcome/welcome.js`.
+The private wizard stores SSH_PUBLIC_KEY and provides administrator-only
+`authorize-ssh`, independent of optional service completion. The standalone
+sbin/lab-authorize-key reads stdin and shares validation with the wizard.
+
+Run the full locked source suite. tests/test_sshkeys.py covers real OpenSSH key
+validation, duplicate-safe appends, preservation and symlink/hardlink rejection.
+Wizard tests cover old saved-state compatibility and unfinished-form activation.
+For live validation, use a disposable generated key, test lab SSH and SFTP, remove
+only that exact key, and compare authorized_keys with its pre-test hash. Never
+substitute the testing key for the owner's actual laptop key.
+
+
+## Invitation enrollment development — 2026-11-07
+
+The previous command-generating welcome flow is superseded by an unprivileged
+loopback enrollment service. See docs/claude-ssh.md for installation and threat
+boundaries. Run the locked source suite and Caddy parser checks; access tests cover
+unknown/expired/revoked tokens, origin and body restrictions, invalid keys,
+retry binding after partial writes, and preserving one-key scope. Live validation
+must use temporary keys and remove exactly those keys after SSH/SFTP checks.
+Do not run SQLite on the lab-owned invitation database as root.
+
+
+## Key-copy guide checks — 2026-11-07
+
+welcome/key-guide.js separates command generation from the DOM. Parse it and
+welcome.js as ES modules with `node --input-type=module --check < FILE`.
+The Mac copy commands were run in a temporary home with a simulated pbcopy,
+covering missing files, successful copying, failed copying and empty files; a
+pre-existing dedicated private key was preserved by the creation guard. This is
+shell-logic evidence, not native macOS clipboard validation. No PowerShell runtime
+is available here; Windows commands were checked against Microsoft documentation
+and their UI paths exercised, not executed on a Windows desktop.
+
+
+## Welcome cache migration — 2026-11-07
+
+Publish welcome/sw.template.js and refresh.html alongside the guide assets. The
+worker immediately activates for this guide, prefers network for public assets,
+and never intercepts enrollment POSTs or stores network responses. The recovery
+page waits for a version acknowledgement before redirecting with the original
+invitation fragment. Test with an older cache-first worker already controlling
+the page; testing only a fresh browser cannot expose this regression.
+
+
+## Terminal result distinction — 2026-11-07
+
+keyCommands formats all copy/create outcomes through one final printer. The
+contiguous RESULT arrow is assembled from separate strings at runtime so the
+pasted command cannot be mistaken for the result. Mac uses bold ANSI formatting;
+PowerShell uses colored Write-Host. Check that generated commands omit the marker
+and simulated shell outcomes contain it exactly once. Invitation UI visibility
+checks can mock only the status response without enrolling keys or minting tokens.
+
+Terminal result spacing: three leading blank lines and two trailing blank lines; the result marker remains assembled at runtime.
+
+Connection diagnostics now use a standalone collapsed details element after the Claude card. The private-key input remains available there and still updates the displayed Claude key path and generated command on input.
+
+
+Claude permission guidance: the Auto instruction belongs to the message-box
+permissions selector, not the environment picker. Optional desktop plugin notices
+are not lab dependencies; installed experiment instructions do not request Codex.
+
+
+## The Infinity Machine branding and onboarding — 2026-11-07
+
+README.md is the human entry point: root Claude connection, installation prompt,
+private invitation, then lab Claude connection. SETUP.md remains authoritative for
+installation; technical README material moved to platform-reference.md. Human UI
+and agent-facing naming guidance use The Infinity Machine. Keep technical lab
+identifiers and historical installation evidence unchanged. The GitHub repository
+has not yet been renamed: clone URLs retain random-quark/randomjunk-lab until then.
+After renaming, update repository links and Git remotes; do not reuse the old name.
+
+
+## Playwright 1.64.1 upgrade — 2026-11-07
+
+Both scaffold dependency declarations and locks pin 1.64.1. Only Playwright
+changed in the resolved package versions. The minimal offline reproduction and
+original investigation are preserved under docs/evidence/webkit-offline-2026-11-07
+and on the test host under /home/lab/platform-evidence/webkit-offline-2026-11-07.
+Run browser code as lab; platform source checks remain in the trusted checkout.
+Use separate PLAYWRIGHT_BROWSERS_PATH directories for version trials and protect
+shared caches with PLAYWRIGHT_SKIP_BROWSER_GC=1 during deliberate upgrades.
+Installed templates require explicit deployment; existing app locks do not
+change automatically. Do not rerun bootstrap for this upgrade.
+
+
+## Optional invitation notifications — 2026-11-07
+
+The lab access service migrates its existing SQLite database by adding a separate
+notifications table. Each recipient is the enrolled public-key digest, independent
+of invitation expiry. All HTTP configuration actions require a valid invitation
+and completed SSH enrollment; topics are generated server-side. Start/test/confirm/
+skip are separate actions; test requests have a 30-second cooldown, fixed ntfy.sh
+HTTPS destination, no redirects, bounded timeout and no topic/body logging.
+Readiness requires explicit receipt confirmation. lab-access notify requires an
+explicit confirmed recipient and never falls back to owner notification settings.
+This is routing within the trusted lab account, not multi-tenant secret isolation.
+
+Deploy access.py to /usr/local/lib/lab and restart lab-access; back up its database
+as lab before migration. Deploy welcome index.html/welcome.js as lab and publish
+welcome to refresh the worker. Update installed agent guidance and notification
+docs; no bootstrap rerun, firewall change or new public port is needed. Tests mock
+network delivery and verify authentication, receipt gating, skip and isolation.
+
+
+## Original-host in-place rollout — 2026-11-07
+
+Applied auto-debug to the original vmi3561391 / randomjunk.dev host without
+bootstrap or app migrations. Trusted platform config/tools/docs/templates and
+welcome source were checkpointed under /root/infinity-machine-upgrades/2026-11-07.
+Installed current template locks and agent guidance, enabled lab-access, and
+replaced the original welcome scaffold with the invitation/optional-ntfy guide.
+connection.json uses this host's Tailscale SSH address, not the Contabo test IP.
+Existing experiments retain their locks/environments; only welcome received new
+test tooling. Matching browsers were installed as lab with GC disabled.
+
+Pre-existing doctor drift was site order only: published records were enumerated
+by filename while publication sorts app names. Doctor now uses the same name
+order, including names with suffixes such as posters/posters-api. No site was
+removed or authentication relaxed. Existing owner ntfy, backup, provider and
+Stripe configuration hashes and non-welcome app records remained unchanged.
+
+
+Before merging auto-debug, compare against origin/master (the actual default,
+not main), run installed-file verification as well as source tests, and preserve
+the invitation page's recipient-aware first prompt in human instructions. The
+original-host uv ownership drift was corrected from matching trusted binaries;
+bootstrap already installs explicit root:root ownership.

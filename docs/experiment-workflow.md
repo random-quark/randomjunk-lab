@@ -32,9 +32,9 @@ out of Git. A source archive is useful for transfer but does not back up runtime
 Use uv and the system Python as lab. For an app needing browser verification:
 
 ```sh
-uv add --dev pytest httpx playwright
+uv add --dev pytest httpx "playwright==1.64.1"
 UV_PYTHON_DOWNLOADS=never uv sync --locked --python /usr/bin/python3
-.venv/bin/playwright install chromium
+PLAYWRIGHT_SKIP_BROWSER_GC=1 .venv/bin/playwright install chromium webkit
 ```
 
 Dependency addition is deliberate and updates the lock; subsequent reproduction
@@ -54,8 +54,9 @@ administration must not import or execute deployment-owned code.
 ## Verify the requested behavior
 
 Match checks to the app instead of stopping at the health endpoint. For a game:
-exercise touch/keyboard input, collisions/rotation/line clears, game over, pause,
-score submission and persistence. For a persistent app, verify a committed record
+exercise the requested input (touch first for a phone game), collisions/rotation/line
+clears, game over and restart. Check pause, scores or persistence only when those
+features exist or were requested. Do not invent features to satisfy this list. For a persistent app, verify a committed record
 survives a service restart. Use isolated fixtures; remove any necessary live test
 record by its exact ID, under the runtime identity, without deleting real data.
 
@@ -96,7 +97,9 @@ wheel, for example, must not be guessed from the generic word “wheel”.
 
 Publish an early preview within the requested privacy/billing constraints and
 capture and inspect a phone-sized screenshot before sending its building link.
-Fix obvious layout errors, then share that screenshot through the available
+Fix obvious layout errors, then immediately post the clickable preview URL in chat,
+clearly labeled building. Share it even if ntfy is missing or fails. Also share the
+screenshot through the available
 user-visible attachment mechanism; SendUserFile is one option, not a universal
 requirement. A screenshot visible only to the agent does not count as sharing.
 Ask for correction and continue working. Repeat after substantial visual changes.
@@ -127,14 +130,21 @@ one scenario must target the same isolated database. Measure with
 ## Release and handoff
 
 1. First safe preview: publish, check reachability, capture and inspect a screenshot,
-   fix obvious visual errors, then send the building notification and share it. Continue without waiting for optional input.
+   fix obvious visual errors, then post the preview URL directly in chat. Send an
+   additional building notification only to the session’s confirmed destination.
+   Continue without waiting for optional input or finishing polish.
 2. Iterate with focused checks; preserve scope/privacy and protect costly endpoints.
-3. Run `labbuild NAME` and `labbuild NAME --check`, then the full relevant suite; publish final assets (and restart backend code when
+   Rerun affected tests while fixing problems; defer unrelated desktop polish for
+   personal phone prototypes. Start with a small set of meaningful behavior tests.
+3. Run `labbuild NAME` and `labbuild NAME --check`, then the full relevant suite once; repeat broader
+   testing only after meaningful changes, failures or unresolved concerns. Test both
+   engines at the requested viewport. Publish final assets (and restart backend code when
    changed), then check the visible install flow and labctl verify NAME.
 4. Keep install.md short: URL, data location, reproduce commands, current evidence,
    known limits and outstanding owner checks. Detailed results belong in saved test
    reports/commit history, not repeated chronological prose in install.md.
-5. Stop temporary servers/remove exact fixtures and send timestamped ready message.
+5. Stop temporary servers/remove exact fixtures. Share the finished URL in chat;
+   send ready via ntfy only when configured and intended for this session.
 6. Commit code, lockfiles and documentation; share the final URL and actual limits.
 
 For small public leaderboards, validate and parameterize input, bound retention,
@@ -201,3 +211,19 @@ or executable paths. Confirm no remaining app listener, managed service, Caddy
 route or platform record, then run `labdoctor`. Report inaccessible checks as
 pending. A clean `labdoctor` result does not prove orphan processes are absent.
 Retained backups and client-side PWA copies are separate from live removal.
+
+
+Browser baseline: new templates pin Playwright 1.64.1, verified with WebKit 27.2
+for simulated offline navigation. Do not apply the historical 1.62.0 offline
+xfail to this baseline. Investigate failures normally and preserve evidence;
+see docs/browser-testing.md (installed: /usr/local/share/lab/docs/browser-testing.md)
+for upgrades and isolated browser caches. App dependency work and tests run as lab.
+
+## Keep platform faults out of the app-building loop
+
+Timebox first diagnosis to a short check and one justified retry. If a shared
+service, DNS or browser tool is broken, save the evidence and report it for a
+platform fix instead of repeating upgrades or exhaustive retries in each app.
+Share an available preview and its limitations; do not declare failed checks passed.
+Notifications and optional polish never gate the first playable link. Never
+replace a friend's destination with the owner's or send to every saved recipient.

@@ -1,4 +1,7 @@
-# Operating the installed lab platform
+# Operating The Infinity Machine
+
+Use “The Infinity Machine” for the platform’s human-facing name. Technical user,
+command and directory names remain lab.
 
 These instructions apply after installation. To develop the platform itself,
 use AGENTS.md in the platform source repository. Everyday experiments run under the deployment identity `lab`; root
@@ -121,14 +124,36 @@ pwa.js: preserve it when replacing app.js, or supply an equivalent tested UX.
 
 ## Progress and completion notifications
 
-For a requested new experiment, send two timestamped ntfy messages with the URL:
-after first publish, reachability check and screenshot inspection: “NAME · started HH:MM · building”; after behavior tests
-and labctl verify pass: “NAME · ready HH:MM”. Use machine-local time (check its
-zone). Do not send duplicates for every republish. No extra permission is needed.
-Stay quiet between them while the owner is active; at most one useful milestone
-when they are away on a long build. Never call an incomplete preview ready.
-For a change to an existing app, don't invent another first-publish event; send
-its completion message after checks. See docs/notifications.md for examples.
+Always share the first usable preview URL directly in chat as soon as publication,
+reachability and a phone screenshot check pass. Do not wait for polish, a full
+suite, notifications or documentation. Label it building, and continue working.
+Always share the finished URL in chat too.
+
+ntfy is optional and additional. For an explicit confirmed recipient ID supplied
+by the user's onboarding prompt, use `lab-access notify --recipient ID --title
+"NAME · building" --url HTTPS_URL` (and ready after verification). See
+/usr/local/share/lab/docs/notifications.md. Never guess a recipient or substitute
+the owner's topic for a friend. Use the legacy owner destination only when it is
+configured and explicitly intended for this session. If missing, skipped or a
+send fails, continue with chat links; do not retry repeatedly or block delivery.
+Never call a preview ready. Send at most building and ready per new experiment,
+not one notification per republish; existing app edits normally need only ready.
+
+## Preview-first scope and test budget
+
+Build the requested experience first. For a phone game, prioritise touch controls,
+screen fit, rotation/collisions, line clearing, game over and restart where relevant.
+Do not add desktop features, leaderboards, persistence or extra test scenarios
+just to satisfy a generic checklist. Defer unrelated desktop polish unless asked.
+Keep privacy, access control and costly endpoints safe from the first preview.
+Use a small risk-based test set. During fixes, rerun affected checks; run the full
+relevant suite once before completion, repeating it only for subsequent meaningful
+changes or unresolved failures. Check both Chromium and WebKit at the requested
+phone viewport before final handoff; desktop layout coverage is for requested or
+shared experiences, not a reason to expand a personal phone game's feature scope.
+Bound infrastructure diagnosis to a short check and one justified retry. Preserve
+evidence and escalate shared platform faults instead of investigating them in every
+app. If a usable preview exists, share it with its limitation immediately.
 
 ## Development and tests
 
@@ -173,7 +198,9 @@ not a requirement to re-answer every setup question for each ordinary experiment
 
 ## App-link notification format
 
-Use `notify "Title" "https://app.example.com"` for app readiness. The message body
+Use `lab-access notify --recipient ID --title "Title" --url "https://app.example.com"`
+for the confirmed session recipient. Use `notify "Title" "https://app.example.com"`
+only for an explicitly intended, configured legacy owner destination. The message body
 contains only the URL, with Copy link and Open in browser buttons. No custom click
 destination is set, so the notification opens normally in ntfy. Link text inside
 ntfy still follows the client's link behavior; the Copy link button copies exactly
@@ -199,3 +226,10 @@ private setup form. It contains no keys and does not enumerate pre-existing
 integrations. Provider keys may still be untested: confirm model access, cost and
 required grants before using them. Static apps require no AI provider. Do not
 read the form's private state or root staging bundle into chat.
+
+
+Browser baseline: new templates pin Playwright 1.64.1, verified with WebKit 27.2
+for simulated offline navigation. Do not apply the historical 1.62.0 offline
+xfail to this baseline. Investigate failures normally and preserve evidence;
+see docs/browser-testing.md (installed: /usr/local/share/lab/docs/browser-testing.md)
+for upgrades and isolated browser caches. App dependency work and tests run as lab.
