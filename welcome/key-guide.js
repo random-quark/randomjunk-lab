@@ -1,26 +1,60 @@
-function rawKeyCommands(os, filename = 'id_ed25519') {
-  // Filenames are application constants, never user input.
-  if (!['id_ed25519', 'lab_ed25519'].includes(filename)) throw new Error('Unknown key filename');
-  if (os === 'windows') return {
-    path: `~/.ssh/${filename}`,
-    copy: `$labKey = "$env:USERPROFILE\\.ssh\\${filename}.pub"\ntry {\n  if (Test-Path -LiteralPath $labKey -PathType Leaf -ErrorAction Stop) {\n    $labPublicKey = Get-Content -LiteralPath $labKey -Raw -ErrorAction Stop\n    if ([string]::IsNullOrWhiteSpace($labPublicKey)) { throw 'Empty public-key file' }\n    Set-Clipboard -Value $labPublicKey -ErrorAction Stop\n    Write-Output 'SUCCESS: Public key copied. Return to the page and paste with Ctrl+V.'\n  } else {\n    Write-Output 'MISSING: Public-key file not found. Click MISSING / No such file on the page.'\n  }\n} catch {\n  Write-Output 'ERROR: Could not read or copy the key. Open the other-error help on the page.'\n}`,
-    create: `try {\n  if ((Test-Path "$env:USERPROFILE\\.ssh\\lab_ed25519" -ErrorAction Stop) -or (Test-Path "$env:USERPROFILE\\.ssh\\lab_ed25519.pub" -ErrorAction Stop)) {\n    Write-Output 'EXISTS: A lab key already exists. Nothing was overwritten. Try the copy command below.'\n  } else {\n    Get-Command ssh-keygen -ErrorAction Stop | Out-Null\n    New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\\.ssh" -ErrorAction Stop | Out-Null\n    ssh-keygen -t ed25519 -f "$env:USERPROFILE\\.ssh\\lab_ed25519" -C 'my-lab'\n    if ($LASTEXITCODE -eq 0) { Write-Output 'CREATED: Now run the copy command below.' }\n    else { Write-Output 'ERROR: Key creation failed. Open the other-error help on the page.' }\n  }\n} catch {\n  Write-Output 'ERROR: Key creation failed. Open the other-error help on the page.'\n}`
-  };
-  return {
-    path: `~/.ssh/${filename}`,
-    copy: `if [ ! -e "$HOME/.ssh/${filename}.pub" ]; then\n  echo 'MISSING: Public-key file not found. Click MISSING / No such file on the page.'\nelif [ -s "$HOME/.ssh/${filename}.pub" ] && pbcopy < "$HOME/.ssh/${filename}.pub"; then\n  echo 'SUCCESS: Public key copied. Return to the page and paste with Command+V.'\nelse\n  echo 'ERROR: Could not read or copy the key. Open the other-error help on the page.'\nfi`,
-    create: `if [ -e "$HOME/.ssh/lab_ed25519" ] || [ -L "$HOME/.ssh/lab_ed25519" ] || [ -e "$HOME/.ssh/lab_ed25519.pub" ] || [ -L "$HOME/.ssh/lab_ed25519.pub" ]; then\n  echo 'EXISTS: A lab key already exists. Nothing was overwritten. Try the copy command below.'\nelif mkdir -p "$HOME/.ssh" && ssh-keygen -t ed25519 -f "$HOME/.ssh/lab_ed25519" -C 'my-lab'; then\n  echo 'CREATED: Now run the copy command below.'\nelse\n  echo 'ERROR: Key creation failed. Open the other-error help on the page.'\nfi`
-  };
-}
+export const KEY_PATH = '~/.ssh/infinity_machine_ed25519';
 
-// Assemble the marker at runtime so it occurs only in terminal output, never
-// verbatim in the pasted command. Print exactly one final result.
-export function keyCommands(os, filename = 'id_ed25519') {
-  const commands = rawKeyCommands(os, filename);
-  const emphasize = command => os === 'windows'
-    ? command.replaceAll('Write-Output ', '$labCopyResult = ') + `\nWrite-Host ''; Write-Host ''; Write-Host ''\nWrite-Host ('RES' + 'ULT---> ' + $labCopyResult) -ForegroundColor Cyan\nWrite-Host ''; Write-Host ''`
-    : command.replaceAll('echo ', 'lab_copy_result=') + `\nprintf '\\n\\n\\n\\033[1m%s%s\\033[0m\\n\\n\\n' 'RES' "ULT---> $lab_copy_result"`;
-  return {...commands, copy: emphasize(commands.copy), create: emphasize(commands.create)};
+export function keyCommands(os) {
+  const copy = os === 'windows' ? `$infinityKey = "$env:USERPROFILE\\.ssh\\infinity_machine_ed25519"
+try {
+  Get-Command ssh-keygen -ErrorAction Stop | Out-Null
+  Get-Command Set-Clipboard -ErrorAction Stop | Out-Null
+  $privateExists = Test-Path -LiteralPath $infinityKey
+  $publicExists = Test-Path -LiteralPath "$infinityKey.pub"
+  if ($privateExists -or $publicExists) {
+    if (!(Test-Path -LiteralPath $infinityKey -PathType Leaf) -or !(Test-Path -LiteralPath "$infinityKey.pub" -PathType Leaf)) {
+      throw 'Incomplete key pair. Keep the existing files and ask your setup agent for help.'
+    }
+  } else {
+    New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\\.ssh" -ErrorAction Stop | Out-Null
+    ssh-keygen -t ed25519 -f $infinityKey -C 'infinity-machine'
+    if ($LASTEXITCODE -ne 0) { throw 'Key creation did not finish.' }
+  }
+  ssh-keygen -l -f "$infinityKey.pub" | Out-Null
+  if ($LASTEXITCODE -ne 0) { throw 'The public-key file is invalid.' }
+  $infinityPublicKey = Get-Content -LiteralPath "$infinityKey.pub" -Raw -ErrorAction Stop
+  if ([string]::IsNullOrWhiteSpace($infinityPublicKey)) { throw 'The public-key file is empty.' }
+  Set-Clipboard -Value $infinityPublicKey -ErrorAction Stop
+  $infinityResult = 'SUCCESS: Key copied to clipboard. Return to the form and paste with Ctrl+V.'
+} catch {
+  $infinityResult = 'ERROR: ' + $_.Exception.Message + ' Nothing was submitted. Do not paste until copying succeeds.'
+}
+Write-Host ''; Write-Host ''; Write-Host ''
+Write-Host ('RES' + 'ULT---> ' + $infinityResult) -ForegroundColor Cyan
+Write-Host ''; Write-Host ''; Write-Host ''` : `(
+infinity_key="$HOME/.ssh/infinity_machine_ed25519"
+infinity_prepare_key() {
+  command -v ssh-keygen >/dev/null && command -v pbcopy >/dev/null || return 1
+  if [ -L "$infinity_key" ] || [ -L "$infinity_key.pub" ]; then
+    echo 'Keep existing key links unchanged; ask your setup agent for help.'
+    return 1
+  fi
+  if [ -e "$infinity_key" ] || [ -e "$infinity_key.pub" ]; then
+    if [ ! -f "$infinity_key" ] || [ ! -s "$infinity_key" ] || [ ! -f "$infinity_key.pub" ] || [ ! -s "$infinity_key.pub" ]; then
+      echo 'Incomplete key pair. Keep the existing files and ask your setup agent for help.'
+      return 1
+    fi
+  else
+    mkdir -p "$HOME/.ssh" && chmod 700 "$HOME/.ssh" || return 1
+    ssh-keygen -t ed25519 -f "$infinity_key" -C 'infinity-machine' || return 1
+  fi
+  ssh-keygen -l -f "$infinity_key.pub" >/dev/null || return 1
+  pbcopy < "$infinity_key.pub"
+}
+if infinity_prepare_key; then
+  infinity_result='SUCCESS: Key copied to clipboard. Return to the form and paste with Command+V.'
+else
+  infinity_result='ERROR: Could not prepare or copy the key. See the message above. Do not paste until copying succeeds.'
+fi
+printf '\\n\\n\\n\\033[1m%s%s\\033[0m\\n\\n\\n\\n' 'RES' "ULT---> $infinity_result"
+)`;
+  return {path: KEY_PATH, copy};
 }
 
 export function privateKeyArgument(path, os) {
@@ -34,39 +68,18 @@ export function privateKeyArgument(path, os) {
 
 export function initKeyGuide(updateConnection) {
   const $ = id => document.getElementById(id);
-  const setPath = filename => {
-    $('key-path').value = keyCommands($('computer-os').value, filename).path;
-    updateConnection();
-  };
   function render() {
     const os = $('computer-os').value;
     const current = keyCommands(os);
-    const fresh = keyCommands(os, 'lab_ed25519');
     $('find-key').textContent = current.copy;
-    $('create-key').textContent = fresh.create;
-    $('new-key').textContent = fresh.copy;
+    $('command-preview').textContent = current.copy.split('\n').slice(0, 3).join('\n');
+    $('key-path').value = current.path;
+    $('ssh-key-path').textContent = current.path;
     $('terminal-instructions').textContent = os === 'windows'
-      ? 'Open Windows PowerShell from the Start menu. Use Ctrl+V to paste commands, then press Enter.'
-      : 'Open Terminal on your Mac (Applications → Utilities → Terminal). Use ⌘V to paste commands, then press Enter.';
-    $('create-key-panel').hidden = true;
-    $('paste-help').hidden = true;
-    setPath('id_ed25519');
-  }
-  function ready(filename) {
-    setPath(filename);
-    $('paste-help').textContent = 'Your public key is now on your clipboard. Click the public-key field below and paste: ⌘V on Mac, Ctrl+V on Windows. Do not run the create-key command.';
-    $('paste-help').hidden = false;
-    $('create-key-panel').hidden = true;
-    $('public-key').focus({preventScroll: true});
-    $('paste-help').scrollIntoView({behavior: 'smooth', block: 'center'});
+      ? 'Open Windows PowerShell. Paste the command with Ctrl+V, then press Enter.'
+      : 'Open Terminal on your Mac (Applications → Utilities → Terminal). Paste the command with ⌘V, then press Enter.';
+    updateConnection();
   }
   $('computer-os').addEventListener('change', render);
-  $('key-found').addEventListener('click', () => ready('id_ed25519'));
-  $('key-missing').addEventListener('click', () => {
-    $('paste-help').hidden = true;
-    $('create-key-panel').hidden = false;
-    $('create-key-panel').scrollIntoView({behavior: 'smooth', block: 'start'});
-  });
-  $('new-key-found').addEventListener('click', () => ready('lab_ed25519'));
   render();
 }

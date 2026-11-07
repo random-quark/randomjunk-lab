@@ -139,7 +139,7 @@ for (const button of document.querySelectorAll('[data-copy]')) button.addEventLi
   try {
     await navigator.clipboard.writeText(text);
     const label = button.textContent;
-    button.textContent = ['find-key', 'create-key', 'new-key'].includes(button.dataset.copy) ? 'Copied — paste in your terminal' : 'Copied';
+    button.textContent = button.dataset.copy === 'find-key' ? 'Copied — paste in your terminal' : 'Copied';
     setTimeout(() => { button.textContent = label; }, 3000);
     $('copy-status').textContent = 'Copied. Paste it where the instructions indicate.';
   }

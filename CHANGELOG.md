@@ -1,5 +1,12 @@
 # Changelog
 
+## One-command SSH onboarding — 2026-11-07
+
+- Create or reuse infinity_machine_ed25519 and copy its public key in one command.
+- Use the same private-key filename in Claude and diagnostics without result buttons.
+- Collapse commands to a faded three-line preview and add a folder copy button.
+
+
 ## Final review corrections — 2026-11-07
 
 - Preserve confirmed notification routing in the README’s Claude handoff.
