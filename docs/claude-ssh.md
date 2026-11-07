@@ -65,7 +65,10 @@ bar and keeps it in memory only. Reopen the original link after refreshing.
 Key binding commits before authorization, so interrupted requests cannot redeem
 one invitation for another key. No API accepts an account or file destination.
 
-Test from the Mac with the matching private-key path and actual host/port:
+The guide shows three steps: authorize the computer, connect Claude, and start an
+experiment. Optional diagnostics are in a collapsed Connection trouble? area below
+the Claude card. If needed, test from the laptop with the matching private-key path
+and actual host/port:
 
 ```sh
 ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes -o PreferredAuthentications=publickey lab@YOUR_SERVER 'whoami; cd /srv/lab && pwd'

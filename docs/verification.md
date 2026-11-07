@@ -594,3 +594,10 @@ deterministic; no real invitations or authorized keys changed. Cache migration a
 live invitation enrollment retain the separately recorded real-service evidence.
 
 Result spacing follow-up: generated Mac commands retain a valid shell format and three leading/two trailing blank lines; Windows uses corresponding explicit blank Write-Host calls.
+
+
+Three-step guide follow-up: Chromium and WebKit at 390px/1280px confirmed exactly
+three numbered cards, a separate collapsed Connection trouble? disclosure directly
+below the Claude card, hidden diagnostic fields until expanded, and automatic
+command/Claude-path updates after editing the private-key path. No overflow or
+JavaScript errors. 137 source tests and 59 parse checks passed.

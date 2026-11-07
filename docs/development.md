@@ -500,3 +500,5 @@ and simulated shell outcomes contain it exactly once. Invitation UI visibility
 checks can mock only the status response without enrolling keys or minting tokens.
 
 Terminal result spacing: three leading blank lines and two trailing blank lines; the result marker remains assembled at runtime.
+
+Connection diagnostics now use a standalone collapsed details element after the Claude card. The private-key input remains available there and still updates the displayed Claude key path and generated command on input.

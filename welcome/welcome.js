@@ -46,7 +46,7 @@ $('use-invite').addEventListener('click', async () => {
   $('invite-code').value = '';
   await checkInvitation();
 });
-const buttons = [...document.querySelectorAll('button[data-copy], #prepare, #test-command-button')];
+const buttons = [...document.querySelectorAll('button[data-copy], #prepare')];
 buttons.forEach(button => { button.disabled = true; });
 try {
   const response = await fetch('/connection.json', {cache: 'no-store'});
@@ -69,7 +69,6 @@ function testCommand() {
   $('ssh-key-path').textContent = path;
   $('test-command').textContent = `ssh -i ${shellPath} -o IdentitiesOnly=yes -o PreferredAuthentications=publickey -p ${connection.port} lab@${connection.host} 'whoami; cd /srv/lab && pwd'`;
 }
-$('test-command-button').addEventListener('click', testCommand);
 $('key-path').addEventListener('input', () => { if (connection) testCommand(); });
 initKeyGuide(() => { if (connection) testCommand(); });
 if (connection) testCommand();

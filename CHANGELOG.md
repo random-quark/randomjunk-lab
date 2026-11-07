@@ -440,3 +440,5 @@ https://ntfy.sh, omits a custom-server field and generates a fresh owner topic.
 Documentation-only follow-up; `git diff --check` passed.
 
 Welcome terminal results now have three blank lines above and two below on Mac and Windows.
+
+Welcome guide now has three numbered steps; connection diagnostics are collapsed beneath the Claude card, outside it. Removed the redundant prepare-test button.
