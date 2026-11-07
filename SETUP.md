@@ -114,7 +114,13 @@ Root administers the platform. Experiment work runs as `lab`, with individual ap
 running as `labapp-NAME`. Never run experiment scripts/dependency hooks as root.
 
 Choose the owner's desktop coding agent and configure SSH access as `lab` with
-their own public key. Follow the [desktop connection guide](README.md#start-here-connect-your-desktop-agent-over-ssh).
+their own public key. Root's authorized keys are not inherited. Collect only the
+owner laptop's public key through the private form or a protected file. For a saved
+form, run `python3 -I tools/setup-wizard.py authorize-ssh` after core installation;
+this can run while optional services remain pending. For direct entry, pipe the
+public key to `/usr/local/sbin/lab-authorize-key` as root. Never copy every root
+key or a test agent's key as a substitute. Follow [the Claude handoff](docs/claude-ssh.md)
+and have the owner test lab login from their own laptop. Follow the [desktop connection guide](README.md#start-here-connect-your-desktop-agent-over-ssh).
 Claude Desktop installs its helper/engine automatically for this user. Codex
 currently needs its CLI available on this user's login-shell PATH and its own
 authentication; verify those as `lab`, not root. A separate terminal CLI is only

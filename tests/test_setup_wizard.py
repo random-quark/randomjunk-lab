@@ -309,3 +309,25 @@ def test_review_missing_form_explains_handoff(tmp_path, monkeypatch):
     monkeypatch.setattr(w.sys, 'argv', ['setup-wizard.py', 'review', '--state-dir', str(tmp_path / 'absent')])
     with pytest.raises(w.LabError, match='No saved setup form'):
         w.main()
+
+
+def test_saved_ssh_key_can_be_authorized_without_finishing_optional_services(wizard, monkeypatch, capsys):
+    import base64
+    key = 'ssh-ed25519 ' + base64.b64encode(b'\x00\x00\x00\x0bssh-ed25519\x00\x00\x00\x20' + bytes(range(32))).decode()
+    save(wizard, {'SSH_PUBLIC_KEY': key, 'BACKUPS': 'b2'})
+    before = (wizard.directory / 'setup.json').read_bytes()
+    calls = []
+    monkeypatch.setattr(w, 'authorize_lab_key', calls.append)
+    monkeypatch.setattr(w.os, 'geteuid', lambda: 0)
+    monkeypatch.setattr(w.sys, 'argv', ['setup-wizard.py', 'authorize-ssh', '--state-dir', str(wizard.directory)])
+    w.main()
+    assert calls == [key]
+    assert 'authorized for lab' in capsys.readouterr().out
+    assert (wizard.directory / 'setup.json').read_bytes() == before
+
+
+def test_old_bundle_without_ssh_key_loads(wizard):
+    data = json.loads((wizard.directory / 'setup.json').read_text())
+    del data['choices']['SSH_PUBLIC_KEY']
+    (wizard.directory / 'setup.json').write_text(json.dumps(data))
+    assert w.read_bundle(wizard.directory)['choices']['SSH_PUBLIC_KEY'] == ''

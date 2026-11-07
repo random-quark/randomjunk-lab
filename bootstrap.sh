@@ -94,6 +94,7 @@ install -m 644 "$REPO_DIR/templates/operating-instructions.md" /srv/lab/AGENTS.m
 install -m 644 "$REPO_DIR/templates/operating-instructions.md" /srv/lab/CLAUDE.md
 install -o lab -g lab -m 644 "$REPO_DIR/templates/operating-instructions.md" /home/lab/AGENTS.md
 install -m 755 "$REPO_DIR/sbin/labctl" /usr/local/sbin/labctl
+install -o root -g root -m 755 "$REPO_DIR/sbin/lab-authorize-key" /usr/local/sbin/lab-authorize-key
 for script in newlab labrm labs labdoctor notify labdev labshot labbuild labpreflight; do
   install -m 755 "$REPO_DIR/bin/$script" "/usr/local/bin/$script"
 done

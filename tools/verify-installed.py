@@ -5,7 +5,8 @@ import hashlib
 import stat
 import sys
 ROOT=Path(__file__).resolve().parents[1]
-pairs=[(ROOT/'sbin/labctl',Path('/usr/local/sbin/labctl')),
+pairs=[(ROOT/'sbin/lab-authorize-key',Path('/usr/local/sbin/lab-authorize-key')),
+       (ROOT/'sbin/labctl',Path('/usr/local/sbin/labctl')),
        (ROOT/'etc/lab-app@.service',Path('/etc/systemd/system/lab-app@.service')),
        (ROOT/'backup/lab-backup.sh',Path('/usr/local/bin/lab-backup')),
        (ROOT/'backup/lab-notify-root',Path('/usr/local/bin/lab-notify-root'))]

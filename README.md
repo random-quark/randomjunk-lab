@@ -35,6 +35,8 @@ bootstrap again.
    same user. In the desktop app, open Settings → Connections, add/enable the SSH
    host, and choose the checkout folder. The app starts the remote app server;
    do not manually launch an interactive CLI or tmux session first.
+For a step-by-step Claude-only handoff, see [Connect Claude Desktop](docs/claude-ssh.md).
+
 5. Ask the connected agent to confirm `hostname`, `whoami` and the checkout path,
    then give it the setup instruction below. After installation, authorize your
    SSH public key for `lab`, add a separate desktop connection as `lab`, and select

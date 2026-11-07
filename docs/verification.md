@@ -513,3 +513,19 @@ cloud-init failure remains separate. This trial preserved same-host certificates
 SSH/network/provider configuration and original packages, so it does not replace
 the earlier genuinely clean OS-install evidence. Optional real API access, hosted
 ntfy phone receipt, remote backups/monitoring and desktop sign-in remain pending.
+
+
+## Claude welcome and SSH handoff — 2026-11-07
+
+Source checks pass 128 tests and 55 parse checks. JavaScript syntax checks pass
+for the welcome ES module and setup form. The VPS welcome page passed Chromium
+and WebKit at 390px and 1280px: no horizontal overflow or JavaScript errors,
+private/multiline key rejection, public-key command generation, private-path
+updates and no POST/key storage. The public field does not contact a grant service.
+
+The root-owned helper was tested on the experimental VPS with a fresh disposable
+key. Two activations produced one entry; SSH returned lab and /srv/lab, and SFTP
+connected successfully. The exact test key was removed and authorized_keys matched
+its prior SHA-256 hash. No owner key was guessed or copied from root. Actual Mac
+key selection and a new Claude Desktop session remain owner acceptance steps.
+The existing WebKit offline limitation is unchanged; these are online UI checks.

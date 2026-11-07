@@ -78,6 +78,7 @@ function render(next, fillChoices = true) {
   $('#review-list').replaceChildren();
   for (const text of [
     `${count} AI provider${count === 1 ? '' : 's'} saved${count ? ' — access still needs verification' : ' — fine for a static website'}.`,
+    `Laptop SSH: ${next.choices.SSH_PUBLIC_KEY ? 'key saved — administrator activation and laptop connection test pending' : 'no key supplied'}.`,
     `Notifications: ${$('#ntfy-status').textContent.toLowerCase()}.`,
     `Backups: ${next.choices.BACKUPS === 'b2' ? 'selected — agent configuration and restore test pending' : next.choices.BACKUPS === 'skip' ? 'explicitly deferred' : 'choose or defer before finishing'}.`,
   ]) { const li = document.createElement('li'); li.textContent = text; $('#review-list').append(li); }

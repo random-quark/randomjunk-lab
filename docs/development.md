@@ -438,3 +438,20 @@ Repeat-trial source validation at d4e2154: 121 tests, 52 source parse checks and
 all four optional Caddy parser cases passed. Two existing upstream test-client
 deprecation warnings remain. The CLI review test now also covers absent saved
 form state with a specific continuation message.
+
+
+## Claude laptop handoff — 2026-11-07
+
+The reusable welcome/ assets provide a Claude-only connection guide. The public
+key field generates a quoted administrator SSH command locally; no grant endpoint
+exists. Test its module syntax with `node --input-type=module --check < welcome/welcome.js`.
+The private wizard stores SSH_PUBLIC_KEY and provides administrator-only
+`authorize-ssh`, independent of optional service completion. The standalone
+sbin/lab-authorize-key reads stdin and shares validation with the wizard.
+
+Run the full locked source suite. tests/test_sshkeys.py covers real OpenSSH key
+validation, duplicate-safe appends, preservation and symlink/hardlink rejection.
+Wizard tests cover old saved-state compatibility and unfinished-form activation.
+For live validation, use a disposable generated key, test lab SSH and SFTP, remove
+only that exact key, and compare authorized_keys with its pre-test hash. Never
+substitute the testing key for the owner's actual laptop key.

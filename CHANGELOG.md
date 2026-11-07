@@ -1,5 +1,14 @@
 # Changelog
 
+## Claude laptop handoff — 2026-11-07
+
+- Add a reusable Claude-only welcome guide with exact desktop steps, public-key
+  entry, authenticated administrator command and laptop connection test.
+- Add public-key input to the private setup form and an administrator-only SSH
+  activation command that preserves existing keys and pending service choices.
+- Validate keys and perform authorized_keys writes as lab, rejecting redirected
+  files. Keep private keys on the laptop and root keys separate.
+
 ## Fresh-agent handoff and installer ownership — 2026-11-06
 
 - Extract uv under a private staging directory and install root-owned executables;
