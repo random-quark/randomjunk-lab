@@ -663,3 +663,14 @@ access-focused suite additionally checks fixed HTTPS destination and Copy/Open
 actions. All 60 source parse checks and the ES-module syntax check passed.
 ntfy.sh accepted one isolated random-topic test message; no user subscription
 was changed and no phone delivery was claimed.
+
+
+Original-host rollout — 2026-11-07: 142 source tests and 60 parse checks passed.
+labdoctor changed from one pre-existing order-only Caddy warning to zero problems.
+Caddy and lab-access are active; live invitation endpoint rejects a missing token.
+Welcome's scaffold test and Chromium/WebKit preflight passed. Browser checks at
+390/1280px passed optional ntfy flows with mocked API responses; real HTTPS
+refresh, offline shell and reconnect checks passed in both engines. No actual
+user invitation was consumed or notification destination changed. Existing
+non-welcome app records and selected protected config hashes matched checkpoint.
+Physical-device checks and earlier setup checklist items were not reclassified.

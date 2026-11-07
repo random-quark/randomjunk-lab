@@ -550,3 +550,21 @@ as lab before migration. Deploy welcome index.html/welcome.js as lab and publish
 welcome to refresh the worker. Update installed agent guidance and notification
 docs; no bootstrap rerun, firewall change or new public port is needed. Tests mock
 network delivery and verify authentication, receipt gating, skip and isolation.
+
+
+## Original-host in-place rollout — 2026-11-07
+
+Applied auto-debug to the original vmi3561391 / randomjunk.dev host without
+bootstrap or app migrations. Trusted platform config/tools/docs/templates and
+welcome source were checkpointed under /root/infinity-machine-upgrades/2026-11-07.
+Installed current template locks and agent guidance, enabled lab-access, and
+replaced the original welcome scaffold with the invitation/optional-ntfy guide.
+connection.json uses this host's Tailscale SSH address, not the Contabo test IP.
+Existing experiments retain their locks/environments; only welcome received new
+test tooling. Matching browsers were installed as lab with GC disabled.
+
+Pre-existing doctor drift was site order only: published records were enumerated
+by filename while publication sorts app names. Doctor now uses the same name
+order, including names with suffixes such as posters/posters-api. No site was
+removed or authentication relaxed. Existing owner ntfy, backup, provider and
+Stripe configuration hashes and non-welcome app records remained unchanged.

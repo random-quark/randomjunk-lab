@@ -1,5 +1,11 @@
 # Changelog
 
+## Original-host rollout — 2026-11-07
+
+- Apply current onboarding, build guidance and future-app browser baseline in place.
+- Fix doctor site-order comparison to match publication sorting.
+
+
 ## Preview-first builds and optional phone notifications — 2026-11-07
 
 - Share a usable preview directly in chat before full validation and polish.

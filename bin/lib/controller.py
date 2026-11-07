@@ -589,7 +589,7 @@ class Controller:
             except LabError:
                 problems.append(f'cannot enumerate Postgres {kind}s')
         try:
-            expected_sites = ''.join(caddy_site(rec, self.config()['domain'], self.root, self.public, self.config().get('tls_mode', 'production'), access=rec['name'] == self.config().get('access_app')) for rec in self.published())
+            expected_sites = ''.join(caddy_site(rec, self.config()['domain'], self.root, self.public, self.config().get('tls_mode', 'production'), access=rec['name'] == self.config().get('access_app')) for rec in sorted(self.published(), key=lambda item: item["name"]))
             if (self.caddy/'lab-sites.caddy').read_text() != expected_sites:
                 problems.append('Caddy file differs from published records; use labctl reconcile-caddy')
         except (LabError, OSError, ValueError):
