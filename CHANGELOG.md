@@ -1,5 +1,10 @@
 # Changelog
 
+## Claude permission guidance — 2026-11-07
+
+- Explain choosing Auto below the message box for fewer routine approval prompts.
+- Keep onboarding Claude-only and retain the three visible steps.
+
 ## Unambiguous onboarding results — 2026-11-07
 
 - Assemble a bold/colored RESULT arrow only at command execution, separating the

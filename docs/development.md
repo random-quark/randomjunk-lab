@@ -502,3 +502,8 @@ checks can mock only the status response without enrolling keys or minting token
 Terminal result spacing: three leading blank lines and two trailing blank lines; the result marker remains assembled at runtime.
 
 Connection diagnostics now use a standalone collapsed details element after the Claude card. The private-key input remains available there and still updates the displayed Claude key path and generated command on input.
+
+
+Claude permission guidance: the Auto instruction belongs to the message-box
+permissions selector, not the environment picker. Optional desktop plugin notices
+are not lab dependencies; installed experiment instructions do not request Codex.

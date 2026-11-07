@@ -601,3 +601,11 @@ three numbered cards, a separate collapsed Connection trouble? disclosure direct
 below the Claude card, hidden diagnostic fields until expanded, and automatic
 command/Claude-path updates after editing the private-key path. No overflow or
 JavaScript errors. 137 source tests and 59 parse checks passed.
+
+Claude Auto guidance — 2026-11-07: 137 tests and 59 source parse checks passed.
+Published welcome page contains the message-box Auto instruction. Live Chromium
+and WebKit checks at 390px/1280px retain three numbered cards, collapsed standalone
+diagnostics, working path updates, and no overflow or JavaScript errors. Installed
+lab agent instructions were checked: no Codex reference or installation request.
+The screenshot's plugin notice appears to originate in Claude's desktop/account
+plugin configuration; the user's Mac configuration was not inspected or changed.
