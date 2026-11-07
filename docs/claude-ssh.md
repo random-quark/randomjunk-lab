@@ -92,13 +92,14 @@ do not disable host-key checks to get past a reinstall warning.
 8. Below the message box, open the permissions selector and choose **Auto** for
    fewer routine approval prompts. If it already says Auto, you’re set. Claude
    may still ask when needed. If Auto is unavailable, keep the available default.
-9. Send:
+9. Use **Copy first message** on the invitation page to include the confirmed
+   notification recipient. Without notifications, send:
 
 > Confirm you are running as lab in /srv/lab. Read CLAUDE.md and the installed lab
 > instructions. Then help me build my first experiment. Ask me what I want to make.
 
 Desktop installs its remote helper automatically. No manual CLI session or tmux is
-required. The UI sequence follows owner screenshots from 2026-11-07; connection
+required. The UI sequence follows owner screenshots from 2026-11-07.
 Auto is the permissions selector below the message box, not the cloud environment
 option. See [permission modes](https://code.claude.com/docs/en/desktop#choose-a-permission-mode). Connection
 fields were checked against [Claude's official guide](https://code.claude.com/docs/en/desktop#ssh-sessions).

@@ -568,3 +568,10 @@ by filename while publication sorts app names. Doctor now uses the same name
 order, including names with suffixes such as posters/posters-api. No site was
 removed or authentication relaxed. Existing owner ntfy, backup, provider and
 Stripe configuration hashes and non-welcome app records remained unchanged.
+
+
+Before merging auto-debug, compare against origin/master (the actual default,
+not main), run installed-file verification as well as source tests, and preserve
+the invitation page's recipient-aware first prompt in human instructions. The
+original-host uv ownership drift was corrected from matching trusted binaries;
+bootstrap already installs explicit root:root ownership.

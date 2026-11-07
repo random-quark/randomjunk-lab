@@ -1,5 +1,11 @@
 # Changelog
 
+## Final review corrections — 2026-11-07
+
+- Preserve confirmed notification routing in the README’s Claude handoff.
+- Verify original-host installed tooling and correct uv/uvx ownership drift.
+
+
 ## Original-host rollout — 2026-11-07
 
 - Apply current onboarding, build guidance and future-app browser baseline in place.

@@ -52,7 +52,9 @@ start without them and add them later.
 2. In Claude Desktop, add another **SSH** environment named **The Infinity Machine**.
    Use `lab@YOUR_SERVER_IP`, the SSH port and key path shown on the invitation page.
    Set **Folders** to `/srv/lab`, leave **Worktree** unchecked, and create it.
-3. Select that environment, choose **Auto** if available, and send:
+3. Select that environment and choose **Auto** if available. Use **Copy first message**
+   on your invitation page—it includes your notification recipient if configured.
+   Without notifications, you can simply send:
 
 > Confirm you are running as lab in /srv/lab. Read CLAUDE.md and the installed
 > instructions. Help me build my first experiment. Ask me what I want to make.

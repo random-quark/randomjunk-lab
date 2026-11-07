@@ -674,3 +674,21 @@ refresh, offline shell and reconnect checks passed in both engines. No actual
 user invitation was consumed or notification destination changed. Existing
 non-welcome app records and selected protected config hashes matched checkpoint.
 Physical-device checks and earlier setup checklist items were not reclassified.
+
+
+## Pre-merge review — 2026-11-07
+
+Reviewed the full auto-debug diff against the actual default branch, master:
+SSH enrollment boundaries, invitation expiry/revocation and same-key retries,
+notification recipient isolation/confirmation, cache exclusions, setup handoff
+and pinned template locks. Corrected README/Claude handoff to copy the invitation
+page's recipient-aware first message rather than dropping notification routing.
+142 tests, 60 source parse checks, five Caddy parser cases and both template
+lock checks passed. Historical evidence is not a substitute for a fresh full
+reinstall; no production bootstrap or destructive replay was performed.
+
+Installed-file audit on the original host found only uv/uvx ownership drift.
+Both matched the trusted root-owned 0.8.22 workspace binaries byte-for-byte;
+replaced them atomically with root:root 0755 copies. All installed code/templates
+then matched source, with executable ownership verified. Review found no remaining
+merge blocker. Real phone delivery/install checks remain user/device confirmations.
