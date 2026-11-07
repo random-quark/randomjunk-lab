@@ -33,7 +33,7 @@ def main():
         (ROOT/'bin/lab-access', '/usr/local/bin/lab-access', '755'),
         (ROOT/'etc/lab-access.service', '/etc/systemd/system/lab-access.service', '644')]:
         subprocess.run(['install', '-o', 'root', '-g', 'root', '-m', mode, str(source), dest], check=True)
-    subprocess.run(['runuser', '-u', 'lab', '--', '/usr/bin/python3', '-I', '-c',
+    subprocess.run(['/usr/sbin/runuser', '-u', 'lab', '--', '/usr/bin/python3', '-I', '-c',
                     "from pathlib import Path; p=Path.home()/'.ssh'; p.mkdir(mode=0o700,exist_ok=True); assert not p.is_symlink()"],
                    check=True, env={'PATH': '/usr/bin:/bin', 'HOME': account.pw_dir})
     with locked(Path('/var/lib/lab/lock')):
@@ -46,7 +46,7 @@ def main():
     subprocess.run(['systemctl', 'enable', '--now', 'lab-access.service'], check=True)
     subprocess.run(['systemctl', 'restart', 'lab-access.service'], check=True)
     # Normal publication validates and reloads the managed Caddy candidate.
-    subprocess.run(['runuser', '-u', 'lab', '--', 'sudo', '/usr/local/sbin/labctl', 'publish', app], check=True)
+    subprocess.run(['/usr/sbin/runuser', '-u', 'lab', '--', 'sudo', '/usr/local/sbin/labctl', 'publish', app], check=True)
     print('Invitation enrollment enabled. As lab, run: lab-access invite')
 
 
