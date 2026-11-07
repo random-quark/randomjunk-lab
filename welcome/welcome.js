@@ -9,6 +9,29 @@ function readInvitation() {
 let invitation = readInvitation();
 let invitationReady = false;
 let sending = false;
+const firstPrompt = $('prompt').textContent;
+let notificationBusy = false;
+async function notificationAction(action) {
+  if (notificationBusy) return;
+  notificationBusy = true;
+  const controls = ['notifications-start', 'notifications-skip', 'notifications-test', 'notifications-confirm'];
+  controls.forEach(id => { $(id).disabled = true; });
+  try {
+    const state = await access('notifications', {action});
+    $('notifications-guide').hidden = !['pending', 'ready'].includes(state.state);
+    $('notification-topic').textContent = state.topic || '';
+    $('notifications-ready').hidden = state.state !== 'ready';
+    $('notifications-confirm').dataset.tested = state.tested ? 'yes' : '';
+    $('notifications-status').textContent = state.state === 'ready' ? 'Confirmed on your phone.' : state.state === 'skipped' ? 'Skipped. Claude will share links in chat. You can set up notifications later with a new invitation for this same SSH key.' : action === 'test' ? 'Test sent. Check your phone, then confirm receipt.' : state.state === 'pending' ? 'Subscribe on your phone, then send a test.' : '';
+    $('prompt').textContent = firstPrompt + (state.state === 'ready' ? ` My confirmed notification recipient ID is ${state.recipient}. Use lab-access notify with this recipient for this session; always share app links in chat too.` : ' Share app links in chat. Do not send notifications to another person’s destination.');
+  } catch (error) { $('notifications-status').textContent = error.message; }
+  finally {
+    notificationBusy = false;
+    controls.forEach(id => { $(id).disabled = false; });
+    $('notifications-confirm').disabled = $('notifications-confirm').dataset.tested !== 'yes';
+  }
+}
+for (const action of ['start', 'skip', 'test', 'confirm']) $('notifications-' + action).addEventListener('click', () => notificationAction(action));
 async function access(action, data = {}) {
   const response = await fetch('/_lab/access/' + action, {
     method: 'POST', cache: 'no-store', credentials: 'omit',
@@ -23,6 +46,9 @@ async function access(action, data = {}) {
 }
 async function checkInvitation() {
   invitationReady = false;
+  $('notifications').hidden = true;
+  $('notification-topic').textContent = '';
+  $('prompt').textContent = firstPrompt;
   $('prepare').disabled = true;
   $('invite-entry').hidden = false;
   $('no-invitation-help').hidden = false;
@@ -35,6 +61,8 @@ async function checkInvitation() {
     $('invite-entry').hidden = true;
     $('no-invitation-help').hidden = true;
     $('prepare').disabled = !connection;
+    $('notifications').hidden = !status.used;
+    if (status.used) await notificationAction('status');
   } catch (error) { $('invite-status').textContent = error.message; }
 }
 window.addEventListener('hashchange', async () => {
@@ -96,6 +124,8 @@ $('prepare').addEventListener('click', async () => {
     await access('enroll', {public_key: key});
     $('public-key').value = '';
     $('grant').hidden = false;
+    $('notifications').hidden = false;
+    await notificationAction('status');
     $('invite-status').textContent = 'Access enabled for this key. This invitation cannot add another key.';
   } catch (error) { $('key-error').textContent = error.message; }
   finally {

@@ -645,3 +645,21 @@ Actual iPhone install/offline behaviour remains a physical-device check.
 
 The original scratch environments and older browser cache builds were retained;
 no unrelated cached builds or user work were deleted.
+
+
+## Preview pipeline and ntfy enrollment — 2026-11-07
+
+Access tests cover pre-enrollment denial, Origin and bearer requirements, separate
+recipients, test-before-confirm, cooldown, failed-send handling, revocation, skip,
+and same-key invitation renewal. Browser checks in Chromium/WebKit at 390/1280px
+cover optional setup, explicit receipt, skip, recipient-only first prompt, three
+numbered steps and no overflow/JavaScript errors. Browser API responses were mocked
+and service workers blocked for deterministic routing; no real invitation or
+user SSH key was consumed. A protected database backup was made as lab before
+service deployment. Real phone receipt remains a user-confirmed setup step.
+
+Source suite: 141 tests passed before the final URL-action addition; the final
+access-focused suite additionally checks fixed HTTPS destination and Copy/Open
+actions. All 60 source parse checks and the ES-module syntax check passed.
+ntfy.sh accepted one isolated random-topic test message; no user subscription
+was changed and no phone delivery was claimed.

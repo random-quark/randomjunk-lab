@@ -1,5 +1,13 @@
 # Changelog
 
+## Preview-first builds and optional phone notifications — 2026-11-07
+
+- Share a usable preview directly in chat before full validation and polish.
+- Focus tests on requested behavior; bound retries of shared infrastructure faults.
+- Add optional post-enrollment ntfy subscriptions with test/receipt confirmation,
+  per-key recipient routing, and no changes to the owner’s destination.
+
+
 ## WebKit offline testing fix — 2026-11-07
 
 - Pin both experiment templates to Playwright 1.64.1 and regenerate locks.

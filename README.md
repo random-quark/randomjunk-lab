@@ -48,6 +48,7 @@ start without them and add them later.
 
 1. Open the private invitation Claude gives you. Follow the page to find or create
    your computer’s SSH key, paste its **public** key, and click **Enable access**.
+   Optionally connect ntfy for phone notifications, or choose **Skip for now**.
 2. In Claude Desktop, add another **SSH** environment named **The Infinity Machine**.
    Use `lab@YOUR_SERVER_IP`, the SSH port and key path shown on the invitation page.
    Set **Folders** to `/srv/lab`, leave **Worktree** unchecked, and create it.

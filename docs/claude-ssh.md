@@ -127,3 +127,9 @@ instructions replace retired ones. It does not change experiment service workers
 If an older guide is cached, open /refresh.html with the same invitation fragment;
 it upgrades the worker and returns to the current guide without exposing the token
 in a query string. It never automatically reloads an active enrollment form.
+
+
+After enrollment, the optional ntfy panel creates a separate subscription for
+that SSH public key. The user can skip, or subscribe through the phone app and
+confirm test receipt. The page adds the confirmed recipient ID to the first
+Claude message; no owner destination is overwritten. See notifications.md.

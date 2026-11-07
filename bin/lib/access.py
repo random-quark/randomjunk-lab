@@ -13,6 +13,8 @@ import subprocess
 import sys
 import time
 from urllib.parse import urlsplit
+import urllib.request
+import urllib.error
 from labcore import LabError
 from sshkeys import public_key, WRITER
 
@@ -21,11 +23,70 @@ CONFIG = Path('/etc/lab/access.json')
 
 
 class Invitations:
-    def __init__(self, path, writer):
+    def __init__(self, path, writer, sender=None):
         self.path = path
         self.writer = writer
+        self.sender = sender or send_notification
         with self.connect() as db:
             db.execute('CREATE TABLE IF NOT EXISTS invitations (digest TEXT PRIMARY KEY, expires REAL NOT NULL, binding TEXT, used INTEGER NOT NULL DEFAULT 0, revoked INTEGER NOT NULL DEFAULT 0)')
+
+            db.execute('CREATE TABLE IF NOT EXISTS notifications (recipient TEXT PRIMARY KEY, topic TEXT NOT NULL, confirmed INTEGER NOT NULL DEFAULT 0, tested INTEGER NOT NULL DEFAULT 0, last_test REAL NOT NULL DEFAULT 0, skipped INTEGER NOT NULL DEFAULT 0)')
+
+    def notification(self, token, action):
+        if action not in ('status', 'start', 'test', 'confirm', 'skip'):
+            raise LabError('Unknown notification action.')
+        with self.connect() as db:
+            db.execute('BEGIN IMMEDIATE')
+            _, invite = self.check(db, token)
+            if not invite[2]:
+                raise LabError('Enable SSH access first. Notifications are optional.')
+            recipient = invite[1]
+            if action == 'start':
+                db.execute('INSERT OR IGNORE INTO notifications(recipient,topic) VALUES (?,?)',
+                           (recipient, 'infinity-' + secrets.token_hex(20)))
+                db.execute('UPDATE notifications SET skipped=0 WHERE recipient=?', (recipient,))
+            row = db.execute('SELECT topic,confirmed,tested,last_test,skipped FROM notifications WHERE recipient=?', (recipient,)).fetchone()
+            if action == 'skip':
+                db.execute('INSERT OR IGNORE INTO notifications(recipient,topic) VALUES (?,?)',
+                           (recipient, 'infinity-' + secrets.token_hex(20)))
+                db.execute('UPDATE notifications SET skipped=1,confirmed=0 WHERE recipient=?', (recipient,))
+                return {'state': 'skipped', 'recipient': recipient}
+            if not row:
+                if action != 'status':
+                    raise LabError('Choose Set up notifications first.')
+                return {'state': 'unconfigured', 'recipient': recipient}
+            if action == 'test':
+                if row[4]:
+                    raise LabError('Choose Set up notifications first.')
+                if time.time() - row[3] < 30:
+                    raise LabError('Wait 30 seconds before sending another test.')
+                db.execute('UPDATE notifications SET last_test=?,tested=0 WHERE recipient=?', (time.time(), recipient))
+            if action == 'confirm':
+                if not row[2] or row[4]:
+                    raise LabError('Send a test and confirm it arrived on your phone first.')
+                db.execute('UPDATE notifications SET confirmed=1 WHERE recipient=?', (recipient,))
+        if action == 'test':
+            self.sender(row[0], 'The Infinity Machine', 'Your test notification arrived. Confirm receipt on the setup page.')
+            with self.connect() as db:
+                db.execute('UPDATE notifications SET tested=1 WHERE recipient=?', (recipient,))
+        with self.connect() as db:
+            row = db.execute('SELECT topic,confirmed,tested,last_test,skipped FROM notifications WHERE recipient=?', (recipient,)).fetchone()
+        return {'state': 'skipped' if row[4] else ('ready' if row[1] else 'pending'),
+                'recipient': recipient, 'topic': row[0] if not row[4] else '', 'tested': bool(row[2])}
+
+    def notify(self, recipient, title, url):
+        if not recipient or not re.fullmatch(r'[a-f0-9]{64}', recipient):
+            raise LabError('Supply the recipient ID from the invitation page; never guess a destination.')
+        parsed = urlsplit(url or '')
+        if parsed.scheme != 'https' or not parsed.hostname or parsed.username or any(c.isspace() for c in url):
+            raise LabError('Supply an HTTPS app URL without credentials.')
+        if not title or len(title) > 180 or len(url) > 2048:
+            raise LabError('Supply a short title and app URL.')
+        with self.connect() as db:
+            row = db.execute('SELECT topic,confirmed,skipped FROM notifications WHERE recipient=?', (recipient,)).fetchone()
+        if not row or not row[1] or row[2]:
+            raise LabError('Notifications are not confirmed for this recipient. Share the link in chat.')
+        self.sender(row[0], title, url)
 
     def connect(self):
         return sqlite3.connect(self.path, timeout=5)
@@ -79,6 +140,28 @@ class Invitations:
             raise LabError('Invitation ID not found.')
 
 
+def send_notification(topic, title, message):
+    # Fixed destination; never accept a user-supplied endpoint or follow redirects.
+    class NoRedirect(urllib.request.HTTPRedirectHandler):
+        def redirect_request(self, *args, **kwargs):
+            return None
+    payload = {'topic': topic, 'title': title, 'message': message}
+    if message.startswith('https://'):
+        payload['actions'] = [
+            {'action': 'copy', 'label': 'Copy link', 'value': message},
+            {'action': 'view', 'label': 'Open in browser', 'url': message},
+        ]
+    body = json.dumps(payload).encode()
+    request = urllib.request.Request('https://ntfy.sh', data=body,
+                                     headers={'Content-Type': 'application/json'})
+    try:
+        with urllib.request.build_opener(NoRedirect).open(request, timeout=8) as response:
+            if response.status != 200:
+                raise LabError('ntfy could not accept the message. Retry later or skip for now.')
+    except (OSError, urllib.error.URLError):
+        raise LabError('ntfy could not accept the message. Retry later or skip for now.') from None
+
+
 def write_key(key):
     if os.geteuid() != pwd.getpwnam('lab').pw_uid:
         raise LabError('Access service must run as lab.')
@@ -111,7 +194,7 @@ def server(store, origin, port=9876):
 
         def do_POST(self):
             try:
-                if self.path not in ('/_lab/access/status', '/_lab/access/enroll'):
+                if self.path not in ('/_lab/access/status', '/_lab/access/enroll', '/_lab/access/notifications'):
                     self.reply(404, {'error': 'Not found.'}); return
                 if self.headers.get('Origin') != origin or self.headers.get('Transfer-Encoding'):
                     self.reply(403, {'error': 'Open the original invitation page.'}); return
@@ -132,6 +215,10 @@ def server(store, origin, port=9876):
                 token = self.headers.get('Authorization', '').removeprefix('Bearer ')
                 if self.path.endswith('/status'):
                     result = store.status(token)
+                elif self.path.endswith('/notifications'):
+                    if set(data) != {'action'}:
+                        raise ValueError()
+                    result = store.notification(token, data['action'])
                 else:
                     if set(data) != {'public_key'}:
                         raise ValueError()
@@ -154,9 +241,12 @@ def server(store, origin, port=9876):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('command', choices=['invite', 'serve', 'revoke'])
+    parser.add_argument('command', choices=['invite', 'serve', 'revoke', 'notify'])
     parser.add_argument('--hours', type=int, default=24)
     parser.add_argument('--id')
+    parser.add_argument('--recipient')
+    parser.add_argument('--title')
+    parser.add_argument('--url')
     args = parser.parse_args()
     if not 1 <= args.hours <= 168:
         parser.error('Invitation lifetime must be 1–168 hours.')
@@ -179,6 +269,9 @@ def main():
         print(f'Private invitation (expires in {args.hours} hours; one public key):')
         print(origin + '/#invite=' + token)
         print('Invitation ID: ' + digest)
+    elif args.command == 'notify':
+        store.notify(args.recipient, args.title, args.url)
+        print('Notification sent.')
     elif args.command == 'revoke':
         if not args.id:
             parser.error('--id is required for revoke')

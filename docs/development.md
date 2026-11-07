@@ -531,3 +531,22 @@ Use separate PLAYWRIGHT_BROWSERS_PATH directories for version trials and protect
 shared caches with PLAYWRIGHT_SKIP_BROWSER_GC=1 during deliberate upgrades.
 Installed templates require explicit deployment; existing app locks do not
 change automatically. Do not rerun bootstrap for this upgrade.
+
+
+## Optional invitation notifications — 2026-11-07
+
+The lab access service migrates its existing SQLite database by adding a separate
+notifications table. Each recipient is the enrolled public-key digest, independent
+of invitation expiry. All HTTP configuration actions require a valid invitation
+and completed SSH enrollment; topics are generated server-side. Start/test/confirm/
+skip are separate actions; test requests have a 30-second cooldown, fixed ntfy.sh
+HTTPS destination, no redirects, bounded timeout and no topic/body logging.
+Readiness requires explicit receipt confirmation. lab-access notify requires an
+explicit confirmed recipient and never falls back to owner notification settings.
+This is routing within the trusted lab account, not multi-tenant secret isolation.
+
+Deploy access.py to /usr/local/lib/lab and restart lab-access; back up its database
+as lab before migration. Deploy welcome index.html/welcome.js as lab and publish
+welcome to refresh the worker. Update installed agent guidance and notification
+docs; no bootstrap rerun, firewall change or new public port is needed. Tests mock
+network delivery and verify authentication, receipt gating, skip and isolation.

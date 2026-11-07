@@ -220,7 +220,11 @@ For the Claude welcome handoff, publish the guide assets from `welcome/` and fol
 [claude-ssh.md](docs/claude-ssh.md). Enable invitation enrollment once with
 `python3 -I tools/enable-access.py --app welcome`, then generate the owner's private
 link with `runuser -u lab -- lab-access invite`. The owner uses the same form as an
-invited friend: paste their public key, Enable access, then connect as lab. Never
+invited friend: paste their public key, Enable access, optionally set up their own
+ntfy subscription (or skip), then connect as lab. The page requires a test and
+explicit phone receipt before marking that subscription ready. Use the page’s
+first Claude prompt to carry the chosen recipient ID; never replace the owner’s
+notification destination for an invited friend. Never
 require a collaborator to log in as root or put invitation URLs in public logs.
 
 Keep `.local/setup-status.md` current. Finish with the domain, installed components,
