@@ -37,16 +37,16 @@ Shell edits in either app kind need `labctl publish NAME` to regenerate the work
 Backend Python edits also need `labctl service restart NAME`. HTTP verification
 is not application testing.
 
-Read [SETUP.md](SETUP.md), [security](docs/security.md),
-[recovery](docs/recovery.md), [hosted notifications](docs/notifications.md), [migration](docs/migration.md), and
-[agent operating instructions](templates/operating-instructions.md) before installing or administering.
+Read [SETUP.md](../SETUP.md), [security](security.md),
+[recovery](recovery.md), [hosted notifications](notifications.md), [migration](migration.md), and
+[agent operating instructions](../templates/operating-instructions.md) before installing or administering.
 
 ## Experiment development workflow
 
 New static and backend scaffolds include an in-app PWA offer, content-hashed shell
 worker generation, uv-locked test tooling, and tools/tests shared fixtures. Start a
 local preview with labdev, publish an early safe preview, and share screenshots
-with labshot. See [the workflow](docs/experiment-workflow.md). Existing apps are
+with labshot. See [the workflow](experiment-workflow.md). Existing apps are
 not rewritten: custom workers opt in only through an explicit migration.
 
 ## Server backups and monitoring
@@ -62,7 +62,7 @@ repository data. **Healthchecks.io** receives start, success and failure signals
 and monitors for missed or stalled runs, using a one-day period and one-hour
 grace. Email notifications are selected; inbox delivery still needs confirmation.
 
-Logs: `/var/log/restic-backup.log`. See [backup setup and recovery instructions](docs/server-backups.md)
+Logs: `/var/log/restic-backup.log`. See [backup setup and recovery instructions](server-backups.md)
 for exclusions, protected configuration and restore commands. These services are
 not activated by cloning the repository; a new installation must configure and verify its own
 backup repository and monitoring check.

@@ -609,3 +609,15 @@ diagnostics, working path updates, and no overflow or JavaScript errors. Install
 lab agent instructions were checked: no Codex reference or installation request.
 The screenshot's plugin notice appears to originate in Claude's desktop/account
 plugin configuration; the user's Mac configuration was not inspected or changed.
+
+
+The Infinity Machine onboarding — 2026-11-07: README reduced from 178 to 67
+lines, with root connection, installation prompt, invitation and lab connection.
+Technical overview preserved in platform-reference.md and linked from agent entry
+points. Local documentation links and mirrored agent instructions checked.
+137 tests and 59 source parse checks passed (two existing warnings). Chromium and
+WebKit at 390px/1280px verified branded live welcome and intercepted local setup
+form assets without horizontal overflow. The form test did not submit settings
+or activate integrations. Repository rename was assessed, not performed; no
+.github workflow/action directory exists in this checkout. Historical domains
+and technical lab identities remain unchanged.
