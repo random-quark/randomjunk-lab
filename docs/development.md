@@ -455,3 +455,14 @@ Wizard tests cover old saved-state compatibility and unfinished-form activation.
 For live validation, use a disposable generated key, test lab SSH and SFTP, remove
 only that exact key, and compare authorized_keys with its pre-test hash. Never
 substitute the testing key for the owner's actual laptop key.
+
+
+## Invitation enrollment development — 2026-11-07
+
+The previous command-generating welcome flow is superseded by an unprivileged
+loopback enrollment service. See docs/claude-ssh.md for installation and threat
+boundaries. Run the locked source suite and Caddy parser checks; access tests cover
+unknown/expired/revoked tokens, origin and body restrictions, invalid keys,
+retry binding after partial writes, and preserving one-key scope. Live validation
+must use temporary keys and remove exactly those keys after SSH/SFTP checks.
+Do not run SQLite on the lab-owned invitation database as root.

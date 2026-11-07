@@ -1,6 +1,39 @@
 const $ = id => document.getElementById(id);
 const quote = value => "'" + value.replaceAll("'", "'\\''") + "'";
 let connection;
+let invitation = new URLSearchParams(location.hash.slice(1)).get('invite') || '';
+if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+let invitationReady = false;
+let sending = false;
+async function access(action, data = {}) {
+  const response = await fetch('/_lab/access/' + action, {
+    method: 'POST', cache: 'no-store', credentials: 'omit',
+    headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + invitation},
+    body: JSON.stringify(data)
+  });
+  let result;
+  try { result = await response.json(); }
+  catch { throw new Error('Access setup is unavailable. Ask the server owner to check it.'); }
+  if (!response.ok) throw new Error(result.error || 'Could not enable access.');
+  return result;
+}
+async function checkInvitation() {
+  invitationReady = false;
+  $('prepare').disabled = true;
+  if (!invitation) return;
+  try {
+    const status = await access('status');
+    invitationReady = true;
+    $('invite-status').textContent = status.used ? 'This invitation has already enabled one key. You can retry that same key or continue to step 2.' : 'Your invitation is ready. Paste your public key below.';
+    $('invite-entry').open = false;
+    $('prepare').disabled = !connection;
+  } catch (error) { $('invite-status').textContent = error.message; }
+}
+$('use-invite').addEventListener('click', async () => {
+  invitation = $('invite-code').value.trim();
+  $('invite-code').value = '';
+  await checkInvitation();
+});
 const buttons = [...document.querySelectorAll('button[data-copy], #prepare, #test-command-button')];
 buttons.forEach(button => { button.disabled = true; });
 try {
@@ -11,6 +44,8 @@ try {
   $('ssh-host').textContent = `lab@${connection.host}`;
   $('ssh-port').textContent = String(connection.port);
   buttons.forEach(button => { button.disabled = false; });
+  $('prepare').disabled = true;
+  await checkInvitation();
 } catch { $('key-error').textContent = 'Connection details could not load. Reload this page while online.'; }
 function testCommand() {
   const path = $('key-path').value.trim();
@@ -25,8 +60,9 @@ function testCommand() {
 $('test-command-button').addEventListener('click', testCommand);
 $('key-path').addEventListener('input', () => { if (connection) testCommand(); });
 if (connection) testCommand();
-$('public-key').addEventListener('input', () => { $('grant').hidden = true; $('grant-command').textContent = ''; });
-$('prepare').addEventListener('click', () => {
+$('public-key').addEventListener('input', () => { $('grant').hidden = true; });
+$('prepare').addEventListener('click', async () => {
+  if (!invitationReady || sending) return;
   const value = $('public-key').value.trim();
   const parts = value.split(/\s+/);
   $('grant').hidden = true;
@@ -41,8 +77,20 @@ $('prepare').addEventListener('click', () => {
   } catch { $('key-error').textContent = 'That public key looks incomplete. Copy the whole .pub file again.'; return; }
   $('key-error').textContent = '';
   const key = parts.slice(0, 2).join(' ');
-  $('grant-command').textContent = `printf '%s\\n' ${quote(key)} | ssh -p ${connection.port} root@${connection.host} /usr/local/sbin/lab-authorize-key`;
-  $('grant').hidden = false;
+  sending = true;
+  $('prepare').disabled = true;
+  $('prepare').textContent = 'Enabling…';
+  try {
+    await access('enroll', {public_key: key});
+    $('public-key').value = '';
+    $('grant').hidden = false;
+    $('invite-status').textContent = 'Access enabled for this key. This invitation cannot add another key.';
+  } catch (error) { $('key-error').textContent = error.message; }
+  finally {
+    sending = false;
+    $('prepare').disabled = false;
+    $('prepare').textContent = 'Enable access';
+  }
 });
 for (const button of document.querySelectorAll('[data-copy]')) button.addEventListener('click', async () => {
   const text = $(button.dataset.copy).textContent;

@@ -211,6 +211,13 @@ Use `labdoctor` to check for leftovers. The broad live-integration harness in
 [verification.md](docs/verification.md) is for a disposable empty platform only;
 do not run it on an occupied production machine.
 
+For the Claude welcome handoff, publish the guide assets from `welcome/` and follow
+[claude-ssh.md](docs/claude-ssh.md). Enable invitation enrollment once with
+`python3 -I tools/enable-access.py --app welcome`, then generate the owner's private
+link with `runuser -u lab -- lab-access invite`. The owner uses the same form as an
+invited friend: paste their public key, Enable access, then connect as lab. Never
+require a collaborator to log in as root or put invitation URLs in public logs.
+
 Keep `.local/setup-status.md` current. Finish with the domain, installed components,
 secret **locations only**, how to enter `lab` and create an experiment, backup/
 monitoring status, test evidence and every pending/explicitly deferred item.

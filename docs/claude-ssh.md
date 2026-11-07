@@ -16,13 +16,42 @@ The private file stays on the Mac; only the .pub contents go to the administrato
 The private setup form has a public-key field. After saving, the administrator
 runs `python3 -I tools/setup-wizard.py authorize-ssh` from the trusted checkout.
 Alternatively, pipe one public key into `/usr/local/sbin/lab-authorize-key` as root.
-This helper adds the key for lab without replacing existing keys. It is not part
-of lab's sudo allowlist and has no public HTTP endpoint.
+This fallback helper adds the key for lab without replacing existing keys. The
+invitation form below provides the normal recipient flow.
 
-The public welcome guide provides a local-only key field and a copyable command
-that sends the public key over authenticated root SSH to that helper. The browser
-neither sends the key to an HTTP service nor saves it. Preparing the command does
-not authorize anything; the owner must execute it with administrator access.
+The welcome guide now uses a private invitation for both the owner and invited
+friends. Paste the public key and click Enable access; no root command or password
+is requested from the person connecting. The server authorizes the key for lab.
+Opening the public guide alone grants nothing. Invitations expire after 24 hours,
+authorize one key, and allow retrying that same key if a response was lost.
+
+After installing the core and publishing the welcome guide, the setup agent runs:
+
+```sh
+python3 -I tools/enable-access.py --app welcome
+runuser -u lab -- lab-access invite
+```
+
+Give the owner the private URL printed by the second command. Do not put it in
+Git, public pages, screenshots or shared logs. This is also how the owner adds
+their first lab key after installing the server. Once connected, an existing lab
+session can run `lab-access invite` to invite another device or friend without
+root. Each invitation grants the shared lab account, including its apps/files;
+there is no per-person isolation. Keep root administration separate.
+
+`lab-access invite --hours 1` creates a shorter-lived invitation (1–168 hours).
+`lab-access revoke --id INVITATION_ID` revokes an invitation; this does not remove
+an already installed SSH key. Remove an installed key separately when revoking
+someone's existing SSH access.
+
+The enrollment service runs as lab on loopback port 9876, with systemd write
+access limited to lab's SSH directory, invitation state and private temporary
+files. Only the chosen guide site proxies /_lab/access/* to it. Tokens are hashed
+in the private database, transmitted in Authorization headers, and not logged.
+The browser takes the token from the URL fragment, removes it from the address
+bar and keeps it in memory only. Reopen the original link after refreshing.
+Key binding commits before authorization, so interrupted requests cannot redeem
+one invitation for another key. No API accepts an account or file destination.
 
 Test from the Mac with the matching private-key path and actual host/port:
 

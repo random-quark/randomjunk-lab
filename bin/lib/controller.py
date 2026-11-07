@@ -193,7 +193,7 @@ class Controller:
         if (self.caddy/'Caddyfile').read_text() != canonical:
             raise LabError('top-level Caddyfile differs from managed configuration; inspect before publication')
         dom = self.config()['domain']
-        sites = ''.join(caddy_site(rec, dom, self.root, self.public, self.config().get('tls_mode', 'production')) for rec in sorted(records, key=lambda item: item['name']))
+        sites = ''.join(caddy_site(rec, dom, self.root, self.public, self.config().get('tls_mode', 'production'), access=rec['name'] == self.config().get('access_app')) for rec in sorted(records, key=lambda item: item['name']))
         header = '{\n\tadmin unix//run/caddy/admin.sock\n\tskip_install_trust\n}\n'
         candidate = self.state/'caddy-candidate'
         atomic_write(candidate, header + sites, 0o600)
@@ -589,7 +589,7 @@ class Controller:
             except LabError:
                 problems.append(f'cannot enumerate Postgres {kind}s')
         try:
-            expected_sites = ''.join(caddy_site(rec, self.config()['domain'], self.root, self.public, self.config().get('tls_mode', 'production')) for rec in self.published())
+            expected_sites = ''.join(caddy_site(rec, self.config()['domain'], self.root, self.public, self.config().get('tls_mode', 'production'), access=rec['name'] == self.config().get('access_app')) for rec in self.published())
             if (self.caddy/'lab-sites.caddy').read_text() != expected_sites:
                 problems.append('Caddy file differs from published records; use labctl reconcile-caddy')
         except (LabError, OSError, ValueError):

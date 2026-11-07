@@ -529,3 +529,11 @@ connected successfully. The exact test key was removed and authorized_keys match
 its prior SHA-256 hash. No owner key was guessed or copied from root. Actual Mac
 key selection and a new Claude Desktop session remain owner acceptance steps.
 The existing WebKit offline limitation is unchanged; these are online UI checks.
+
+
+## Invitation enrollment — 2026-11-07
+
+The earlier welcome command flow is superseded. The new owner/friend form sends
+only a public key with a private invitation token to an unprivileged lab service.
+137 source tests and 59 source parse checks passed. Live acceptance results will
+be added after deployment. Previous no-POST checks apply only to the retired flow.

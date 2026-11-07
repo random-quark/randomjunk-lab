@@ -1,5 +1,13 @@
 # Changelog
 
+## Unified invitation access — 2026-11-07
+
+- Replace the welcome page's root SSH command with invitation-authorized Enable
+  access, using the same flow for a fresh server owner or an invited friend.
+- Add an unprivileged enrollment service, expiring one-key invitations, safe
+  same-key retries, revocation and invitation creation by existing lab users.
+- Explain that pbcopy silently copies to the clipboard and prompt users to paste.
+
 ## Claude laptop handoff — 2026-11-07
 
 - Add a reusable Claude-only welcome guide with exact desktop steps, public-key
